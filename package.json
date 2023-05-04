@@ -1,0 +1,28 @@
+{
+  "name": "appgastrobackend",
+  "version": "1.0.0",
+  "description": "Backend de la aplicacion AppGastro",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "react",
+    "appgastro"
+  ],
+  "author": "Sebastian Gomez",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.2.0",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1"
+  }
+}
