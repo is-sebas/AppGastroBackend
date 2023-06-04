@@ -59,7 +59,17 @@ module.exports = {
                     phone: myUser.phone,
                     image: myUser.image,
                     session_token: `JWT ${token}`,
-                    roles: JSON.parse(myUser.roles)
+                    //roles: JSON.parse(myUser.roles)
+                    roles: {}
+                }
+                if (myUser.roles) {
+                    try {
+                        data.roles = JSON.parse(myUser.roles);
+                        console.data('Parsing JSON Verificar userController: ' + data);//sagz
+
+                    } catch (error) {
+                        console.error('Error Parsing JSON Verificar userController: ' + error);
+                    }
                 }
 
                 return res.status(201).json({

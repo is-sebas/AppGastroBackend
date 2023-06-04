@@ -7,11 +7,7 @@ const cors = require('cors');
 const passport = require('passport');
 const multer = require('multer');
 const io = require('socket.io')(server);
-const mercadopago = require('mercadopago');
-mercadopago.configure({
-    sandbox: true,
-    access_token: 'TEST-4332423066954571-102200-779dd861dfaa9f6acb7609a1887ee3f3-191014229'
-});
+
 
 /*
 * IMPORTTAR SOCKETS
@@ -26,7 +22,6 @@ const categoriesRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const mercadoPagoRoutes = require('./routes/mercadoPagoRoutes');
 const stripeRoutes = require('./routes/stripeRoutes');
 
 const port = process.env.PORT || 3000;
@@ -65,13 +60,18 @@ categoriesRoutes(app ,upload);
 addressRoutes(app);
 productRoutes(app ,upload);
 orderRoutes(app);
-mercadoPagoRoutes(app);
 stripeRoutes(app);
 
 //
-server.listen(3000, '192.168.100.6' || 'localhost', function() {    //casa
+//server.listen(3000, '192.168.13.212' || 'localhost', function() {    //columbia macbook
+//server.listen(3000, '192.168.50.149' || 'localhost', function() {    //celular macbook
+//server.listen(3000, '10.2.8.12' || 'localhost', function() {    //continental macbook
+//server.listen(3000, '192.168.100.6' || 'localhost', function() {    //casa
+//server.listen(3000, '192.168.100.66' || 'localhost', function() {    //casa Macbook
 //server.listen(3000, '192.168.137.27' || 'localhost', function() {     //oficina
-//server.listen(3000, '192.168.13.148' || 'localhost', function() {     //facultad
+//server.listen(3000, '192.168.13.148' || 'localhost', function() {     //facultad 
+server.listen(3000, '192.168.0.243' || 'localhost', function() {    //columbia macbook
+
     console.log('Aplicacion NodeJS ' + port + ' Iniciada...')
 });
 
