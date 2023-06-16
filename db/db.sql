@@ -145,3 +145,31 @@ CREATE TABLE locales (
   FOREIGN KEY(id_categoria) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE CASCADE,
   PRIMARY KEY (id_local)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE mesas (
+  id_mesa bigint NOT NULL AUTO_INCREMENT,
+  codigoqr varchar(20) NOT NULL,
+  mesa_ubicacion varchar(20) NOT NULL,
+  mesa_estado int NOT NULL,
+  total_cancelado double NOT NULL,
+  propina double NOT NULL,
+  pagado varchar(2) NOT NULL,
+  id_staff bigint NOT NULL,
+  mesa_fecha_crea timestamp NOT NULL,
+  mesa_fecha_cierre timestamp NOT NULL,
+  PRIMARY KEY (id_mesa)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE usuariosActivos (
+  id_usuario bigint NOT NULL AUTO_INCREMENT,
+  id_mesa bigint NOT NULL,
+  id_local bigint NOT NULL,
+  estado int NOT NULL,
+  monto_pagado double NOT NULL,
+  es_temporal varchar(2) NOT NULL,
+  ingreso timestamp NOT NULL,
+  salida timestamp NOT NULL,
+  FOREIGN KEY(id_usuario) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY(id_mesa) REFERENCES mesas(id_mesa) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY(id_local) REFERENCES locales(id_local) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
