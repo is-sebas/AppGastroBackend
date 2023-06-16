@@ -1,15 +1,15 @@
-const Locales = require('../models/locales');
+const Mesas = require('../models/mesas');
 
 module.exports = {
     
-    findById_Local(req, res) {
-        const id_local = req.params.id_local;
+    findById_Existe_Mesa(req, res) {
+        const id_mesa = req.params.id_mesa;
 
-        Locales.findById_local(id_local, (err, data) => {
+        Mesas.findById_Existe_Mesa(id_mesa, (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
-                    message: 'Hubo un error al momento de listar los locales',
+                    message: 'Hubo un error al momento de listar las mesas',
                     error: err
                 });
             }
@@ -20,41 +20,41 @@ module.exports = {
 
     create(req, res) {
 
-        const local = JSON.parse(req.body.local); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+        const mesa = JSON.parse(req.body.mesa); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
         
-        Locales.create(local, (err, id_local) => {
+        Mesas.create(mesa, (err, id_mesa) => {
     
             if (err) {
                 return res.status(501).json({
                     success: false,
-                    message: 'Hubo un error con el registro del local',
+                    message: 'Hubo un error con el registro de la mesa',
                     error: err
                 });
             }
             
             return res.status(201).json({
                 success: true,
-                message: 'El local se almaceno correctamente',
+                message: 'La mesa se almaceno correctamente',
                 data: data
             });
         });
     },
 
     update(req, res) {
-        const local = req.body;
+        const mesa = req.body;
 
-        Locales.update(local, (err, data) => {
+        Mesas.update(mesa, (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
-                    message: 'Hubo un error con la actualización del local',
+                    message: 'Hubo un error con la actualización de la mesa',
                     error: err
                 });
             }
 
             return res.status(201).json({
                 success: true,
-                message: 'El local se actualizo correctamente',
+                message: 'La mesa se actualizo correctamente',
                 data: data
             });
         })
@@ -63,18 +63,18 @@ module.exports = {
     delete(req, res) {
         const id = req.params.id;
 
-        Locales.delete(id, (err, id) => {
+        Mesas.delete(id, (err, id) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
-                    message: 'Hubo un error al momento de eliminar el local',
+                    message: 'Hubo un error al momento de eliminar la mesa',
                     error: err
                 });
             }
 
             return res.status(201).json({
                 success: true,
-                message: 'El local se elimino correctamente',
+                message: 'La mesa se elimino correctamente',
                 data: `${id}`
             });
         });

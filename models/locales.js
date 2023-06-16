@@ -25,14 +25,14 @@ Locales.findById_local = (id_local, result) => {
                 result(err, null);
             }
             else {
-                console.log('Id del nuevo local:', res);
+                console.log('Local obtenido:', res);
                 result(null, res);
             }
         }
     );
 }
 
-Product.create = (locales, result) => {
+Locales.create = (locales, result) => {
 
     const sql = `
     INSERT INTO
@@ -67,13 +67,11 @@ Product.create = (locales, result) => {
                 result(null, res.insertId);
             }
         }
-
     )
-
 }
 
 
-Product.update = (locales, result) => {
+Locales.update = (locales, result) => {
 
     const sql = `
     UPDATE
@@ -104,14 +102,14 @@ Product.update = (locales, result) => {
                 result(err, null);
             }
             else {
-                console.log('Id del local actualizado:', locales.id_local);
+                console.log('Local actualizado:', locales.id_local);
                 result(null, product.id);
             }
         }
     )
 }
 
-Product.delete = (id_local, result) => {
+Locales.delete = (id_local, result) => {
     const sql = `
     DELETE FROM
         locales

@@ -29,6 +29,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const mercadoPagoRoutes = require('./routes/mercadoPagoRoutes');
 const stripeRoutes = require('./routes/stripeRoutes');
 const localesRoutes = require('./routes/localesRoutes');
+const localesRoutes = require('./routes/mesasRoutes');
 const { update } = require('./models/user');
 
 const port = process.env.PORT || 3000;
@@ -70,6 +71,7 @@ orderRoutes(app);
 mercadoPagoRoutes(app);
 stripeRoutes(app);
 localesRoutes(app, upload);
+mesasRoutes(app, upload);
 
 //
 server.listen(3000, '192.168.100.6' || 'localhost', function() {    //casa
