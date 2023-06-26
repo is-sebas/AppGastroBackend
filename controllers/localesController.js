@@ -20,24 +20,68 @@ module.exports = {
 
     create(req, res) {
 
-        const local = JSON.parse(req.body.local); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+        const local = JSON.parse(req.body.locales); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+
+        const files = req.files;
         
-        Locales.create(local, (err, id_local) => {
-    
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con el registro del local',
-                    error: err
-                });
-            }
-            
-            return res.status(201).json({
-                success: true,
-                message: 'El local se almaceno correctamente',
-                data: data
+        let inserts = 0; 
+        
+        if (files.length === 0) {
+            return res.status(501).json({
+                success: false,
+                message: 'Error al registrar el local no tiene imagen',
             });
-        });
+        }
+        else {
+            Locales.create(local, (err, id_local) => {
+
+        
+                if (err) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error con el registro del local',
+                        error: err
+                    });
+                }
+                
+                local.id = id_local;
+                const start = async () => {
+                    await asyncForEach(files, async (file) => {
+                        const path = `image_${Date.now()}`;
+                        const url = await storage(file, path);
+
+                        if (url != undefined && url != null) { // CREO LA IMAGEN EN FIREBASE
+                            if (inserts == 0) { //IMAGEN 1
+                                product.image1 = url;
+                            }
+                        }
+
+                        await Locales.update(local, (err, data) => {
+                            if (err) {
+                                return res.status(501).json({
+                                    success: false,
+                                    message: 'Hubo un error con el registro del local',
+                                    error: err
+                                });
+                            }
+
+                            if (inserts == files.length) { // TERMINO DE ALAMACENAR LAS TRES IMAGENES
+                                return res.status(201).json({
+                                    success: true,
+                                    message: 'El local se almaceno correctamente',
+                                    data: data
+                                });
+                            }
+
+                        });
+                    });
+                }
+    
+                start();
+    
+            });
+        }
+
     },
 
     update(req, res) {
@@ -58,6 +102,72 @@ module.exports = {
                 data: data
             });
         })
+    },
+
+    updateWithImage(req, res) {
+
+        const local = JSON.parse(req.body.locales); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+
+        const files = req.files;
+        
+        let inserts = 0; 
+        
+        if (files.length === 0) {
+            return res.status(501).json({
+                success: false,
+                message: 'Error al registrar el local no tiene imagen',
+            });
+        }
+        else {
+            Locales.update(local, (err, id_local) => {
+
+        
+                if (err) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error con la actualización del local',
+                        error: err
+                    });
+                }
+                
+                local.id = id_local;
+                const start = async () => {
+                    await asyncForEach(files, async (file) => {
+                        const path = `image_${Date.now()}`;
+                        const url = await storage(file, path);
+
+                        if (url != undefined && url != null) { // CREO LA IMAGEN EN FIREBASE
+                            if (inserts == 0) { //IMAGEN 1
+                                product.image1 = url;
+                            }
+                        }
+
+                        await Locales.update(local, (err, data) => {
+                            if (err) {
+                                return res.status(501).json({
+                                    success: false,
+                                    message: 'Hubo un error con la actualización del local',
+                                    error: err
+                                });
+                            }
+
+                            if (inserts == files.length) { // TERMINO DE ALAMACENAR LAS TRES IMAGENES
+                                return res.status(201).json({
+                                    success: true,
+                                    message: 'El local se actualizo correctamente',
+                                    data: data
+                                });
+                            }
+
+                        });
+                    });
+                }
+    
+                start();
+    
+            });
+        }
+
     },
 
     delete(req, res) {

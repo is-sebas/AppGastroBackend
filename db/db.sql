@@ -90,6 +90,7 @@ CREATE TABLE products(
     image2 VARCHAR(255) NULL,
     image3 VARCHAR(255) NULL,
     id_category BIGINT NOT NULL,
+    stock double NOT NULL,
     created_at TIMESTAMP(0) NOT NULL,
     updated_at TIMESTAMP(0) NOT NULL,
     FOREIGN KEY(id_category) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -138,6 +139,7 @@ CREATE TABLE locales (
   id_local bigint NOT NULL AUTO_INCREMENT,
   loc_nombre varchar(50) NOT NULL,
   loc_descripcion varchar(50) NOT NULL,
+  loc_imagen varchar(250) NOT NULL,
   loc_estado int NOT NULL,
   id_categoria bigint NOT NULL,
   loc_creado timestamp NOT NULL,

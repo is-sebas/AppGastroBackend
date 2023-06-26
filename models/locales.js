@@ -8,6 +8,7 @@ Locales.findById_local = (id_local, result) => {
         CONVERT(P.id_local, char) AS id,
         P.loc_nombre,
         P.loc_descripcion,
+        P.loc_imagen,
         P.loc_estado,
         CONVERT(P.id_categoria, char) AS id_categoria
     FROM
@@ -39,12 +40,13 @@ Locales.create = (locales, result) => {
         locales(
             loc_nombre,
             loc_descripcion,
+            loc_imagen,
             loc_estado,
             id_categoria,
             loc_creado,
             loc_update
         )
-    VALUES(?, ?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
@@ -52,6 +54,7 @@ Locales.create = (locales, result) => {
         [
             locales.loc_nombre,
             locales.loc_descripcion,
+            locales.loc_imagen,
             locales.loc_estado,
             locales.id_categoria,
             new Date(),
@@ -78,7 +81,8 @@ Locales.update = (locales, result) => {
         locales
     SET
         loc_nombre = ?, 
-        loc_descripcion = ?, 
+        loc_descripcion = ?,
+        loc_imagen = ?,
         loc_estado = ?, 
         id_categoria = ?,  
         loc_update = ?
@@ -91,6 +95,7 @@ Locales.update = (locales, result) => {
         [
             locales.loc_nombre,
             locales.loc_descripcion,
+            locales.loc_imagen,
             locales.loc_estado,
             locales.id_categoria,
             new Date(),
