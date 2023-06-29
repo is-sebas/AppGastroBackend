@@ -90,6 +90,7 @@ CREATE TABLE products(
     image2 VARCHAR(255) NULL,
     image3 VARCHAR(255) NULL,
     id_category BIGINT NOT NULL,
+    stock double NOT NULL,
     created_at TIMESTAMP(0) NOT NULL,
     updated_at TIMESTAMP(0) NOT NULL,
     FOREIGN KEY(id_category) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -133,3 +134,44 @@ CREATE TABLE order_has_products(
     FOREIGN KEY(id_order) REFERENCES orders(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY(id_product) REFERENCES products(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE locales (
+  id_local bigint NOT NULL AUTO_INCREMENT,
+  loc_nombre varchar(50) NOT NULL,
+  loc_descripcion varchar(50) NOT NULL,
+  loc_imagen varchar(250) NOT NULL,
+  loc_estado int NOT NULL,
+  id_categoria bigint NOT NULL,
+  loc_creado timestamp NOT NULL,
+  loc_update timestamp NOT NULL,
+  FOREIGN KEY(id_categoria) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  PRIMARY KEY (id_local)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE mesas (
+  id_mesa bigint NOT NULL AUTO_INCREMENT,
+  codigoqr varchar(20) NOT NULL,
+  mesa_ubicacion varchar(20) NOT NULL,
+  mesa_estado int NOT NULL,
+  total_cancelado double NOT NULL,
+  propina double NOT NULL,
+  pagado varchar(2) NOT NULL,
+  id_staff bigint NOT NULL,
+  mesa_fecha_crea timestamp NOT NULL,
+  mesa_fecha_cierre timestamp NOT NULL,
+  PRIMARY KEY (id_mesa)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE usuariosActivos (
+  id_usuario bigint NOT NULL AUTO_INCREMENT,
+  id_mesa bigint NOT NULL,
+  id_local bigint NOT NULL,
+  estado int NOT NULL,
+  monto_pagado double NOT NULL,
+  es_temporal varchar(2) NOT NULL,
+  ingreso timestamp NOT NULL,
+  salida timestamp NOT NULL,
+  FOREIGN KEY(id_usuario) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY(id_mesa) REFERENCES mesas(id_mesa) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY(id_local) REFERENCES locales(id_local) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

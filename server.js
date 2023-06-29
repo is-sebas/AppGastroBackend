@@ -7,11 +7,7 @@ const cors = require('cors');
 const passport = require('passport');
 const multer = require('multer');
 const io = require('socket.io')(server);
-const mercadopago = require('mercadopago');
-mercadopago.configure({
-    sandbox: true,
-    access_token: 'TEST-4332423066954571-102200-779dd861dfaa9f6acb7609a1887ee3f3-191014229'
-});
+
 
 /*
 * IMPORTTAR SOCKETS
@@ -26,8 +22,11 @@ const categoriesRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const mercadoPagoRoutes = require('./routes/mercadoPagoRoutes');
 const stripeRoutes = require('./routes/stripeRoutes');
+const localesRoutes = require('./routes/localesRoutes');
+const mesasRoutes = require('./routes/mesasRoutes');
+const promocionesRoutes = require('./routes/promocionesRoutes');
+const { update } = require('./models/user');
 
 const port = process.env.PORT || 3000;
 
@@ -65,13 +64,13 @@ categoriesRoutes(app ,upload);
 addressRoutes(app);
 productRoutes(app ,upload);
 orderRoutes(app);
-mercadoPagoRoutes(app);
 stripeRoutes(app);
+localesRoutes(app, upload);
+mesasRoutes(app, upload);
+promocionesRoutes(app, upload);
 
 //
-server.listen(3000, '192.168.100.6' || 'localhost', function() {    //casa
-//server.listen(3000, '192.168.137.27' || 'localhost', function() {     //oficina
-//server.listen(3000, '192.168.13.148' || 'localhost', function() {     //facultad
+server.listen(3000, "127.0.0.1" || "localhost", function () {    
     console.log('Aplicacion NodeJS ' + port + ' Iniciada...')
 });
 
