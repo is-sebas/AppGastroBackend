@@ -76,7 +76,7 @@ mesasRoutes(app, upload);
 promocionesRoutes(app, upload);
 
 //
-server.listen(3000, '192.168.100.6' || 'localhost', function() {    //casa
+server.listen(3000, '192.168.1.9' || 'localhost', function() {    //casa
 //server.listen(3000, '192.168.137.27' || 'localhost', function() {     //oficina
 //server.listen(3000, '192.168.13.148' || 'localhost', function() {     //facultad
     console.log('Aplicacion NodeJS ' + port + ' Iniciada...')
