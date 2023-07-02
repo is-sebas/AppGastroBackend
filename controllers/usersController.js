@@ -1,53 +1,93 @@
-const User = require('../models/user');
-const Rol = require('../models/rol');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const keys = require('../config/keys');
-const storage = require('../utils/cloud_storage');
+const User = require("../models/user");
+const Rol = require("../models/rol");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const keys = require("../config/keys");
+const storage = require("../utils/cloud_storage");
 
 module.exports = {
-
-    findDeliveryMen(req, res) {
-        User.findDeliveryMen((err, data) => {
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con al listar los repartidores',
-                    error: err
-                });
-            }
-
-            
-            return res.status(201).json(data);
+  findDeliveryMen(req, res) {
+    User.findDeliveryMen((err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con al listar los repartidores",
+          error: err,
         });
-    },
-    login(req, res) {
+      }
 
-        const email = req.body.email;
-        const password = req.body.password;
+      return res.status(201).json(data);
+    });
+  },
 
-        User.findByEmail(email, async (err, myUser) => {
-            
-            console.log('Error ', err);
-            console.log('USUARIO ', myUser);
+  login(req, res) {
+    const email = req.body.email;
+    const password = req.body.password;
 
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con el registro del usuario',
-                    error: err
-                });
-            }
+    User.findByEmail(email, async (err, myUser) => {
+      console.log("Error ", err);
+      console.log("USUARIO ", myUser);
 
-            if (!myUser) {
-                return res.status(401).json({ // EL CLIENTE NO TIENE AUTORIZACION PARTA REALIZAR ESTA PETICION (401)
-                    success: false,
-                    message: 'El email no fue encontrado'
-                });
-            }
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con el registro del usuario",
+          error: err,
+        });
+      }
 
-            const isPasswordValid = await bcrypt.compare(password, myUser.password);
+      if (!myUser) {
+        return res.status(401).json({
+          // EL CLIENTE NO TIENE AUTORIZACION PARTA REALIZAR ESTA PETICION (401)
+          success: false,
+          message: "El email no fue encontrado",
+        });
+      }
 
+      const isPasswordValid = await bcrypt.compare(password, myUser.password);
+
+      if (isPasswordValid) {
+        const token = jwt.sign(
+          { id: myUser.id, email: myUser.email },
+          keys.secretOrKey,
+          {}
+        );
+
+        const data = {
+          id: `${myUser.id}`,
+          name: myUser.name,
+          lastname: myUser.lastname,
+          email: myUser.email,
+          phone: myUser.phone,
+          image: myUser.image,
+          session_token: `JWT ${token}`,
+          roles: {},
+        };
+        console.log("Entro en userController: ", data); //sagz
+        if (myUser.roles) {
+          try {
+            data.roles = JSON.parse(myUser.roles);
+            console.data("Parsing JSON Verificar userController: " + data); //sagz
+          } catch (error) {
+            console.error(
+              "Error Parsing JSON Verificar userController: " + error + data
+            );
+          }
+        }
+
+        return res.status(201).json({
+          success: true,
+          message: "El usuario fue autenticado",
+          data: data, // EL ID DEL NUEVO USUARIO QUE SE REGISTRO
+        });
+      } else {
+        return res.status(401).json({
+          // EL CLIENTE NO TIENE AUTORIZACION PARTA REALIZAR ESTA PETICION (401)
+          success: false,
+          message: "El password es incorrecto",
+        });
+      }
+      /*
             if (isPasswordValid) {
                 const token = jwt.sign({id: myUser.id, email: myUser.email}, keys.secretOrKey, {});
 
@@ -61,192 +101,161 @@ module.exports = {
                     session_token: `JWT ${token}`,
                     roles: JSON.parse(myUser.roles)
                 }
+                console.logr('Parsing JSON Verificar userController: ' + data);//sagz
 
                 return res.status(201).json({
                     success: true,
                     message: 'El usuario fue autenticado',
                     data: data // EL ID DEL NUEVO USUARIO QUE SE REGISTRO
                 });
-
             }
             else {
                 return res.status(401).json({ // EL CLIENTE NO TIENE AUTORIZACION PARTA REALIZAR ESTA PETICION (401)
                     success: false,
                     message: 'El password es incorrecto'
                 });
-            }
+            }*/
+    });
+  },
 
+  register(req, res) {
+    const user = req.body; // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+    User.create(user, (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con el registro del usuario",
+          error: err,
         });
+      }
 
-    },
+      return res.status(201).json({
+        success: true,
+        message: "El registro se realizo correctamente",
+        data: data, // EL ID DEL NUEVO USUARIO QUE SE REGISTRO
+      });
+    });
+  },
+  async registerWithImage(req, res) {
+    const user = JSON.parse(req.body.user); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
 
-    register(req, res) {
+    const files = req.files;
 
-        const user = req.body; // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
-        User.create(user, (err, data) => {
+    if (files.length > 0) {
+      const path = `image_${Date.now()}`;
+      const url = await storage(files[0], path);
 
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con el registro del usuario',
-                    error: err
-                });
-            }
+      if (url != undefined && url != null) {
+        user.image = url;
+      }
+    }
 
-            return res.status(201).json({
-                success: true,
-                message: 'El registro se realizo correctamente',
-                data: data // EL ID DEL NUEVO USUARIO QUE SE REGISTRO
-            });
-
+    User.create(user, (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con el registro del usuario",
+          error: err,
         });
+      }
 
-    },
-    async registerWithImage(req, res) {
+      user.id = `${data}`;
+      const token = jwt.sign(
+        { id: user.id, email: user.email },
+        keys.secretOrKey,
+        {}
+      );
+      user.session_token = `JWT ${token}`;
 
-        const user = JSON.parse(req.body.user); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
-
-        const files = req.files;
-
-        if (files.length > 0) {
-            const path = `image_${Date.now()}`;
-            const url = await storage(files[0], path);
-
-            if (url != undefined && url != null) {
-                user.image = url;
-            }
+      Rol.create(user.id, 3, (err, data) => {
+        if (err) {
+          return res.status(501).json({
+            success: false,
+            message: "Hubo un error con el registro del rol de usuario",
+            error: err,
+          });
         }
 
-        User.create(user, (err, data) => {
-
-        
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con el registro del usuario',
-                    error: err
-                });
-            }
-
-        
-            user.id = `${data}`;
-            const token = jwt.sign({id: user.id, email: user.email}, keys.secretOrKey, {});
-            user.session_token = `JWT ${token}`;
-
-            Rol.create(user.id, 3, (err, data) => {
-                
-                if (err) {
-                    return res.status(501).json({
-                        success: false,
-                        message: 'Hubo un error con el registro del rol de usuario',
-                        error: err
-                    });
-                }
-                
-                return res.status(201).json({
-                    success: true,
-                    message: 'El registro se realizo correctamente',
-                    data: user
-                });
-
-            });
-
-           
-
+        return res.status(201).json({
+          success: true,
+          message: "El registro se realizo correctamente",
+          data: user,
         });
+      });
+    });
+  },
 
-    },
+  async updateWithImage(req, res) {
+    const user = JSON.parse(req.body.user); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
 
-    async updateWithImage(req, res) {
+    const files = req.files;
 
-        const user = JSON.parse(req.body.user); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+    if (files.length > 0) {
+      const path = `image_${Date.now()}`;
+      const url = await storage(files[0], path);
 
-        const files = req.files;
+      if (url != undefined && url != null) {
+        user.image = url;
+      }
+    }
 
-        if (files.length > 0) {
-            const path = `image_${Date.now()}`;
-            const url = await storage(files[0], path);
-
-            if (url != undefined && url != null) {
-                user.image = url;
-            }
-        }
-
-        User.update(user, (err, data) => {
-
-        
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con el registro del usuario',
-                    error: err
-                });
-            }
-
-            return res.status(201).json({
-                success: true,
-                message: 'El usuario se actualizo correctamente',
-                data: user
-            });
-        
-
+    User.update(user, (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con el registro del usuario",
+          error: err,
         });
+      }
 
-    },
+      return res.status(201).json({
+        success: true,
+        message: "El usuario se actualizo correctamente",
+        data: user,
+      });
+    });
+  },
 
-    async updateWithoutImage(req, res) {
+  async updateWithoutImage(req, res) {
+    const user = req.body; // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+    console.log("DATA DEL CLIENTE ", user);
 
-        const user = req.body; // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
-        console.log('DATA DEL CLIENTE ', user);
-
-        User.updateWithoutImage(user, (err, data) => {
-
-        
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con el registro del usuario',
-                    error: err
-                });
-            }
-
-            return res.status(201).json({
-                success: true,
-                message: 'El usuario se actualizo correctamente',
-                data: user
-            });
-        
-
+    User.updateWithoutImage(user, (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con el registro del usuario",
+          error: err,
         });
+      }
 
-    },
-    async updateNotificationToken(req, res) {
+      return res.status(201).json({
+        success: true,
+        message: "El usuario se actualizo correctamente",
+        data: user,
+      });
+    });
+  },
+  async updateNotificationToken(req, res) {
+    const id = req.body.id;
+    const token = req.body.token;
+    console.log("ID ", id);
+    console.log("TOKEN ", token);
 
-        const id = req.body.id;
-        const token = req.body.token;
-        console.log('ID ', id);
-        console.log('TOKEN ', token);
-
-        User.updateNotificationToken(id, token, (err, data) => {
-
-        
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con el registro del usuario',
-                    error: err
-                });
-            }
-
-            return res.status(201).json({
-                success: true,
-                message: 'El token se actualizo correctamente',
-                data: id
-            });
-        
-
+    User.updateNotificationToken(id, token, (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con el registro del usuario",
+          error: err,
         });
+      }
 
-    },
-
-}
+      return res.status(201).json({
+        success: true,
+        message: "El token se actualizo correctamente",
+        data: id,
+      });
+    });
+  },
+};

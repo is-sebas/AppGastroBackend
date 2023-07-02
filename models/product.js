@@ -52,7 +52,7 @@ Product.create = (product, result) => {
             created_at,
             updated_at   
         )
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?. ?)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
