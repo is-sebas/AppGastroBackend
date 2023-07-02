@@ -4,7 +4,7 @@ module.exports = {
     
     list_promociones(req, res) {
 
-        Locales.list_promociones( (err, data) => {
+        Promociones.list_promociones( (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,

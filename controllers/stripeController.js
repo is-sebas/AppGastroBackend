@@ -11,7 +11,7 @@ module.exports = {
         try {
             const payment = await stripe.paymentIntents.create({
                 amount: data.amount,
-                currency: 'PYG',
+                currency: 'USD',
                 description: 'Compra en Ecommerce gastroapp',
                 payment_method: data.id, //token
                 confirm: true
