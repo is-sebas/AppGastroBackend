@@ -1,5 +1,5 @@
 const db = require('../config/config')
-import QRCode from 'qrcode'
+const QRCode = require('qrcode');
 
 const Mesas = {}
 
@@ -38,7 +38,7 @@ Mesas.findById_Existe_Mesa = (id_mesa, result) => {
     );
 }
 
-Mesas.create = (Mesas, result) => {
+Mesas.create = (mesas, result) => {
 
     const sql = `
     INSERT INTO
@@ -88,7 +88,7 @@ Mesas.create = (Mesas, result) => {
     )
 }
 
-Mesas.update = (Mesas, result) => {
+Mesas.update = (mesas, result) => {
 
     const sql = `
     UPDATE

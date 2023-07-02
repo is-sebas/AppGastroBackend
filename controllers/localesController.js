@@ -1,7 +1,22 @@
 const Locales = require('../models/locales');
 
 module.exports = {
-    
+
+    list_locales(req, res) {
+
+        Locales.list_locales( (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar los locales',
+                    error: err
+                });
+            }
+
+            return res.status(201).json(data);
+        });
+    },
+
     findById_Local(req, res) {
         const id_local = req.params.id_local;
 
