@@ -2,9 +2,9 @@ const Promociones = require('../models/promociones');
 
 module.exports = {
     
-    list_promociones(req, res) {
+    async getAll(req, res) {
 
-        Promociones.list_promociones( (err, data) => {
+        Promociones.getAll( (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,

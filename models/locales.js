@@ -2,29 +2,31 @@ const db = require('../config/config');
 
 const Locales = {};
 
-Locales.list_locales = (result) => {
+Locales.getAll = (result) => {
     const sql = `
     SELECT
-        CONVERT(P.id_local, char) AS id,
-        P.loc_nombre,
-        P.loc_descripcion,
-        P.loc_imagen,
-        P.loc_estado,
-        CONVERT(P.id_categoria, char) AS id_categoria
+        CONVERT(id_local, char) AS id,
+        loc_nombre,
+        loc_descripcion,
+        loc_imagen,
+        loc_estado,
+        CONVERT(id_categoria, char) AS id_categoria
     FROM
-        locales as P
+        locales
+    ORDER BY
+        loc_nombre
     `;
 
     db.query(
         sql,
-        (err, res) => {
+        (err, data) => {
             if (err) {
                 console.log('Error:', err);
                 result(err, null);
             }
             else {
-                console.log('Listado de Locales obtenidos:', res);
-                result(null, res);
+                console.log('Listado de Locales obtenidos:', data);
+                result(null, data);
             }
         }
     );

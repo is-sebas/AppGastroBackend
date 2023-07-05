@@ -2,9 +2,9 @@ const Locales = require('../models/locales');
 
 module.exports = {
 
-    list_locales(req, res) {
+    async getAll(req, res) {
 
-        Locales.list_locales( (err, data) => {
+        Locales.getAll((err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
@@ -17,7 +17,7 @@ module.exports = {
         });
     },
 
-    findById_Local(req, res) {
+    async findById_Local(req, res) {
         const id_local = req.params.id_local;
 
         Locales.findById_local(id_local, (err, data) => {
@@ -33,7 +33,7 @@ module.exports = {
         });
     },
 
-    create(req, res) {
+    async create(req, res) {
 
         const local = JSON.parse(req.body.locales); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
 
@@ -99,7 +99,7 @@ module.exports = {
 
     },
 
-    update(req, res) {
+    async update(req, res) {
         const local = req.body;
 
         Locales.update(local, (err, data) => {
@@ -119,7 +119,7 @@ module.exports = {
         })
     },
 
-    updateWithImage(req, res) {
+    async updateWithImage(req, res) {
 
         const local = JSON.parse(req.body.locales); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
 
@@ -185,7 +185,7 @@ module.exports = {
 
     },
 
-    delete(req, res) {
+    async delete(req, res) {
         const id = req.params.id;
 
         Locales.delete(id, (err, id) => {

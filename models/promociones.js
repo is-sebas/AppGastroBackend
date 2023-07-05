@@ -2,31 +2,33 @@ const db = require('../config/config');
 
 const Promocion = {};
 
-Promocion.list_promociones = (result) => {
+Promocion.getAll = (result) => {
     const sql = `
     SELECT
-        CONVERT(P.id_promocion ) AS id, 
-        P.pro_nombre, 
-        P.id_local, 
-        P.pro_descripcion, 
-        P.pro_imagen, 
-        P.pro_estado, 
-        P.pro_creado, 
-        P.pro_update
+        CONVERT(id_promocion ) AS id, 
+        pro_nombre, 
+        id_local, 
+        pro_descripcion, 
+        pro_imagen, 
+        pro_estado, 
+        pro_creado, 
+        pro_update
     FROM
-        promociones as P
+        promociones
+    ORDER BY
+        pro_nombre
     `;
 
     db.query(
         sql,
-        (err, res) => {
+        (err, data) => {
             if (err) {
                 console.log('Error:', err);
                 result(err, null);
             }
             else {
-                console.log('Listado de Promociones:', res);
-                result(null, res);
+                console.log('Listado de Promociones:', data);
+                result(null, data);
             }
         }
     );

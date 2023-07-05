@@ -3,5 +3,5 @@ const passport = require('passport');
 
 module.exports = (app, upload) => {
 
-    app.get('/api/promociones/list_promociones/',  passport.authenticate('jwt', { session: false }), promocionesController.list_promociones);
+    app.get('/api/promociones/getAll',  passport.authenticate('jwt', { session: false }), promocionesController.getAll);
 }
