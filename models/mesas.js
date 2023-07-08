@@ -7,6 +7,7 @@ Mesas.findById_Existe_Mesa = (id_mesa, result) => {
     const sql = `
     SELECT
         CONVERT(P.id_mesa, char) AS id,
+        P.id_local,
         P.codigoqr,
         P.mesa_ubicacion,
         P.mesa_estado,
@@ -44,6 +45,7 @@ Mesas.create = (mesas, result) => {
     INSERT INTO
         mesas(
             codigoqr,
+            id_local,
             mesa_ubicacion,
             mesa_estado,
             total_cancelado,
@@ -53,7 +55,7 @@ Mesas.create = (mesas, result) => {
             mesa_fecha_crea,
             mesa_fecha_cierre
         )
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     codigoAleatorio = Math.random().toString(36).substring(2, 8);
@@ -62,6 +64,7 @@ Mesas.create = (mesas, result) => {
         sql, 
         [
             codigoAleatorio,
+            mesas.id_local,
             mesas.mesa_ubicacion,
             mesas.mesa_estado,
             mesas.total_cancelado,
@@ -89,15 +92,13 @@ Mesas.update = (mesas, result) => {
     const sql = `
     UPDATE
         mesas
-    SET
-        id_mesa = ?, 
-        codigoqr = ?, 
-        mesa_ubicacion = ?, 
+    SET        
+        mesa_ubicacion = ?,
         mesa_estado = ?,  
         total_cancelado = ?,
         propina = ?,
+        pagado = ?,
         id_staff = ?,
-        mesa_fecha_crea = ?,
         mesa_fecha_cierre = ?
     WHERE
         id_mesa = ?
@@ -106,16 +107,14 @@ Mesas.update = (mesas, result) => {
     db.query(
         sql, 
         [
-            Mesas.id_mesa,
-            Mesas.codigoqr,
-            Mesas.mesa_ubicacion,
-            Mesas.mesa_estado,
-            Mesas.total_cancelado,
-            Mesas.propina,
-            Mesas.pagado,
-            Mesas.id_staff,
+            mesas.mesa_ubicacion,
+            mesas.mesa_estado,
+            mesas.total_cancelado,
+            mesas.propina,
+            mesas.pagado,
+            mesas.id_staff,
             new Date(),
-            Mesas.id_mesa
+            mesas.id_mesa
         ],
         (err, res) => {
             if (err) {
@@ -124,34 +123,46 @@ Mesas.update = (mesas, result) => {
             }
             else {
                 console.log('Mesa actualizado:', Mesas.id_mesa);
-                result(null, product.id);
+                result(null, mesas.id);
             }
         }
     )
 }
 
-Mesas.delete = (id_mesa, result) => {
+Mesas.ListMesas = (id_local, result) => {
     const sql = `
-    DELETE FROM
-        mesas
-    WHERE
-        id_mesa = ?
+    SELECT
+        CONVERT(P.id_mesa, char) AS id,
+        P.id_local,
+        P.codigoqr,
+        P.mesa_ubicacion,
+        P.mesa_estado,
+        P.total_cancelado,
+        P.propina,
+        P.pagado,
+        CONVERT(P.id_staff, char) AS id_staff,
+        p.mesa_fecha_crea,
+        p.mesa_fecha_cierre
+    FROM
+        mesas as P
+    WHERE 
+        P.id_local = ?
     `;
 
     db.query(
         sql,
-        [id_mesa],
+        [id_local],
         (err, res) => {
             if (err) {
                 console.log('Error:', err);
                 result(err, null);
             }
             else {
-                console.log('Id de la mesa eliminado:', id_mesa);
-                result(null, id_mesa);
+                console.log('Mesa del local:', res);
+                result(null, res);
             }
         }
-    )
+    );
 }
 
 module.exports = Mesas;

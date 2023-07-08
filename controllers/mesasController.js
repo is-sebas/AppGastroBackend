@@ -61,23 +61,19 @@ module.exports = {
         })
     },
 
-    delete(req, res) {
-        const id = req.params.id;
+    ListMesas(req, res) {
+        const id_local = req.params.id_local;
 
-        Mesas.delete(id, (err, id) => {
+        Mesas.ListMesas(id_local, (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
-                    message: 'Hubo un error al momento de eliminar la mesa',
+                    message: 'Hubo un error al momento de listar las mesas por local',
                     error: err
                 });
             }
 
-            return res.status(201).json({
-                success: true,
-                message: 'La mesa se elimino correctamente',
-                data: `${id}`
-            });
+            return res.status(201).json(data);
         });
     },
 
