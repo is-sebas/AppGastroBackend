@@ -20,9 +20,10 @@ module.exports = {
 
     create(req, res) {
 
-        const mesa = JSON.parse(req.body.mesas); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+        //const mesa = JSON.parse(req.body.mesas); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+        const mesa = req.body; // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
         
-        Mesas.create(mesa, (err, id_mesa) => {
+        Mesas.create(mesa, (err, data) => {
     
             if (err) {
                 return res.status(501).json({

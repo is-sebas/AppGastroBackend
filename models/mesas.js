@@ -1,5 +1,5 @@
 const db = require('../config/config')
-const QRCode = require('qrcode');
+var codigoAleatorio;
 
 const Mesas = {}
 
@@ -43,7 +43,6 @@ Mesas.create = (mesas, result) => {
     const sql = `
     INSERT INTO
         mesas(
-            id_mesa,
             codigoqr,
             mesa_ubicacion,
             mesa_estado,
@@ -54,24 +53,21 @@ Mesas.create = (mesas, result) => {
             mesa_fecha_crea,
             mesa_fecha_cierre
         )
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    var codigoqr = QRCode.toDataURL(cadenaAleatoria, function (err, url) {
-      console.log(url)
-    })
+    codigoAleatorio = Math.random().toString(36).substring(2, 8);
 
     db.query(
         sql, 
         [
-            Mesas.id_mesa,
-            codigoqr,
-            Mesas.mesa_ubicacion,
-            Mesas.mesa_estado,
-            Mesas.total_cancelado,
-            Mesas.propina,
-            Mesas.pagado,
-            Mesas.id_staff,
+            codigoAleatorio,
+            mesas.mesa_ubicacion,
+            mesas.mesa_estado,
+            mesas.total_cancelado,
+            mesas.propina,
+            mesas.pagado,
+            mesas.id_staff,
             new Date(),
             new Date(),
         ],
