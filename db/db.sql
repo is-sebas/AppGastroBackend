@@ -262,15 +262,14 @@ CREATE TABLE `ordersCompart` (
   CONSTRAINT `ordersCompart_ibfk_3` FOREIGN KEY (`id_mesa`) REFERENCES `mesas` (`id_mesa`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- gastro_db.pedido_log definition
+-- gastro_db.pedidoLog definition
 
-CREATE TABLE `pedido_log` (
+CREATE TABLE `pedidoLog` (
   `id_log` bigint NOT NULL AUTO_INCREMENT,
   `id_mesa` bigint DEFAULT NULL,
   `id_orders` bigint NOT NULL,
   `estadoPedido` int NOT NULL,
   `costoTotal` bigint NOT NULL,
-  `idDetallePedido` bigint NOT NULL,
   `idProducto` bigint NOT NULL,
   `descripcion` varchar(250) NOT NULL,
   `cantidad` bigint NOT NULL,

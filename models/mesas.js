@@ -122,7 +122,7 @@ Mesas.update = (mesas, result) => {
                 result(err, null);
             }
             else {
-                console.log('Mesa actualizada:', Mesas.id_mesa);
+                console.log('Mesa actualizada:', mesas.id_mesa);
                 result(null, mesas.id);
             }
         }

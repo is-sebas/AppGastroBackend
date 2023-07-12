@@ -28,6 +28,7 @@ const mesasRoutes = require('./routes/mesasRoutes');
 const promocionesRoutes = require('./routes/promocionesRoutes');
 const usuariosActivosRoutes = require('./routes/usuariosActivosRoutes');
 const ordersCompart = require('./routes/ordersCompartRoutes');
+const pedidoLog = require('./routes/pedidoLogRoutes');
 const { update } = require('./models/user');
 
 const port = process.env.PORT || 3000;
@@ -72,6 +73,7 @@ mesasRoutes(app, upload);
 promocionesRoutes(app, upload);
 usuariosActivosRoutes(app,upload);
 ordersCompart(app,upload);
+pedidoLog(app, upload);
 
 //
 server.listen(3000, "127.0.0.2" || "localhost", function () {    

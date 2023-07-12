@@ -2,7 +2,7 @@ const Mesas = require('../models/mesas');
 
 module.exports = {
     
-    findById_Existe_Mesa(req, res) {
+    async findById_Existe_Mesa(req, res) {
         const id_mesa = req.params.id_mesa;
 
         Mesas.findById_Existe_Mesa(id_mesa, (err, data) => {
@@ -18,7 +18,7 @@ module.exports = {
         });
     },
 
-    create(req, res) {
+    async create(req, res) {
 
         //const mesa = JSON.parse(req.body.mesas); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
         const mesa = req.body; // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
@@ -41,7 +41,7 @@ module.exports = {
         });
     },
 
-    update(req, res) {
+    async update(req, res) {
         const mesa = req.body;
 
         Mesas.update(mesa, (err, data) => {
@@ -61,7 +61,7 @@ module.exports = {
         })
     },
 
-    ListMesas(req, res) {
+    async ListMesas(req, res) {
         const id_local = req.params.id_local;
 
         Mesas.ListMesas(id_local, (err, data) => {
