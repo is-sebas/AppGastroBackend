@@ -13,7 +13,7 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json(data);
+            return res.status(200).json(data);
         });
     },
 
@@ -77,7 +77,7 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json({
+            return res.status(200).json({
                 success: true,
                 message: 'La categoria se actualizo correctamente',
                 data: `${id}`
@@ -101,7 +101,7 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json({
+            return res.status(200).json({
                 success: true,
                 message: 'La categoria se actualizo correctamente',
                 data: `${id}`
@@ -121,7 +121,7 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json({
+            return res.status(200).json({
                 success: true,
                 message: 'La categoria se elimino correctamente',
                 data: `${id}`

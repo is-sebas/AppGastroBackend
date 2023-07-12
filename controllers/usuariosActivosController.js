@@ -1,11 +1,10 @@
-const UsuariosActivos = require('../models/mesas');
+const UsuariosActivos = require('../models/usuariosActivos');
 
 module.exports = {
     
-    findByUsuariosActivos(req, res) {
-        const id_usuario = req.params.id_usuario;
+    async ListUsersActivos(req, res) {
 
-        Mesas.findByUsuariosActivos(id_usuario, (err, data) => {
+        UsuariosActivos.ListUsersActivos((err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
@@ -14,15 +13,30 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json(data);
+            return res.status(200).json(data);
         });
     },
 
-    create(req, res) {
+    async ListUsersInactivos(req, res) {
 
-        const usuariosActivos = JSON.parse(req.body.usuariosActivos); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
+        UsuariosActivos.ListUsersInactivos((err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar los usuarios inactivos',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
+    },
+
+    async create(req, res) {
+
+        const usuariosActivos = req.body;
         
-        UsuariosActivos.create(usuariosActivos, (err, id_usuario) => {
+        UsuariosActivos.create(usuariosActivos, (err, data) => {
     
             if (err) {
                 return res.status(501).json({
@@ -40,7 +54,7 @@ module.exports = {
         });
     },
 
-    update(req, res) {
+    async update(req, res) {
         const usuariosActivos = req.body;
 
         UsuariosActivos.update(usuariosActivos, (err, data) => {
@@ -52,7 +66,7 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json({
+            return res.status(200).json({
                 success: true,
                 message: 'El usuario activo se actualizo correctamente',
                 data: data
@@ -60,7 +74,7 @@ module.exports = {
         })
     },
 
-    delete(req, res) {
+    async delete(req, res) {
         const id = req.params.id;
 
         UsuariosActivos.delete(id, (err, id) => {

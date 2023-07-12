@@ -12,6 +12,7 @@ Order.findByStatus = (status, result) => {
         CONVERT(O.id_delivery, char) AS id_delivery,
         O.status,
         O.timestamp,
+        O.id_mesa,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
@@ -98,6 +99,7 @@ Order.findByDeliveryAndStatus = (id_delivery, status, result) => {
         CONVERT(O.id_delivery, char) AS id_delivery,
         O.status,
         O.timestamp,
+        O.id_mesa,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
@@ -184,6 +186,7 @@ Order.findByClientAndStatus = (id_client, status, result) => {
         CONVERT(O.id_delivery, char) AS id_delivery,
         O.status,
         O.timestamp,
+        O.id_mesa,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
@@ -269,10 +272,11 @@ Order.create = (order, result) => {
             id_address,
             status,
             timestamp,
+            id_mesa,
             created_at,
             updated_at   
         )
-    VALUES(?, ?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
@@ -282,6 +286,7 @@ Order.create = (order, result) => {
             order.id_address,
             'PAGADO', // 1. PAGADO 2. DESPACHADO 3. EN CAMINO 4. ENTREGADO
             Date.now(),
+            order.id_mesa,
             new Date(),
             new Date(),
         ],

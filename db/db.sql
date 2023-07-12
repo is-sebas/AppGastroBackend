@@ -108,32 +108,45 @@ CREATE TABLE address(
     FOREIGN KEY(id_user) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE orders(
-	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    id_client BIGINT NOT NULL,
-    id_delivery BIGINT NULL,
-    id_address BIGINT NOT NULL,
-    lat DOUBLE PRECISION,
-    lng DOUBLE PRECISION,
-    status VARCHAR(90) NOT NULL,
-    timestamp BIGINT NOT NULL,
-    created_at TIMESTAMP(0) NOT NULL,
-    updated_at TIMESTAMP(0) NOT NULL,
-    FOREIGN KEY(id_client) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY(id_delivery) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY(id_address) REFERENCES address(id) ON UPDATE CASCADE ON DELETE CASCADE
-); 
+-- gastro_db.orders definition
 
-CREATE TABLE order_has_products(
-	id_order BIGINT NOT NULL,
-    id_product BIGINT NOT NULL,
-    quantity BIGINT NOT NULL,
-    created_at TIMESTAMP(0) NOT NULL,
-    updated_at TIMESTAMP(0) NOT NULL,
-    PRIMARY KEY(id_order, id_product),
-    FOREIGN KEY(id_order) REFERENCES orders(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY(id_product) REFERENCES products(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
+CREATE TABLE `orders` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id_client` bigint NOT NULL,
+  `id_delivery` bigint DEFAULT NULL,
+  `id_address` bigint NOT NULL,
+  `lat` double DEFAULT NULL,
+  `lng` double DEFAULT NULL,
+  `status` varchar(90) NOT NULL,
+  `timestamp` bigint NOT NULL,
+  `id_mesa` bigint NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_client` (`id_client`),
+  KEY `id_delivery` (`id_delivery`),
+  KEY `id_address` (`id_address`),
+  KEY `id_mesa` (`id_mesa`),
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`id_client`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`id_delivery`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`id_address`) REFERENCES `address` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `orders_ibfk_4` FOREIGN KEY (`id_mesa`) REFERENCES `mesas` (`id_mesa`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- gastro_db.order_has_products definition
+
+CREATE TABLE `order_has_products` (
+  `id_order` bigint NOT NULL,
+  `id_product` bigint NOT NULL,
+  `quantity` bigint NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL,
+  PRIMARY KEY (`id_order`,`id_product`),
+  KEY `id_product` (`id_product`),
+  KEY `id_order` (`id_order`),
+  CONSTRAINT `order_has_products_ibfk_1` FOREIGN KEY (`id_product`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `order_has_products_ibfk_2` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE locales (
   id_local bigint NOT NULL AUTO_INCREMENT,
@@ -233,3 +246,42 @@ INSERT INTO gastro_db.address (id, address, neighborhood, lat, lng, created_at, 
 
 INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(1, 'Charles The Bar', 'Pub - Bar', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/image_1684882394590?alt=media&token=db7e5e14-0124-477c-94e1-dcd9f2edca91', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
 INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(2, 'Baroga', 'Bar - DiscoPub', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/image_1684882394590?alt=media&token=db7e5e14-0124-477c-94e1-dcd9f2edca91', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+
+-- gastro_db.ordersCompart definition
+
+CREATE TABLE `ordersCompart` (
+  `OrdersID` bigint NOT NULL,
+  `id_usuarioActivo` bigint NOT NULL,
+  `id_mesa` bigint DEFAULT NULL,
+  `estado` bigint NOT NULL,
+  KEY `OrdersID` (`OrdersID`),
+  KEY `id_usuarioActivo` (`id_usuarioActivo`),
+  KEY `id_mesa` (`id_mesa`),
+  CONSTRAINT `ordersCompart_ibfk_1` FOREIGN KEY (`OrdersID`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ordersCompart_ibfk_2` FOREIGN KEY (`id_usuarioActivo`) REFERENCES `usuariosActivos` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ordersCompart_ibfk_3` FOREIGN KEY (`id_mesa`) REFERENCES `mesas` (`id_mesa`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- gastro_db.pedido_log definition
+
+CREATE TABLE `pedido_log` (
+  `id_log` bigint NOT NULL AUTO_INCREMENT,
+  `id_mesa` bigint DEFAULT NULL,
+  `id_orders` bigint NOT NULL,
+  `estadoPedido` int NOT NULL,
+  `costoTotal` bigint NOT NULL,
+  `idDetallePedido` bigint NOT NULL,
+  `idProducto` bigint NOT NULL,
+  `descripcion` varchar(250) NOT NULL,
+  `cantidad` bigint NOT NULL,
+  `subTotal` bigint NOT NULL,
+  `fechaSolicitud` timestamp NOT NULL,
+  `fechaEntrega` timestamp NOT NULL,
+  PRIMARY KEY (`id_log`),
+  KEY `id_mesa` (`id_mesa`),
+  KEY `id_orders` (`id_orders`),
+  KEY `idProducto` (`idProducto`),
+  CONSTRAINT `pedido_log_ibfk_1` FOREIGN KEY (`id_mesa`) REFERENCES `mesas` (`id_mesa`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `pedido_log_ibfk_2` FOREIGN KEY (`id_orders`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `pedido_log_ibfk_3` FOREIGN KEY (`idProducto`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

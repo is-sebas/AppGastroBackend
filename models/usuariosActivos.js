@@ -1,8 +1,7 @@
 const db = require('../config/config');
-
 const UsuarioActivo = {};
 
-UsuarioActivo.findByUsuariosActivos = (id_usuario, result) => {
+UsuarioActivo.ListUsersActivos = (result) => {
     const sql = `
     SELECT
         CONVERT(P.id_usuario, char) AS id,
@@ -16,19 +15,50 @@ UsuarioActivo.findByUsuariosActivos = (id_usuario, result) => {
     FROM
         usuariosActivos as P
     WHERE 
-        P.id_usuario = ?
+        P.estado = 1
     `;
 
     db.query(
         sql,
-        [id_usuario],
         (err, res) => {
             if (err) {
                 console.log('Error:', err);
                 result(err, null);
             }
             else {
-                console.log('Id del nuevo usuario activo:', res);
+                console.log('Listado de Usuarios Activos:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
+UsuarioActivo.ListUsersInactivos = (result) => {
+    const sql = `
+    SELECT
+        CONVERT(P.id_usuario, char) AS id,
+        CONVERT(P.id_mesa, char) AS id_mesa,
+        CONVERT(P.id_local, char) AS id_mesa,
+        P.estado,
+        P.monto_pagado,
+        P.es_temporal,
+        P.ingreso,
+        P.salida
+    FROM
+        usuariosActivos as P
+    WHERE 
+        P.estado = 0
+    `;
+
+    db.query(
+        sql,
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Listado de Usuarios Inactivos:', res);
                 result(null, res);
             }
         }
@@ -39,7 +69,8 @@ UsuarioActivo.create = (usuariosActivos, result) => {
 
     const sql = `
     INSERT INTO
-        UsuarioActivo(
+        usuariosActivos(
+            id_usuario,
             id_mesa,
             id_local,
             estado,
@@ -48,19 +79,20 @@ UsuarioActivo.create = (usuariosActivos, result) => {
             ingreso,
             salida
         )
-    VALUES(?, ?, ?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
         sql, 
         [
+            usuariosActivos.id_usuario,
             usuariosActivos.id_mesa,
             usuariosActivos.id_local,
             usuariosActivos.estado,
             usuariosActivos.monto_pagado,
             usuariosActivos.es_temporal,
             new Date(),
-            new Date(),
+            new Date()
         ],
         (err, res) => {
             if (err) {
@@ -81,30 +113,22 @@ UsuarioActivo.update = (usuariosActivos, result) => {
 
     const sql = `
     UPDATE
-        usuarioActivo
+        usuariosActivos
     SET
-        id_mesa = ?,
-        id_local = ?,
         estado = ?,
         monto_pagado = ?,
-        es_temporal = ?,
-        ingreso = ?,
         salida = ?
     WHERE
-        id = ?
+        id_usuario = ?
     `;
 
     db.query(
         sql, 
         [
-            usuariosActivos.id_mesa,
-            usuariosActivos.id_local,
             usuariosActivos.estado,
             usuariosActivos.monto_pagado,
-            usuariosActivos.es_temporal,
             new Date(),
-            new Date(),
-            usuariosActivos.id
+            usuariosActivos.id_usuario
         ],
         (err, res) => {
             if (err) {
@@ -112,8 +136,8 @@ UsuarioActivo.update = (usuariosActivos, result) => {
                 result(err, null);
             }
             else {
-                console.log('Id del usuario activo actualizado:', usuariosActivos.id);
-                result(null, usuariosActivos.id);
+                console.log('Usuario activo actualizado:', usuariosActivos.id_usuario);
+                result(null, usuariosActivos.id_usuario);
             }
         }
     )
@@ -124,7 +148,7 @@ UsuarioActivo.delete = (id, result) => {
     DELETE FROM
         usuariosActivos
     WHERE
-        id = ?
+        id_usuario = ?
     `;
 
     db.query(

@@ -14,7 +14,7 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json(data);
+            return res.status(200).json(data);
         });
     },
 
@@ -53,7 +53,7 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json({
+            return res.status(200).json({
                 success: true,
                 message: 'La mesa se actualizo correctamente',
                 data: data
@@ -73,7 +73,7 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json(data);
+            return res.status(200).json(data);
         });
     },
 
