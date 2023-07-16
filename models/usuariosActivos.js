@@ -33,6 +33,53 @@ UsuarioActivo.ListUsersActivos = (result) => {
     );
 }
 
+UsuarioActivo.ListUserMesas = (id_mesa, status, result) => {
+
+    const sql = `
+    SELECT id_usuario, 
+		id_mesa, 
+		id_local, 
+		estado, 	
+		monto_pagado, 
+		es_temporal, 
+		ingreso, 
+		salida,
+		JSON_OBJECT(
+            'id', CONVERT(U.id, char),
+            'name', U.name,
+            'lastname', U.lastname,
+            'image', U.image,
+            'phone', U.phone
+        ) AS users
+		
+    FROM gastro_db.usuariosActivos ua
+    INNER JOIN
+        users AS U
+    ON
+        U.id = ua.id_usuario
+    WHERE ua.id_mesa = ?
+        AND ua.estado = ?
+    ORDER BY
+        ua.id_usuario
+
+    `;
+
+    db.query(
+        sql,
+        [id_mesa, status],
+        (err, data) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Listado de Usuarios en mesa:', data);
+                result(null, data);
+            }
+        }
+    )
+}
+
 UsuarioActivo.ListUsersInactivos = (result) => {
     const sql = `
     SELECT

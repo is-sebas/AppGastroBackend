@@ -11,8 +11,9 @@ CREATE TABLE users(
     password VARCHAR(90) NOT NULL,
     created_at TIMESTAMP(0) NOT NULL,
     updated_at TIMESTAMP(0) NOT NULL,
-    token VARCHAR(255) NULL
+    notification_token VARCHAR(255) NULL
 );
+--ALTER TABLE gastro_db.users CHANGE token notification_token varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL;
 
 CREATE TABLE roles(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -95,6 +96,7 @@ CREATE TABLE products(
     updated_at TIMESTAMP(0) NOT NULL,
     FOREIGN KEY(id_category) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+ALTER TABLE gastro_db.products ADD stock BIGINT NULL;
 
 CREATE TABLE address(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -244,8 +246,10 @@ INSERT INTO gastro_db.categories (id, name, description, image, created_at, upda
 
 INSERT INTO gastro_db.address (id, address, neighborhood, lat, lng, created_at, updated_at, id_user) VALUES(1, 'Mesa 1', 'Patio Trasero', 0.0, 0.0, '2023-05-22 20:34:45', '2023-05-22 20:34:45', 1);
 
-INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(1, 'Charles The Bar', 'Pub - Bar', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/image_1684882394590?alt=media&token=db7e5e14-0124-477c-94e1-dcd9f2edca91', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
-INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(2, 'Baroga', 'Bar - DiscoPub', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/image_1684882394590?alt=media&token=db7e5e14-0124-477c-94e1-dcd9f2edca91', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(1, 'Charles The Bar', 'Pub - Bar', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/charles.png?alt=media&token=e9d85abf-11f6-4c21-88eb-9d8400c69bf1', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(2, 'Baroga', 'Bar - DiscoPub', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/baroga.jpeg?alt=media&token=5a44d776-de41-4b0f-976a-d810f2ed8ad2', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(3, 'Negroni Downtown SkyBar', 'Bar - Bistro', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/Negroni.png?alt=media&token=ebcf91fd-f006-4bb7-9661-957c25996207', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(4, 'Pancia Piena Pizzeria', 'Restaurant', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/PianciaPiena.jpeg?alt=media&token=cfc4a0f7-5e5f-487e-8683-a2e786d8f62a', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
 
 -- gastro_db.ordersCompart definition
 
@@ -284,3 +288,6 @@ CREATE TABLE `pedidoLog` (
   CONSTRAINT `pedido_log_ibfk_2` FOREIGN KEY (`id_orders`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `pedido_log_ibfk_3` FOREIGN KEY (`idProducto`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE gastro_db.orders ADD id_mesa BIGINT NULL;
+ALTER TABLE gastro_db.orders ADD CONSTRAINT orders_FK FOREIGN KEY (id_mesa) REFERENCES gastro_db.mesas(id_mesa) ON DELETE CASCADE ON UPDATE CASCADE;

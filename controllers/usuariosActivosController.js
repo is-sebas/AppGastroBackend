@@ -32,6 +32,29 @@ module.exports = {
         });
     },
 
+    async ListUserMesas(req, res) {
+        const id_mesa = req.params.id_mesa;
+        const status = req.params.status;
+
+        UsuariosActivos.ListUserMesas(id_mesa, status, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar las ordenes',
+                    error: err
+                });
+            }
+
+            for (const d of data) {
+                console.log(d.users);
+                d.users = JSON.parse(d.users);
+            }
+            
+            
+            return res.status(201).json(data);
+        });
+    },
+
     async create(req, res) {
 
         const usuariosActivos = req.body;
