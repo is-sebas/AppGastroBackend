@@ -36,32 +36,35 @@ UsuarioActivo.ListUsersActivos = (result) => {
 UsuarioActivo.ListUserMesas = (id_mesa, status, result) => {
 
     const sql = `
-    SELECT id_usuario, 
-		id_mesa, 
-		id_local, 
-		estado, 	
-		monto_pagado, 
-		es_temporal, 
-		ingreso, 
-		salida,
+    SELECT ua.id_usuario, 
+		ua.id_mesa as id_mesa, 
+		ua.id_local as id_local, 
+		ua.estado as estado, 	
+		ua.monto_pagado as monto_pagado, 
+		ua.es_temporal as es_temporal, 
+		ua.ingreso as ingreso, 
+		ua.salida as salida,
 		JSON_OBJECT(
             'id', CONVERT(U.id, char),
             'name', U.name,
             'lastname', U.lastname,
             'image', U.image,
             'phone', U.phone
-        ) AS users
-		
-    FROM gastro_db.usuariosActivos ua
+        ) AS users,
+        m.codigoqr as codigoqr
+FROM gastro_db.usuariosActivos ua
     INNER JOIN
         users AS U
     ON
-        U.id = ua.id_usuario
-    WHERE ua.id_mesa = ?
-        AND ua.estado = ?
-    ORDER BY
+        U.id = ua.id_usuario    
+    INNER JOIN
+        mesas AS m
+    ON
+        m.id_mesa  = ua.id_mesa 
+WHERE ua.id_mesa = ?
+and ua.estado = ?
+   order BY
         ua.id_usuario
-
     `;
 
     db.query(

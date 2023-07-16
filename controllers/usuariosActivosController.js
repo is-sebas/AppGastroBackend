@@ -45,13 +45,13 @@ module.exports = {
                 });
             }
 
-            for (const d of data) {
+       /*     for (const d of data) {
                 console.log(d.users);
                 d.users = JSON.parse(d.users);
             }
+        */    
             
-            
-            return res.status(201).json(data);
+            return res.status(200).json(data);
         });
     },
 
