@@ -7,7 +7,8 @@ Category.getAll = (result) => {
         id,
         name,
         description,
-        image
+        image,
+        id_local
     FROM
         categories
     ORDER BY
@@ -120,6 +121,36 @@ Category.delete = (id, result) => {
             }
         }
     )
+}
+
+Category.listCategoryXLocal = (id_local, result) => {
+    const sql = `
+    SELECT
+        id,
+        name,
+        description,
+        image,
+        id_local
+    FROM
+        categories
+    WHERE
+        id_local = ?
+    `;
+
+    db.query(
+        sql,
+        [id_local],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Categoria por Local:', res);
+                result(null, res);
+            }
+        }
+    );
 }
 
 module.exports = Category;

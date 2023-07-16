@@ -127,5 +127,21 @@ module.exports = {
                 data: `${id}`
             });
         });
+    },
+
+    async listCategoryXLocal(req, res) {
+        const id_local = req.params.id_local;
+
+        Category.listCategoryXLocal(id_local, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar las categorias por local',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
     }
 }

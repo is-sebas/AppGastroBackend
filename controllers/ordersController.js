@@ -90,7 +90,6 @@ module.exports = {
                 });
             }
 
-            /* No funciona esta parte del código - Realizar llamado directamente al Create de OrderHasProducts
             for (const product of order.JSON) {
                 await OrderHasProducts.create(id, product.id, product.quantity, (err, id_data) => {
                     if (err) {
@@ -101,7 +100,7 @@ module.exports = {
                         });
                     }
                 });
-            }*/
+            }
 
             return res.status(200).json({
                 success: true,

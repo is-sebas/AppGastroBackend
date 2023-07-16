@@ -284,7 +284,7 @@ Order.create = (order, result) => {
         [
             order.id_client,
             order.id_address,
-            'PAGADO', // 1. PAGADO 2. DESPACHADO 3. EN CAMINO 4. ENTREGADO
+            'EN CAMINO', // 1. PAGADO 2. DESPACHADO 3. EN CAMINO 4. ENTREGADO
             Date.now(),
             order.id_mesa,
             new Date(),

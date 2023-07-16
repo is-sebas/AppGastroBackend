@@ -8,5 +8,6 @@ module.exports = (app, upload) => {
     app.put('/api/categories/updateWithImage', passport.authenticate('jwt', {session: false}) , upload.array('image', 1), categoriesController.updateWithImage);
     app.put('/api/categories/update', passport.authenticate('jwt', {session: false}) , categoriesController.update);
     app.delete('/api/categories/delete/:id', passport.authenticate('jwt', {session: false}), categoriesController.delete);
+    app.get('/api/categories/listCategoryXLocal/:id_local',  passport.authenticate('jwt', { session: false }), categoriesController.listCategoryXLocal);
 
 }
