@@ -291,3 +291,7 @@ CREATE TABLE `pedidoLog` (
 
 ALTER TABLE gastro_db.orders ADD id_mesa BIGINT NULL;
 ALTER TABLE gastro_db.orders ADD CONSTRAINT orders_FK FOREIGN KEY (id_mesa) REFERENCES gastro_db.mesas(id_mesa) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE gastro_db.locales DROP FOREIGN KEY locales_ibfk_1;
+ALTER TABLE gastro_db.categories ADD id_local BIGINT NULL;
+ALTER TABLE gastro_db.categories ADD CONSTRAINT id_local FOREIGN KEY (id_local) REFERENCES gastro_db.locales(id_local) ON DELETE CASCADE ON UPDATE CASCADE;
