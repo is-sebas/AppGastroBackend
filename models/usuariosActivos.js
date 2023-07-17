@@ -217,4 +217,42 @@ UsuarioActivo.delete = (id, result) => {
     )
 }
 
+UsuarioActivo.listDatosUserMesaLocal = (id_user, result) => {
+    const sql = `
+    SELECT 
+           l.id_local,
+           l.loc_nombre,
+           m.id_mesa,
+           m.codigoqr
+     FROM 
+          usuariosActivos ua
+     INNER JOIN 
+          users u 
+        ON 
+          ua.id_usuario = u.id 
+     INNER JOIN 
+          mesas m 
+       ON 
+          ua.id_mesa = m.id_mesa 
+     INNER JOIN 
+          locales l
+       ON 
+        ua.id_local = l.id_local
+    WHERE 
+        ua.id_usuario = ?
+      AND 
+        ua.estado = 1
+      `;
+  
+    db.query(sql, [id_user], (err, user) => {
+      if (err) {
+        console.log("Error:", err);
+        result(err, null);
+      } else {
+        console.log("Datos del Usuario:", user);
+        result(null, user);
+      }
+    });
+  };
+
 module.exports = UsuarioActivo;

@@ -117,4 +117,19 @@ module.exports = {
         });
     },
 
+    async listDatosUserMesaLocal(req, res) {
+        const id_user = req.params.id_user;
+
+        UsuariosActivos.listDatosUserMesaLocal(id_user, (err, data) => {
+          if (err) {
+            return res.status(501).json({
+              success: false,
+              message: "Hubo un error con al listar los datos del usuario",
+              error: err,
+            });
+          }
+    
+          return res.status(200).json(data);
+        });
+      }
 }

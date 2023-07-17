@@ -257,5 +257,5 @@ module.exports = {
         data: id,
       });
     });
-  },
+  }
 };
