@@ -240,9 +240,9 @@ INSERT INTO gastro_db.order_has_products (id_order, id_product, quantity, create
 INSERT INTO gastro_db.order_has_products (id_order, id_product, quantity, created_at, updated_at) VALUES(6, 1, 3, '2023-06-19 18:21:19', '2023-06-19 18:21:19');
 INSERT INTO gastro_db.order_has_products (id_order, id_product, quantity, created_at, updated_at) VALUES(6, 2, 1, '2023-06-19 18:21:19', '2023-06-19 18:21:19');
 
-INSERT INTO gastro_db.categories (id, name, description, image, created_at, updated_at) VALUES(1, 'Bebidas', 'Listado de bebidas', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/bebidajajajaj.jpeg?alt=media&token=c9dfb45b-4357-4e51-ba21-4eceba5b2e91', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
-INSERT INTO gastro_db.categories (id, name, description, image, created_at, updated_at) VALUES(2, 'Pizzas', 'Listado de pizzas', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/slice-of-pizza-cartoon-cartoon-illustration-cartoon-clipart-free-vector.jpg?alt=media&token=93e17e9c-d766-4af0-8331-7c0627718acf', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
-INSERT INTO gastro_db.categories (id, name, description, image, created_at, updated_at) VALUES(3, 'Postres', 'Listado de postres', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/pngtree-food-elements-hand-drawn-cute-cartoon-dessert-cake-elementcartoon-foodhand-drawn-png-image_614857.jpg?alt=media&token=6ac9fcaf-77e2-4a52-85e0-2782ce34322f', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
+INSERT INTO gastro_db.categories (id, name, description, image, created_at, updated_at, id_local) VALUES(1, 'Bebidas', 'Listado de bebidas', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/bebidajajajaj.jpeg?alt=media&token=c9dfb45b-4357-4e51-ba21-4eceba5b2e91', '2022-03-27 00:00:00', '2022-03-27 00:00:00', 1);
+INSERT INTO gastro_db.categories (id, name, description, image, created_at, updated_at, id_local) VALUES(2, 'Pizzas', 'Listado de pizzas', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/slice-of-pizza-cartoon-cartoon-illustration-cartoon-clipart-free-vector.jpg?alt=media&token=93e17e9c-d766-4af0-8331-7c0627718acf', '2022-03-27 00:00:00', '2022-03-27 00:00:00', 1);
+INSERT INTO gastro_db.categories (id, name, description, image, created_at, updated_at, id_local) VALUES(3, 'Postres', 'Listado de postres', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/pngtree-food-elements-hand-drawn-cute-cartoon-dessert-cake-elementcartoon-foodhand-drawn-png-image_614857.jpg?alt=media&token=6ac9fcaf-77e2-4a52-85e0-2782ce34322f', '2022-03-27 00:00:00', '2022-03-27 00:00:00', 1);
 
 INSERT INTO gastro_db.address (id, address, neighborhood, lat, lng, created_at, updated_at, id_user) VALUES(1, 'Mesa 1', 'Patio Trasero', 0.0, 0.0, '2023-05-22 20:34:45', '2023-05-22 20:34:45', 1);
 
@@ -250,6 +250,18 @@ INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen
 INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(2, 'Baroga', 'Bar - DiscoPub', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/baroga.jpeg?alt=media&token=5a44d776-de41-4b0f-976a-d810f2ed8ad2', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
 INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(3, 'Negroni Downtown SkyBar', 'Bar - Bistro', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/Negroni.png?alt=media&token=ebcf91fd-f006-4bb7-9661-957c25996207', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
 INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen, loc_estado, id_categoria, loc_creado, loc_update) VALUES(4, 'Pancia Piena Pizzeria', 'Restaurant', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/PianciaPiena.jpeg?alt=media&token=cfc4a0f7-5e5f-487e-8683-a2e786d8f62a', 1, 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+
+INSERT INTO gastro_db.mesas (id_mesa, codigoqr, mesa_ubicacion, mesa_estado, total_cancelado, propina, pagado, id_staff, mesa_fecha_crea, mesa_fecha_cierre) VALUES(1, 'JHSD65G4', '1', 1, 150000.0, 0.0, 'NO', 1, '2022-03-27 00:00:00', '2022-03-27 00:00:00');
+
+INSERT INTO gastro_db.promociones (id_promocion, pro_nombre, id_local, pro_descripcion, pro_imagen, pro_estado, pro_creado, pro_update) VALUES(1, 'Promo charles', 1, 'Promo Semana 1 - Julio', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/promo_charles4.jpeg?alt=media&token=2dc07911-0236-448d-b241-c919904629cb', 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+INSERT INTO gastro_db.promociones (id_promocion, pro_nombre, id_local, pro_descripcion, pro_imagen, pro_estado, pro_creado, pro_update) VALUES(2, 'Promo Negroni', 3, 'Promo Semana 1 - Julio', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/promo_negroni1.jpeg?alt=media&token=f6525ec7-03ae-4e42-beb4-f0e77324af32', 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+INSERT INTO gastro_db.promociones (id_promocion, pro_nombre, id_local, pro_descripcion, pro_imagen, pro_estado, pro_creado, pro_update) VALUES(3, 'Promo Baroga', 2, 'Promo Semana 1 - Julio', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/promo_baroga1.jpeg?alt=media&token=85c83600-3d53-4eaf-8ed7-858635830004', 1, '2023-05-22 10:40:24', '2023-05-22 10:40:24');
+
+INSERT INTO gastro_db.usuariosActivos (id_usuario, id_mesa, id_local, estado, monto_pagado, es_temporal, ingreso, salida) VALUES(1, 1, 1, 1, 100000.0, 'NO', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
+INSERT INTO gastro_db.usuariosActivos (id_usuario, id_mesa, id_local, estado, monto_pagado, es_temporal, ingreso, salida) VALUES(3, 1, 1, 1, 50000.0, 'SI', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
+INSERT INTO gastro_db.usuariosActivos (id_usuario, id_mesa, id_local, estado, monto_pagado, es_temporal, ingreso, salida) VALUES(2, 1, 1, 1, 0.0, 'NO', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
+INSERT INTO gastro_db.usuariosActivos (id_usuario, id_mesa, id_local, estado, monto_pagado, es_temporal, ingreso, salida) VALUES(4, 1, 1, 1, 0.0, 'SI', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
+
 
 -- gastro_db.ordersCompart definition
 
@@ -268,6 +280,10 @@ CREATE TABLE `ordersCompart` (
   CONSTRAINT `ordersCompart_ibfk_2` FOREIGN KEY (`id_usuarioActivo`) REFERENCES `usuariosActivos` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ordersCompart_ibfk_3` FOREIGN KEY (`id_mesa`) REFERENCES `mesas` (`id_mesa`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+ALTER TABLE gastro_db.ordersCompart ADD subTotal BIGINT NULL;
+ALTER TABLE gastro_db.ordersCompart ADD id BIGINT auto_increment NOT NULL;
+ALTER TABLE gastro_db.ordersCompart CHANGE id id BIGINT auto_increment NOT NULL FIRST;
+ALTER TABLE gastro_db.ordersCompart ADD CONSTRAINT ordersCompart_PK PRIMARY KEY (id);
 
 -- gastro_db.pedidoLog definition
 
@@ -298,33 +314,13 @@ ALTER TABLE gastro_db.orders ADD CONSTRAINT orders_FK FOREIGN KEY (id_mesa) REFE
 ALTER TABLE gastro_db.locales DROP FOREIGN KEY locales_ibfk_1;
 ALTER TABLE gastro_db.categories ADD id_local BIGINT NULL;
 ALTER TABLE gastro_db.categories ADD CONSTRAINT id_local FOREIGN KEY (id_local) REFERENCES gastro_db.locales(id_local) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE gastro_db.ordersCompart ADD subTotal BIGINT NULL;
-ALTER TABLE gastro_db.ordersCompart ADD id BIGINT auto_increment NOT NULL;
-ALTER TABLE gastro_db.ordersCompart CHANGE id id BIGINT auto_increment NOT NULL FIRST;
-ALTER TABLE gastro_db.ordersCompart ADD CONSTRAINT ordersCompart_PK PRIMARY KEY (id);
+
+
+ALTER TABLE gastro_db.locales DROP FOREIGN KEY locales_ibfk_1;
+ALTER TABLE gastro_db.categories ADD id_local BIGINT NULL;
+ALTER TABLE gastro_db.categories ADD CONSTRAINT id_local FOREIGN KEY (id_local) REFERENCES gastro_db.locales(id_local) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
 
-Select (SELECT
-    SUM(oc.subTotal) AS totalSum
-FROM
-    gastro_db.ordersCompart oc
-WHERE
-    oc.id_mesa = 1
-and 
-	oc.id_usuarioActivo = 1) as totalUsuario,
-(SELECT
-    SUM(oc.subTotal) AS totalSum
-FROM
-    gastro_db.ordersCompart oc
-WHERE
-    oc.id_mesa = 1) as totalMesa,
-(SELECT
-    SUM(oc.subTotal) AS totalSum
-FROM
-    gastro_db.ordersCompart oc
-WHERE
-    oc.id_mesa = 1
-and oc.estado = 2) as totalPagado
 
- from dual
+
