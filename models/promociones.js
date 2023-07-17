@@ -5,7 +5,7 @@ const Promocion = {};
 Promocion.getAll = (result) => {
     const sql = `
     SELECT
-        CONVERT(id_promocion ) AS id, 
+        id_promocion AS id, 
         pro_nombre, 
         id_local, 
         pro_descripcion, 
@@ -14,7 +14,7 @@ Promocion.getAll = (result) => {
         pro_creado, 
         pro_update
     FROM
-        promociones
+        promociones s
     ORDER BY
         pro_nombre
     `;
