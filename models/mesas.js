@@ -169,41 +169,46 @@ Mesas.mostrarMesaUserCuenta = (id_mesa, id_usuarioActivo, result) => {
 
     const sql = `
 SELECT 
-	(SELECT
-	    SUM(oc.subTotal) AS totalSum
-	FROM
-	    ordersCompart oc
-	WHERE
-	    oc.id_mesa = ?
-	AND 
-		oc.id_usuarioActivo = ?) as totalUsuario,
-	(SELECT
-	    SUM(oc.subTotal) AS totalSum
-	FROM
-	    ordersCompart oc
-	WHERE
-	    oc.id_mesa = 1) as totalMesa,
-	(SELECT
-	    SUM(oc.subTotal) AS totalSum
-	FROM
-	    ordersCompart oc
-	WHERE
-	    oc.id_mesa = ?
-	AND oc.estado = 2) as totalPagado,
-	    
-	(SELECT
-	    SUM(oc.subTotal) AS totalSum
-	FROM
-	    ordersCompart oc
-	WHERE
-	    oc.id_mesa = ?
-	AND oc.estado = 1) as totalFaltante
+    (SELECT
+        SUM(oc.subTotal) AS totalSum
+    FROM
+        ordersCompart oc
+    WHERE
+        oc.id_mesa = ?
+    AND 
+        oc.id_usuarioActivo = ?) as totalUsuario,
+    (SELECT
+        SUM(oc.subTotal) AS totalSum
+    FROM
+        ordersCompart oc
+    WHERE
+        oc.id_mesa = ?
+    AND 
+        oc.id_usuarioActivo = ?) as totalMesa,
+    (SELECT
+        SUM(oc.subTotal) AS totalSum
+    FROM
+        ordersCompart oc
+    WHERE
+        oc.id_mesa = ?
+    AND 
+        oc.id_usuarioActivo = ?
+    AND oc.estado = 2) as totalPagado,
+    (SELECT
+        SUM(oc.subTotal) AS totalSum
+    FROM
+        ordersCompart oc
+    WHERE
+        oc.id_mesa = ?
+    AND 
+        oc.id_usuarioActivo = ?
+    AND oc.estado = 1) as totalFaltante
 FROM DUAL
     `;
 
     db.query(
         sql,
-        [id_mesa, id_usuarioActivo],
+        [id_mesa, id_usuarioActivo, id_mesa, id_usuarioActivo, id_mesa, id_usuarioActivo, id_mesa, id_usuarioActivo],
         (err, data) => {
             if (err) {
                 console.log('Error:', err);
@@ -216,5 +221,6 @@ FROM DUAL
         }
     )
 }
+
 
 module.exports = Mesas;
