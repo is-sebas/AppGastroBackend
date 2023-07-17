@@ -254,10 +254,13 @@ INSERT INTO gastro_db.locales (id_local, loc_nombre, loc_descripcion, loc_imagen
 -- gastro_db.ordersCompart definition
 
 CREATE TABLE `ordersCompart` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `OrdersID` bigint NOT NULL,
   `id_usuarioActivo` bigint NOT NULL,
   `id_mesa` bigint DEFAULT NULL,
   `estado` bigint NOT NULL,
+  `subTotal` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `OrdersID` (`OrdersID`),
   KEY `id_usuarioActivo` (`id_usuarioActivo`),
   KEY `id_mesa` (`id_mesa`),
@@ -295,3 +298,7 @@ ALTER TABLE gastro_db.orders ADD CONSTRAINT orders_FK FOREIGN KEY (id_mesa) REFE
 ALTER TABLE gastro_db.locales DROP FOREIGN KEY locales_ibfk_1;
 ALTER TABLE gastro_db.categories ADD id_local BIGINT NULL;
 ALTER TABLE gastro_db.categories ADD CONSTRAINT id_local FOREIGN KEY (id_local) REFERENCES gastro_db.locales(id_local) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE gastro_db.ordersCompart ADD subTotal BIGINT NULL;
+ALTER TABLE gastro_db.ordersCompart ADD id BIGINT auto_increment NOT NULL;
+ALTER TABLE gastro_db.ordersCompart CHANGE id id BIGINT auto_increment NOT NULL FIRST;
+ALTER TABLE gastro_db.ordersCompart ADD CONSTRAINT ordersCompart_PK PRIMARY KEY (id);

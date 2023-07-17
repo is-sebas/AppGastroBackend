@@ -10,9 +10,10 @@ OrdersCompart.create = (ordersCompart, result) => {
             OrdersID,
             id_usuarioActivo,
             id_mesa,
-            estado
+            estado,
+            subTotal
         )
-    VALUES(?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?)
     `;
 
     db.query(
@@ -21,7 +22,8 @@ OrdersCompart.create = (ordersCompart, result) => {
             ordersCompart.OrdersID,
             ordersCompart.id_usuarioActivo,
             ordersCompart.id_mesa,
-            ordersCompart.estado
+            ordersCompart.estado,
+            ordersCompart.subTotal
         ],
         (err, res) => {
             if (err) {
@@ -42,7 +44,8 @@ OrdersCompart.ListOrdersCompart = (result) => {
         P.OrdersID,
         P.id_usuarioActivo,
         P.id_mesa,
-        P.estado
+        P.estado,
+        P.subTotal
     FROM
         ordersCompart as P
     ORDER BY
