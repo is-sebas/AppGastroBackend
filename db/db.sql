@@ -302,3 +302,29 @@ ALTER TABLE gastro_db.ordersCompart ADD subTotal BIGINT NULL;
 ALTER TABLE gastro_db.ordersCompart ADD id BIGINT auto_increment NOT NULL;
 ALTER TABLE gastro_db.ordersCompart CHANGE id id BIGINT auto_increment NOT NULL FIRST;
 ALTER TABLE gastro_db.ordersCompart ADD CONSTRAINT ordersCompart_PK PRIMARY KEY (id);
+
+
+
+Select (SELECT
+    SUM(oc.subTotal) AS totalSum
+FROM
+    gastro_db.ordersCompart oc
+WHERE
+    oc.id_mesa = 1
+and 
+	oc.id_usuarioActivo = 1) as totalUsuario,
+(SELECT
+    SUM(oc.subTotal) AS totalSum
+FROM
+    gastro_db.ordersCompart oc
+WHERE
+    oc.id_mesa = 1) as totalMesa,
+(SELECT
+    SUM(oc.subTotal) AS totalSum
+FROM
+    gastro_db.ordersCompart oc
+WHERE
+    oc.id_mesa = 1
+and oc.estado = 2) as totalPagado
+
+ from dual

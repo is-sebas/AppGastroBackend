@@ -165,4 +165,56 @@ Mesas.ListMesas = (id_local, result) => {
     );
 }
 
+Mesas.mostrarMesaUserCuenta = (id_mesa, id_usuarioActivo, result) => {
+
+    const sql = `
+SELECT 
+	(SELECT
+	    SUM(oc.subTotal) AS totalSum
+	FROM
+	    ordersCompart oc
+	WHERE
+	    oc.id_mesa = ?
+	AND 
+		oc.id_usuarioActivo = ?) as totalUsuario,
+	(SELECT
+	    SUM(oc.subTotal) AS totalSum
+	FROM
+	    ordersCompart oc
+	WHERE
+	    oc.id_mesa = 1) as totalMesa,
+	(SELECT
+	    SUM(oc.subTotal) AS totalSum
+	FROM
+	    ordersCompart oc
+	WHERE
+	    oc.id_mesa = ?
+	AND oc.estado = 2) as totalPagado,
+	    
+	(SELECT
+	    SUM(oc.subTotal) AS totalSum
+	FROM
+	    ordersCompart oc
+	WHERE
+	    oc.id_mesa = ?
+	AND oc.estado = 1) as totalFaltante
+FROM DUAL
+    `;
+
+    db.query(
+        sql,
+        [id_mesa, id_usuarioActivo],
+        (err, data) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Estado de Mesa:', data);
+                result(null, data);
+            }
+        }
+    )
+}
+
 module.exports = Mesas;

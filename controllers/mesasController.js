@@ -77,4 +77,28 @@ module.exports = {
         });
     },
 
+    async mostrarMesaUserCuenta(req, res) {
+        const id_mesa = req.params.id_mesa;
+        const id_usuarioActivo = req.params.id_usuarioActivo;
+
+        Mesas.mostrarMesaUserCuenta(id_mesa, id_usuarioActivo, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar el estado de la mesa',
+                    error: err
+                });
+            }
+
+       /*     for (const d of data) {
+                console.log(d.users);
+                d.users = JSON.parse(d.users);
+            }
+        */    
+            
+            return res.status(200).json(data);
+        });
+    },
+
+
 }

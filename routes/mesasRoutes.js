@@ -2,6 +2,8 @@ const mesasController = require('../controllers/mesasController');
 const passport = require('passport');
 
 module.exports = (app, upload) => {
+    
+    app.get('/api/mesas/mostrarMesaUserCuenta/:id_mesa/:id_usuarioActivo',  passport.authenticate('jwt', { session: false }), mesasController.mostrarMesaUserCuenta);
 
     app.get('/api/mesas/findById_Existe_Mesa/:id_mesa',  passport.authenticate('jwt', { session: false }), mesasController.findById_Existe_Mesa);
     app.post('/api/mesas/create', passport.authenticate('jwt', {session: false}) , mesasController.create);
