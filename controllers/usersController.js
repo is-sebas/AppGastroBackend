@@ -257,5 +257,22 @@ module.exports = {
         data: id,
       });
     });
+  },
+
+  async GetRolUser(req, res) {
+    const id = req.params.id;
+
+    User.GetRolUser(id, (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con al listar la información del Rol",
+          error: err,
+        });
+      }
+
+      return res.status(200).json(data);
+    });
   }
+
 };

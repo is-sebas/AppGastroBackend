@@ -320,7 +320,21 @@ ALTER TABLE gastro_db.locales DROP FOREIGN KEY locales_ibfk_1;
 ALTER TABLE gastro_db.categories ADD id_local BIGINT NULL;
 ALTER TABLE gastro_db.categories ADD CONSTRAINT id_local FOREIGN KEY (id_local) REFERENCES gastro_db.locales(id_local) ON DELETE CASCADE ON UPDATE CASCADE;
 
+-- Con la nueva columna: id_local - gastro_db.user_has_roles definition
 
+CREATE TABLE `user_has_roles` (
+  `id_user` bigint NOT NULL,
+  `id_rol` bigint NOT NULL,
+  `id_local` bigint DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL,
+  PRIMARY KEY (`id_user`,`id_rol`),
+  KEY `id_rol` (`id_rol`),
+  KEY `id_local` (`id_local`),
+  CONSTRAINT `user_has_roles_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_has_roles_ibfk_2` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_has_roles_ibfk_3` FOREIGN KEY (`id_local`) REFERENCES `locales` (`id_local`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 

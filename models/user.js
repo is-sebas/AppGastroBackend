@@ -224,4 +224,38 @@ User.updateNotificationToken = (id, token, result) => {
   });
 };
 
+User.GetRolUser = (id, result) => {
+  const sql = `
+    SELECT (SELECT u.name
+              FROM users u 
+             WHERE u.id = uhr.id_user) as Nombre_Usuario,
+           uhr.id_local,
+           (SELECT l.loc_nombre
+              FROM locales l 
+             WHERE l.id_local = uhr.id_local) loc_nombre,
+           uhr.id_rol,
+          CASE WHEN uhr.id_rol = 1 THEN
+              'Cliente'
+          WHEN uhr.id_rol = 2 THEN
+              'Delivery/Mesera'
+          ELSE
+              'Encargada del Local'
+          END as Rol
+    FROM 
+      user_has_roles uhr
+    WHERE 
+      uhr.id_user = ?
+    `;
+
+  db.query(sql, [id], (err, user) => {
+    if (err) {
+      console.log("Error:", err);
+      result(err, null);
+    } else {
+      console.log("Datos Rol de usuario:", user);
+      result(null, user);
+    }
+  });
+};
+
 module.exports = User;
