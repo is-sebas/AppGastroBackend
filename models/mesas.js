@@ -222,5 +222,32 @@ FROM DUAL
     )
 }
 
+Mesas.GetMesaXQR = (codigoQR, result) => {
+    const sql = `
+    SELECT 
+	    m.id_mesa,
+	    m.id_local,
+	    m.mesa_estado
+    FROM 
+	    mesas m 
+    WHERE
+	    m.codigoqr = ?
+    `;
+
+    db.query(
+        sql,
+        [codigoQR],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Mesa obtenida por Código QR:', res);
+                result(null, res);
+            }
+        }
+    );
+}
 
 module.exports = Mesas;

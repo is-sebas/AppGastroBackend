@@ -100,5 +100,20 @@ module.exports = {
         });
     },
 
+    async GetMesaXQR(req, res) {
+        const codigoQR = req.params.codigoQR;
+
+        Mesas.GetMesaXQR(codigoQR, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar las mesas por código QR',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
+    },
 
 }
