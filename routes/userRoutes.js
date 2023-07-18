@@ -12,6 +12,7 @@ module.exports = (app, upload) => {
     app.get('/api/users/GetRolUser/:id', passport.authenticate('jwt', { session: false }), usersController.GetRolUser);
 
     app.post('/api/users/create', usersController.register);
+    app.post('/api/users/createUserTemp', usersController.createUserTemp);
     app.post('/api/users/createWithImage', upload.array('image', 1), usersController.registerWithImage);
     app.post('/api/users/login', usersController.login);
     

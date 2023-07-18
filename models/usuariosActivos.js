@@ -255,4 +255,48 @@ UsuarioActivo.listDatosUserMesaLocal = (id_user, result) => {
     });
   };
 
+  UsuarioActivo.createTemp = (id_usuario, id_mesa, id_local, result) => {
+
+    const sql = `
+    INSERT INTO
+        usuariosActivos(
+            id_usuario,
+            id_mesa,
+            id_local,
+            estado,
+            monto_pagado,
+            es_temporal,
+            ingreso,
+            salida
+        )
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.query(
+        sql, 
+        [
+            id_usuario,
+            id_mesa,
+            id_local,
+            1,
+            0,
+            'SI',
+            new Date(),
+            new Date()
+        ],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Id del nuevo usuario temporal:', res.insertId);
+                result(null, res.insertId);
+            }
+        }
+
+    )
+
+}
+
 module.exports = UsuarioActivo;

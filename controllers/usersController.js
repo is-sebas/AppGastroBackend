@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
 const storage = require("../utils/cloud_storage");
+const UsuariosActivos = require('../models/usuariosActivos');
 
 module.exports = {
   findDeliveryMen(req, res) {
@@ -273,6 +274,37 @@ module.exports = {
 
       return res.status(200).json(data);
     });
-  }
+  },
 
-};
+  async createUserTemp(req, res) {
+    const user = req.body;
+
+    User.createUserTemp(user, async (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con el registro del usuario",
+          error: err,
+        });
+      }
+        const idMesa = user.usuariosActivos[0].id_mesa;
+        const idLocal = user.usuariosActivos[0].id_local;
+
+        await UsuariosActivos.createTemp(data, idMesa, idLocal, (err, id_data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error con el registro del usuario activo',
+                    error: err
+                });
+            }
+        });
+
+        return res.status(201).json({
+          success: true,
+          message: "El registro se realizo correctamente",
+          data: user,
+        });
+      });
+  }
+}

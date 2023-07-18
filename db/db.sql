@@ -336,5 +336,9 @@ CREATE TABLE `user_has_roles` (
   CONSTRAINT `user_has_roles_ibfk_3` FOREIGN KEY (`id_local`) REFERENCES `locales` (`id_local`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+ALTER TABLE gastro_db.users MODIFY COLUMN phone varchar(90) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL;
+ALTER TABLE gastro_db.users MODIFY COLUMN password varchar(90) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL;
+ALTER TABLE gastro_db.users MODIFY COLUMN created_at timestamp NULL;
+ALTER TABLE gastro_db.users MODIFY COLUMN updated_at timestamp NULL;
 
 

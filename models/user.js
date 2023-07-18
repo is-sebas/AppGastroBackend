@@ -258,4 +258,37 @@ User.GetRolUser = (id, result) => {
   });
 };
 
+User.createUserTemp = async (user, result) => {
+
+  const sql = `
+        INSERT INTO
+            users(
+                email,
+                name,
+                lastname,
+                created_at
+            )
+        VALUES(?, ?, ?, ?)
+    `;
+
+  db.query(
+    sql,
+    [
+      user.email,
+      user.name,
+      user.lastname,
+      new Date()
+    ],
+    (err, res) => {
+      if (err) {
+        console.log("Error:", err);
+        result(err, null);
+      } else {
+        console.log("Id del usuario temporal:", res.insertId);
+        result(null, res.insertId);
+      }
+    }
+  );
+};
+
 module.exports = User;

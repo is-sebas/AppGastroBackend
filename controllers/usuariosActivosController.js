@@ -131,5 +131,27 @@ module.exports = {
     
           return res.status(200).json(data);
         });
-      }
+      },
+
+      async createTemp(req, res) {
+
+        const usuariosActivos = req.body;
+        
+        UsuariosActivos.createTemp(usuariosActivos, (err, data) => {
+    
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error con el registro del usuario temporal',
+                    error: err
+                });
+            }
+            
+            return res.status(201).json({
+                success: true,
+                message: 'El usuario temporal se almaceno correctamente',
+                data: data
+            });
+        });
+    }
 }
