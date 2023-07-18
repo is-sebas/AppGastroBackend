@@ -90,7 +90,7 @@ module.exports = {
                 });
             }
 
-            for (const product of order.JSON) {
+            for (const product of order.products) {
                 await OrderHasProducts.create(id, product.id, product.quantity, (err, id_data) => {
                     if (err) {
                         return res.status(501).json({
@@ -102,7 +102,7 @@ module.exports = {
                 });
             }
 
-            return res.status(200).json({
+            return res.status(201).json({
                 success: true,
                 message: 'La orden se ha creado correctamente',
                 data: `${id}` // EL ID DE LA NUEVA CATEGORIA
