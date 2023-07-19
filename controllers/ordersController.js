@@ -46,7 +46,6 @@ module.exports = {
                 d.delivery = JSON.parse(d.delivery);
             }
             
-            
             return res.status(201).json(data);
         });
     },

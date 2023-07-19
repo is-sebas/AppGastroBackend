@@ -72,6 +72,7 @@ CREATE TABLE user_has_roles(
     FOREIGN KEY(id_rol) REFERENCES roles(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY(id_user, id_rol)
 );
+ALTER TABLE gastro_db.user_has_roles ADD id_local BIGINT NULL;
 
 CREATE TABLE categories(
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -218,7 +219,7 @@ INSERT INTO gastro_db.user_has_roles (id_user, id_rol, created_at, updated_at) V
 INSERT INTO gastro_db.user_has_roles (id_user, id_rol, created_at, updated_at) VALUES(4, 3, '2023-06-21 20:38:53', '2023-06-21 20:38:53');
 INSERT INTO gastro_db.user_has_roles (id_user, id_rol, created_at, updated_at) VALUES(5, 3, '2023-06-21 21:11:31', '2023-06-21 21:11:31');
 
-INSERT INTO gastro_db.roles (id, name, image, route, created_at, updated_at) VALUES(1, 'RESTAURANTE', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/image_1684726242822?alt=media&token=5704d951-fdc6-4cfc-a89b-18ff07ad4fc4', '/restaurant/orders/list', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
+INSERT INTO gastro_db.roles (id, name, image, route, created_at, updated_at) VALUES(1, 'ADMIN', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/image_1684726242822?alt=media&token=5704d951-fdc6-4cfc-a89b-18ff07ad4fc4', '/restaurant/orders/list', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
 INSERT INTO gastro_db.roles (id, name, image, route, created_at, updated_at) VALUES(2, 'REPARTIDOR', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/image_1684726242822?alt=media&token=5704d951-fdc6-4cfc-a89b-18ff07ad4fc4', '/delivery/orders/list', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
 INSERT INTO gastro_db.roles (id, name, image, route, created_at, updated_at) VALUES(3, 'CLIENTE', 'https://firebasestorage.googleapis.com/v0/b/appgastro-9ee36.appspot.com/o/image_1684726242822?alt=media&token=5704d951-fdc6-4cfc-a89b-18ff07ad4fc4', '/client/products/list', '2022-03-27 00:00:00', '2022-03-27 00:00:00');
 

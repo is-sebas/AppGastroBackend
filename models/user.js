@@ -18,7 +18,9 @@ User.findById = (id, result) => {
                 'id', CONVERT(R.id, char),
                 'name', R.name,
                 'image', R.image,
-                'route', R.route
+                'route', R.route,
+                'id_local', UHR.id_local,
+                'loc_nombre', (SELECT l.loc_nombre FROM locales l WHERE l.id_local = UHR.id_local)
             )
         ) AS roles
     FROM
@@ -96,7 +98,9 @@ User.findByEmail = (email, result) => {
           'id', CONVERT(R.id, char),
           'name', R.name,
           'image', R.image,
-          'route', R.route
+          'route', R.route,
+          'id_local', UHR.id_local,
+          'loc_nombre', (SELECT l.loc_nombre FROM locales l WHERE l.id_local = UHR.id_local)
       )
   ) AS roles
 FROM
