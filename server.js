@@ -76,7 +76,7 @@ ordersCompart(app,upload);
 pedidoLog(app, upload);
 
 //
-server.listen(3000, "127.0.0.2" || "localhost", function () {    
+server.listen(3000, "127.0.0.1" || "localhost", function () {    
     console.log('Aplicacion NodeJS ' + port + ' Iniciada...')
 });
 
