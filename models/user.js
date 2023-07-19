@@ -83,13 +83,37 @@ User.findDeliveryMen = (result) => {
 
 User.findByEmail = (email, result) => {
   const sql = `
-    SELECT
-        *
-    FROM
-        users
-    WHERE
-        email = ?
-    `;
+  SELECT
+  U.id,
+  U.email,
+  U.name,
+  U.lastname,
+  U.image,
+  U.phone,
+  U.password,
+  JSON_ARRAYAGG(
+      JSON_OBJECT(
+          'id', CONVERT(R.id, char),
+          'name', R.name,
+          'image', R.image,
+          'route', R.route
+      )
+  ) AS roles
+FROM
+  users AS U
+INNER JOIN
+  user_has_roles AS UHR
+ON
+  UHR.id_user = U.id
+INNER JOIN
+  roles AS R
+ON
+  UHR.id_rol = R.id
+WHERE
+  U.email = ?
+GROUP BY
+  U.id
+`;
 
   db.query(sql, [email], (err, user) => {
     console.log("el error es", err, user);

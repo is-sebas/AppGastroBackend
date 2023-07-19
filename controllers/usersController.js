@@ -46,49 +46,6 @@ module.exports = {
       }
 
       const isPasswordValid = await bcrypt.compare(password, myUser.password);
-
-      if (isPasswordValid) {
-        const token = jwt.sign(
-          { id: myUser.id, email: myUser.email },
-          keys.secretOrKey,
-          {}
-        );
-
-        const data = {
-          id: `${myUser.id}`,
-          name: myUser.name,
-          lastname: myUser.lastname,
-          email: myUser.email,
-          phone: myUser.phone,
-          image: myUser.image,
-          session_token: `JWT ${token}`,
-          roles: {},
-        };
-        console.log("Entro en userController: ", data); //sagz
-        if (myUser.roles) {
-          try {
-            data.roles = JSON.parse(myUser.roles);
-            console.data("Parsing JSON Verificar userController: " + data); //sagz
-          } catch (error) {
-            console.error(
-              "Error Parsing JSON Verificar userController: " + error + data
-            );
-          }
-        }
-
-        return res.status(201).json({
-          success: true,
-          message: "El usuario fue autenticado",
-          data: data, // EL ID DEL NUEVO USUARIO QUE SE REGISTRO
-        });
-      } else {
-        return res.status(401).json({
-          // EL CLIENTE NO TIENE AUTORIZACION PARTA REALIZAR ESTA PETICION (401)
-          success: false,
-          message: "El password es incorrecto",
-        });
-      }
-      /*
             if (isPasswordValid) {
                 const token = jwt.sign({id: myUser.id, email: myUser.email}, keys.secretOrKey, {});
 
@@ -100,10 +57,9 @@ module.exports = {
                     phone: myUser.phone,
                     image: myUser.image,
                     session_token: `JWT ${token}`,
-                    roles: JSON.parse(myUser.roles)
-                }
-                console.logr('Parsing JSON Verificar userController: ' + data);//sagz
-
+                    //roles: JSON.parse(myUser.roles)
+                    roles: myUser.roles
+                  }
                 return res.status(201).json({
                     success: true,
                     message: 'El usuario fue autenticado',
@@ -115,7 +71,7 @@ module.exports = {
                     success: false,
                     message: 'El password es incorrecto'
                 });
-            }*/
+            }
     });
   },
 
