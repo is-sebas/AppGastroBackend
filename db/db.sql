@@ -177,6 +177,10 @@ CREATE TABLE mesas (
   mesa_fecha_cierre timestamp NOT NULL,
   PRIMARY KEY (id_mesa)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+ALTER TABLE gastro_db.mesas ADD id_local BIGINT NULL;
+ALTER TABLE gastro_db.mesas ADD CONSTRAINT id_local FOREIGN KEY (id_local) REFERENCES gastro_db.locales(id_local) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
 
 CREATE TABLE usuariosActivos (
   id_usuario bigint NOT NULL AUTO_INCREMENT,

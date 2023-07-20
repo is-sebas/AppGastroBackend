@@ -5,38 +5,42 @@ const User = {};
 
 User.findById = (id, result) => {
   const sql = `
-    SELECT
-        U.id,
-        U.email,
-        U.name,
-        U.lastname,
-        U.image,
-        U.phone,
-        U.password,
-        JSON_ARRAYAGG(
-            JSON_OBJECT(
-                'id', CONVERT(R.id, char),
-                'name', R.name,
-                'image', R.image,
-                'route', R.route,
-                'id_local', UHR.id_local,
-                'loc_nombre', (SELECT l.loc_nombre FROM locales l WHERE l.id_local = UHR.id_local)
-            )
-        ) AS roles
+  SELECT
+    U.id,
+    U.email,
+    U.name,
+    U.lastname,
+    U.image,
+    U.phone,
+    U.password,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'id', CONVERT(R.id, char),
+            'name', R.name,
+            'image', R.image,
+            'route', R.route,
+            'id_local', CASE WHEN UHR.id_local IS NULL THEN '' ELSE UHR.id_local END,
+            'loc_nombre', CASE WHEN l.loc_nombre IS NULL THEN '' ELSE l.loc_nombre END
+        )
+    ) AS roles
     FROM
-        users AS U
+      users AS U
     INNER JOIN
-        user_has_roles AS UHR
+      user_has_roles AS UHR
     ON
-        UHR.id_user = U.id
+      UHR.id_user = U.id
     INNER JOIN
-        roles AS R
+      roles AS R
     ON
-        UHR.id_rol = R.id
+      UHR.id_rol = R.id
+    LEFT JOIN
+      locales AS l
+    ON
+      l.id_local = UHR.id_local
     WHERE
-        U.id = ?
+      U.id = ?
     GROUP BY
-        U.id
+      U.id
     `;
 
   db.query(sql, [id], (err, user) => {
@@ -99,8 +103,8 @@ User.findByEmail = (email, result) => {
           'name', R.name,
           'image', R.image,
           'route', R.route,
-          'id_local', UHR.id_local,
-          'loc_nombre', (SELECT l.loc_nombre FROM locales l WHERE l.id_local = UHR.id_local)
+          'id_local', CASE WHEN UHR.id_local IS NULL THEN '' ELSE UHR.id_local END,
+          'loc_nombre', CASE WHEN l.loc_nombre IS NULL THEN '' ELSE l.loc_nombre END
       )
   ) AS roles
 FROM
@@ -113,6 +117,10 @@ INNER JOIN
   roles AS R
 ON
   UHR.id_rol = R.id
+LEFT JOIN
+  locales AS l
+ON
+  l.id_local = UHR.id_local
 WHERE
   U.email = ?
 GROUP BY
