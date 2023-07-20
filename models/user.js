@@ -271,11 +271,11 @@ User.GetRolUser = (id, result) => {
              WHERE l.id_local = uhr.id_local) loc_nombre,
            uhr.id_rol,
           CASE WHEN uhr.id_rol = 1 THEN
-              'Cliente'
+              'ADMIN'
           WHEN uhr.id_rol = 2 THEN
-              'Delivery/Mesera'
+              'REPARTIDOR'
           ELSE
-              'Encargada del Local'
+              'CLIENTE'
           END as Rol
     FROM 
       user_has_roles uhr
