@@ -138,9 +138,9 @@ UsuarioActivo.create = (usuariosActivos, result) => {
             usuariosActivos.id_usuario,
             usuariosActivos.id_mesa,
             usuariosActivos.id_local,
-            usuariosActivos.estado,
-            usuariosActivos.monto_pagado,
-            usuariosActivos.es_temporal,
+            1,
+            0,
+            "NO",
             new Date(),
             new Date()
         ],
