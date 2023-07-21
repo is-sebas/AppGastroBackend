@@ -172,4 +172,20 @@ module.exports = {
         });
     },
 
+    async listaConsumoMesa(req, res) {
+        const id_mesa = req.params.id_mesa;
+
+        Order.listaConsumoMesa(id_mesa, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de obtener listado de consumos por mesa',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
+    }
+
 }

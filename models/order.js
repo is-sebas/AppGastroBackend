@@ -401,5 +401,64 @@ Order.updateToDelivered = (id_order, id_delivery, result) => {
     )
 }
 
+Order.listaConsumoMesa = (id_mesa, result) => {
+
+    const sql = `
+            SELECT 	
+                (SELECT u.name AS 'SolicitadoPor'
+                FROM users u
+                WHERE u.id = ua.id_usuario) name,
+                p.name producto,
+                oc.subTotal * count(oc.id) Total,
+                ohp.quantity,
+                CASE WHEN (ohp.quantity > 1) THEN
+                    'SI'
+                ELSE
+                    'NO'
+                END AS 'Dividido',
+                o.status AS 'EstadoOrden'
+            FROM 
+                orders o 
+            INNER JOIN
+                order_has_products ohp 
+            ON
+                o.id = ohp.id_order
+            INNER JOIN
+                usuariosActivos ua 
+            ON
+                o.id_client = ua.id_usuario
+            INNER JOIN
+                products p 
+            ON
+                ohp.id_product = p.id 
+            INNER JOIN 
+                ordersCompart oc 
+            ON
+                o.id = oc.OrdersID
+            INNER JOIN 
+                mesas m
+            ON
+                o.id_mesa = m.id_mesa
+            WHERE
+                m.id_mesa = 6
+            GROUP BY
+                1,2,4,6, oc.subTotal 
+    `;
+
+    db.query(
+        sql,
+        [id_mesa],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Listado de consumo por Mesa:', res);
+                result(null, res);
+            }
+        }
+    )
+}
 
 module.exports = Order;
