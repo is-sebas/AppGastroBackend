@@ -462,4 +462,64 @@ Order.listaConsumoMesa = (id_mesa, result) => {
     )
 }
 
+Order.listaConsumoDetalle = (id_orden, result) => {
+
+    const sql = `
+                SELECT 	
+                    p.name nombreProducto,
+                    ohp.quantity cantidad,
+                    p.price costoUnitario,
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'nombre', u.name,
+                            'montoAPagar', oc.subTotal,
+                            'estado', CASE WHEN oc.estado = 0 THEN 'Inactivo'
+                                        WHEN oc.estado = 1 THEN 'Pendiente'
+                                        WHEN oc.estado = 2 THEN 'Pagado'
+                                        ELSE 'Eliminado' END)
+                    ) AS listado
+                FROM 
+                    orders o 
+                INNER JOIN
+                    order_has_products ohp 
+                ON
+                    o.id = ohp.id_order
+                INNER JOIN
+                    usuariosActivos ua 
+                ON
+                    o.id_client = ua.id_usuario
+                INNER JOIN
+                    products p 
+                ON
+                    ohp.id_product = p.id 
+                INNER JOIN 
+                    ordersCompart oc 
+                ON
+                    o.id = oc.OrdersID
+                INNER JOIN 
+                    users u 
+                ON
+                    oc.id_usuarioActivo = u.id
+                WHERE
+                    o.id = ?
+                GROUP BY
+	                p.name
+                `;
+
+    db.query(
+        sql,
+        [id_orden],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Listado detallado por Orden:', res);
+                result(null, res);
+            }
+        }
+    )
+}
+
 module.exports = Order;

@@ -186,6 +186,22 @@ module.exports = {
 
             return res.status(200).json(data);
         });
+    },
+
+    async listaConsumoDetalle(req, res) {
+        const id_orden = req.params.id_orden;
+
+        Order.listaConsumoDetalle(id_orden, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de obtener listado detallado por orden',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
     }
 
 }
