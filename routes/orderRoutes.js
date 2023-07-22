@@ -18,4 +18,5 @@ module.exports = (app) => {
     app.put('/api/orders/updateToDelivered',  passport.authenticate('jwt', { session: false }), OrdersController.updateToDelivered);
     app.get('/api/orders/listaConsumoMesa/:id_mesa',  passport.authenticate('jwt', { session: false }), OrdersController.listaConsumoMesa);
     app.get('/api/orders/listaConsumoDetalle/:id_orden',  passport.authenticate('jwt', { session: false }), OrdersController.listaConsumoDetalle);
+    app.get('/api/orders/getListadoConsumicion/:id_mesa',  passport.authenticate('jwt', { session: false }), OrdersController.getListadoConsumicion);
 }

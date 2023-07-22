@@ -522,4 +522,79 @@ Order.listaConsumoDetalle = (id_orden, result) => {
     )
 }
 
+Order.getListadoConsumicion = (id_mesa, result) => {
+
+    const sql = `
+            SELECT  
+                o.id id_orden,
+                (SELECT concat(u.name, ' ', u.lastname) AS 'SolicitadoPor'
+                FROM users u
+                WHERE u.id = ua.id_usuario) nombre,
+                p.name producto,
+                P.price precio,
+                ohp.quantity cantidad,
+                p.price * ohp.quantity total,
+                CASE WHEN (ohp.quantity > 1) THEN
+                    'SI'
+                ELSE
+                    'NO'
+                END AS 'dividido',
+                o.status AS 'estadoOrden',
+                JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'nombre', CONCAT(u.name, ' ', u.lastname),
+                            'montoAPagar', oc.subTotal,
+                            'estado', CASE WHEN oc.estado = 0 THEN 'Inactivo'
+                                        WHEN oc.estado = 1    THEN 'Pendiente'
+                                        WHEN oc.estado = 2    THEN 'Pagado'
+                                        ELSE 'Eliminado' END)
+                    ) AS listado
+                FROM 
+                    orders o 
+                INNER JOIN
+                    order_has_products ohp 
+                ON
+                    o.id = ohp.id_order
+                INNER JOIN  
+                    usuariosActivos ua 
+                ON
+                    o.id_client = ua.id_usuario
+                INNER JOIN
+                    products p 
+                ON
+                    ohp.id_product = p.id 
+                INNER JOIN 
+                    ordersCompart oc 
+                ON
+                    o.id = oc.OrdersID
+                INNER JOIN 
+                        users u 
+                    ON
+                        oc.id_usuarioActivo = u.id
+                INNER JOIN 
+                    mesas m
+                ON
+                    o.id_mesa = m.id_mesa
+                WHERE
+                    m.id_mesa = ?
+                GROUP BY
+                    o.id, p.name, ohp.quantity,o.status
+                    `;
+
+    db.query(
+        sql,
+        [id_mesa],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Listado de consumición por Mesa:', res);
+                result(null, res);
+            }
+        }
+    )
+}
+
 module.exports = Order;
