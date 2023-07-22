@@ -192,7 +192,6 @@ CREATE TABLE usuariosActivos (
   ingreso timestamp NOT NULL,
   salida timestamp NOT NULL,
   FOREIGN KEY(id_usuario) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY(id_mesa) REFERENCES mesas(id_mesa) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY(id_local) REFERENCES locales(id_local) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
