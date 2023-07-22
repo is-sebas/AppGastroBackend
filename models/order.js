@@ -405,18 +405,19 @@ Order.listaConsumoMesa = (id_mesa, result) => {
 
     const sql = `
             SELECT 	
+                o.id id_orden,
                 (SELECT u.name AS 'SolicitadoPor'
                 FROM users u
-                WHERE u.id = ua.id_usuario) name,
+                WHERE u.id = ua.id_usuario) nombre,
                 p.name producto,
-                oc.subTotal * count(oc.id) Total,
-                ohp.quantity,
+                oc.subTotal * count(oc.id) total,
+                ohp.quantity cantidad,
                 CASE WHEN (ohp.quantity > 1) THEN
                     'SI'
                 ELSE
                     'NO'
-                END AS 'Dividido',
-                o.status AS 'EstadoOrden'
+                END AS 'dividido',
+                o.status AS 'estadoOrden'
             FROM 
                 orders o 
             INNER JOIN
@@ -440,9 +441,9 @@ Order.listaConsumoMesa = (id_mesa, result) => {
             ON
                 o.id_mesa = m.id_mesa
             WHERE
-                m.id_mesa = 6
+                m.id_mesa = ?
             GROUP BY
-                1,2,4,6, oc.subTotal 
+                o.id, p.name, ohp.quantity,o.status, oc.subTotal 
     `;
 
     db.query(
