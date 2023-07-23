@@ -14,14 +14,14 @@ module.exports = {
                     error: err
                 });
             }
-
+/*
             for (const d of data) {
                 d.address = JSON.parse(d.address);
                 d.client = JSON.parse(d.client);
                 d.products = JSON.parse(d.products);
                 d.delivery = JSON.parse(d.delivery);
             }
-            
+  */          
             return res.status(200).json(data);
         });
     },
@@ -38,14 +38,14 @@ module.exports = {
                     error: err
                 });
             }
-
+/*
             for (const d of data) {
                 d.address = JSON.parse(d.address);
                 d.client = JSON.parse(d.client);
                 d.products = JSON.parse(d.products);
                 d.delivery = JSON.parse(d.delivery);
             }
-            
+ */           
             return res.status(201).json(data);
         });
     },
@@ -62,14 +62,14 @@ module.exports = {
                     error: err
                 });
             }
-
+/*
             for (const d of data) {
                 d.address = JSON.parse(d.address);
                 d.client = JSON.parse(d.client);
                 d.products = JSON.parse(d.products);
                 d.delivery = JSON.parse(d.delivery);
             }
-            
+ */           
             
             return res.status(201).json(data);
         });

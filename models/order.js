@@ -470,6 +470,7 @@ Order.listaConsumoDetalle = (id_orden, result) => {
 
     const sql = `
                 SELECT 	
+                    o.id_client user_id,
                     p.name nombreProducto,
                     ohp.quantity cantidad,
                     p.price costoUnitario,
