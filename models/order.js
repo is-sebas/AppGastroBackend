@@ -410,7 +410,7 @@ Order.listaConsumoMesa = (id_mesa, result) => {
                 FROM users u
                 WHERE u.id = ua.id_usuario) nombre,
                 p.name producto,
-                oc.subTotal * count(oc.id) total,
+                p.price * ohp.quantity total,
                 ohp.quantity cantidad,
                 CASE WHEN (ohp.quantity > 1) THEN
                     'SI'
