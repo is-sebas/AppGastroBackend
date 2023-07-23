@@ -217,7 +217,7 @@ Order.findByClientAndStatus = (id_client, status, result) => {
                 'image2', P.image2,
                 'image3', P.image3,
                 'price', P.price,
-                'quantity', OHP.quantity
+                'quantity', OHP.quantity 
             )
         ) AS products
     FROM 
@@ -253,7 +253,8 @@ Order.findByClientAndStatus = (id_client, status, result) => {
         [id_client, status],
         (err, data) => {
             if (err) {
-                console.log('Error:', err);
+                console.log('Error EN ORDER findByClientAndStatus:', err);
+                //console.log('Error EN ORDER findByClientAndStatus:', data);
                 result(err, null);
             }
             else {
@@ -409,6 +410,7 @@ Order.listaConsumoMesa = (id_mesa, result) => {
                 (SELECT u.name AS 'SolicitadoPor'
                 FROM users u
                 WHERE u.id = ua.id_usuario) nombre,
+                ua.id_usuario user_id,
                 p.name producto,
                 oc.subTotal * count(oc.id) total,
                 ohp.quantity cantidad,
@@ -471,6 +473,7 @@ Order.listaConsumoDetalle = (id_orden, result) => {
                     p.price costoUnitario,
                     JSON_ARRAYAGG(
                         JSON_OBJECT(
+                            'id', u.id,
                             'nombre', u.name,
                             'montoAPagar', oc.subTotal,
                             'estado', CASE WHEN oc.estado = 0 THEN 'Inactivo'
