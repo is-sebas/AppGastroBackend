@@ -116,4 +116,23 @@ module.exports = {
         });
     },
 
+    async updatePago(req, res) {
+        const mesa = req.body;
+
+        Mesas.updatePago(mesa, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error con la actualización del pago en la mesa',
+                    error: err
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Los datos del pago en la mesa se actualizaron correctamente',
+                data: data
+            });
+        })
+    }
 }

@@ -123,7 +123,7 @@ Mesas.update = (mesas, result) => {
             }
             else {
                 console.log('Mesa actualizada:', mesas.id_mesa);
-                result(null, mesas.id);
+                result(null, mesas.id_mesa);
             }
         }
     )
@@ -248,6 +248,44 @@ Mesas.GetMesaXQR = (codigoQR, result) => {
             }
         }
     );
+}
+
+Mesas.updatePago = (mesas, result) => {
+
+    const sql = `
+    UPDATE
+        mesas
+    SET
+        mesa_estado = ?,  
+        total_cancelado = ?,
+        propina = ?,
+        pagado = ?,
+        mesa_fecha_cierre = ?
+    WHERE
+        id_mesa = ?
+    `;
+
+    db.query(
+        sql, 
+        [
+            mesas.mesa_estado,
+            mesas.total_cancelado,
+            mesas.propina,
+            mesas.pagado,
+            new Date(),
+            mesas.id_mesa
+        ],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Datos del pago de la mesa actualizado:', mesas.id_mesa);
+                result(null, mesas.id_mesa);
+            }
+        }
+    )
 }
 
 module.exports = Mesas;
