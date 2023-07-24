@@ -218,6 +218,28 @@ module.exports = {
 
             return res.status(200).json(data);
         });
-    }
+    },
 
+    async updateEstado(req, res) {
+
+        const id = req.params.id;
+        const status = req.params.status;
+
+        Order.updateEstado(id,status, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de actualizar el estado de la orden',
+                    error: err
+                });
+            }
+
+            return res.status(201).json({
+                success: true,
+                message: 'El estado se ha actualizado correctamente',
+                data: data
+            });
+
+        });
+    }
 }

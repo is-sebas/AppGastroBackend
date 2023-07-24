@@ -153,5 +153,28 @@ module.exports = {
                 data: data
             });
         });
+    },
+
+    async updateMontoPagado(req, res) {
+
+        const monto_pagado = req.params.monto_pagado;
+        const id_usuario = req.params.id_usuario;
+        const id_mesa = req.params.id_mesa;
+
+        UsuariosActivos.updateMontoPagado(monto_pagado, id_usuario, id_mesa, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error con la actualización del monto pagado',
+                    error: err
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'El monto pagado se se actualizo correctamente',
+                data: data
+            });
+        })
     }
 }

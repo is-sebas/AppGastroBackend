@@ -67,4 +67,33 @@ OrdersCompart.ListOrdersCompart = (result) => {
     );
 }
 
+
+OrdersCompart.updateEstado = (id, estado, result) => {
+    const sql = `
+    UPDATE 
+        ordersCompart
+    SET
+        estado = ?
+    WHERE id = ?;
+    `;
+
+    db.query(
+        sql, 
+        [
+            estado,
+            id
+        ],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Estado de la orden compartida actualizada:', id);
+                result(null, id);
+            }
+        }
+    )
+}
+
 module.exports = OrdersCompart;

@@ -606,4 +606,35 @@ Order.getListadoConsumicion = (id_mesa, result) => {
     )
 }
 
+Order.updateEstado = (id, status, result) => {
+    const sql = `
+    UPDATE 
+        orders
+    SET 
+        status = ?,
+        updated_at = ?
+    WHERE 
+        id = ?;
+    `;
+
+    db.query(
+        sql, 
+        [
+            status,
+            new Date(),
+            id
+        ],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Estado de la orden actualizado:', id);
+                result(null, id);
+            }
+        }
+    )
+}
+
 module.exports = Order;

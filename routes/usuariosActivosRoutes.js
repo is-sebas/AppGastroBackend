@@ -11,5 +11,5 @@ module.exports = (app, upload) => {
     app.post('/api/usuariosActivos/createTemp', passport.authenticate('jwt', {session: false}) , usuariosActivosController.createTemp);
     app.put('/api/usuariosActivos/update', passport.authenticate('jwt', {session: false}) , usuariosActivosController.update);
     app.delete('/api/usuariosActivos/delete/:id', passport.authenticate('jwt', {session: false}), usuariosActivosController.delete);
-
+    app.put('/api/usuariosActivos/updateMontoPagado/:monto_pagado/:id_usuario/:id_mesa',  passport.authenticate('jwt', { session: false }), usuariosActivosController.updateMontoPagado);
 }

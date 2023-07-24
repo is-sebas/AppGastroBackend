@@ -29,6 +29,7 @@ const promocionesRoutes = require('./routes/promocionesRoutes');
 const usuariosActivosRoutes = require('./routes/usuariosActivosRoutes');
 const ordersCompart = require('./routes/ordersCompartRoutes');
 const pedidoLog = require('./routes/pedidoLogRoutes');
+const pago = require('./routes/pagoRoutes');
 const { update } = require('./models/user');
 
 const port = process.env.PORT || 3000;
@@ -74,9 +75,10 @@ promocionesRoutes(app, upload);
 usuariosActivosRoutes(app,upload);
 ordersCompart(app,upload);
 pedidoLog(app, upload);
+pago(app, upload);
 
 //
-server.listen(3000, "127.0.0.1" || "localhost", function () {    
+server.listen(3000, "127.0.0.2" || "localhost", function () {    
     console.log('Aplicacion NodeJS ' + port + ' Iniciada...')
 });
 

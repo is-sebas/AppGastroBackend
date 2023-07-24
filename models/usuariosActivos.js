@@ -299,4 +299,39 @@ UsuarioActivo.listDatosUserMesaLocal = (id_user, result) => {
 
 }
 
+UsuarioActivo.updateMontoPagado = (monto_pagado, id_usuario, id_mesa, result) => {
+
+    const sql = `
+    UPDATE 
+        usuariosActivos ua
+    SET 
+        ua.monto_pagado = ?
+    WHERE
+        ua.id_usuario = ?
+    AND
+        ua.id_mesa = ?
+    AND
+        ua.estado = 1
+    `;
+
+    db.query(
+        sql, 
+        [
+            monto_pagado,
+            id_usuario,
+            id_mesa
+        ],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Monto Pagado actualizado:', monto_pagado);
+                result(null, monto_pagado);
+            }
+        }
+    )
+}
+
 module.exports = UsuarioActivo;

@@ -234,7 +234,9 @@ module.exports = {
 
   async createUserTemp(req, res) {
     const user = req.body;
-
+    const id_mesa = req.body.id_mesa;
+    const id_local = req.body.id_local;
+     
     User.createUserTemp(user, async (err, data) => {
       if (err) {
         return res.status(501).json({
@@ -243,10 +245,8 @@ module.exports = {
           error: err,
         });
       }
-        const idMesa = user.usuariosActivos[0].id_mesa;
-        const idLocal = user.usuariosActivos[0].id_local;
 
-        await UsuariosActivos.createTemp(data, idMesa, idLocal, (err, id_data) => {
+        await UsuariosActivos.createTemp(data, id_mesa, id_local, (err, id_data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,

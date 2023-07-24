@@ -39,4 +39,27 @@ module.exports = {
         });
     },
 
+    async updateEstado(req, res) {
+
+        const id = req.params.id;
+        const estado = req.params.estado;
+
+        OrdersCompart.updateEstado(id,estado, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de actualizar el estado de la orden compartida',
+                    error: err
+                });
+            }
+
+            return res.status(201).json({
+                success: true,
+                message: 'El estado se ha actualizado correctamente',
+                data: data
+            });
+
+        });
+    }
+
 }
