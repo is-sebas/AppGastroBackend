@@ -3,6 +3,7 @@ const OrdersCompart = require('../models/ordersCompart');
 const Order = require('../models/order');
 const UsuariosActivos = require('../models/usuariosActivos');
 const Mesas = require('../models/mesas');
+const _ = require('lodash');
 
 module.exports = {
 
@@ -119,15 +120,13 @@ module.exports = {
             
             // 5. Obtenemos los datos del pago y los capturamos en una variable:
             const datosPago = []; // Declarar la variable fuera del bucle para que esté disponible fuera de él.
-            for (const ordersCompart of datos)
-            {
+            for (const ordersCompart of datos) {
                 for (const orderGroup of ordenes) {
                     for (const order of orderGroup) {
-                        try 
-                        {
+                        try {
                             const datosPagoObtenidos = await obtenerDatosPago(ordersCompart.metododepago, order.id_usuarioActivo, order.id_mesa);
                             datosPago.push(datosPagoObtenidos); // Agregar los datos del pago a la variable datosPago.
-
+            
                         } catch (error) {
                             return res.status(501).json({
                                 success: false,
@@ -138,18 +137,44 @@ module.exports = {
                     }
                 }
             }
+            
+            // Función para comparar dos objetos y determinar si son iguales
+            function areObjectsEqual(obj1, obj2) {
+                const keys1 = Object.keys(obj1);
+                const keys2 = Object.keys(obj2);
+            
+                if (keys1.length !== keys2.length) {
+                return false;
+                }
+            
+                for (const key of keys1) {
+                if (obj1[key] !== obj2[key]) {
+                    return false;
+                }
+                }
+            
+                return true;
+            }
 
-            console.log("Datos del Pago: ", datosPago)
+            // Después de obtener todos los datos, filtra los objetos duplicados en datosPago utilizando la función personalizada
+            const datosPagoFiltrados = datosPago.reduce((result, item) => {
+            if (!result.some((existingItem) => areObjectsEqual(item, existingItem))) {
+                result.push(item);
+            }
+                return result;
+            }, []);
 
+            console.log("Datos del Pago filtrados: ", datosPagoFiltrados);
             // 6. Insertamos los logs del pago:
 
             // Llamar a la función para procesar los pagos
-            procesarPagos(datosPago);
+            procesarPagos(datosPagoFiltrados);
 
             async function procesarPagos(datosPago) {
                 try {
                   // Recorrer todos los datos de pago
                   for (const pago of datosPago) {
+                    console.log("pago ", pago)
                     // Llamar a Pago.create con cada objeto de pago
                     await new Promise((resolve, reject) => {
                       Pago.create(pago, (err, id_data) => {
@@ -165,13 +190,13 @@ module.exports = {
                   console.log('Todos los pagos procesados correctamente');
               
                   // Aquí puedes devolver una respuesta exitosa si es necesario
-                  res.status(200).json({ success: true, message: 'Pago procesado correctamente' });
+                  //res.status(200).json({ success: true, message: 'Pago procesado correctamente' });
               
                 } catch (error) {
                   console.log('Hubo un error al procesar los pagos:', error);
               
                   // Aquí puedes devolver una respuesta de error si es necesario
-                   res.status(501).json({ success: false, message: 'Hubo un error al procesar los pagos', error: error });
+                   //res.status(501).json({ success: false, message: 'Hubo un error al procesar los pagos', error: error });
                 }
               }
               
