@@ -345,4 +345,18 @@ ALTER TABLE gastro_db.users MODIFY COLUMN password varchar(90) CHARACTER SET utf
 ALTER TABLE gastro_db.users MODIFY COLUMN created_at timestamp NULL;
 ALTER TABLE gastro_db.users MODIFY COLUMN updated_at timestamp NULL;
 
+-- gastro_db.pagosLogs definition
 
+CREATE TABLE `pagosLogs` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id_cliente` bigint DEFAULT NULL,
+  `id_mesero` bigint NOT NULL,
+  `metodoDePago` varchar(100) NOT NULL,
+  `montoPagado` double NOT NULL,
+  `fechaPago` timestamp NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_cliente` (`id_cliente`),
+  KEY `id_mesero` (`id_mesero`),
+  CONSTRAINT `pagosLogs_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `pagosLogs_ibfk_2` FOREIGN KEY (`id_mesero`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

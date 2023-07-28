@@ -44,12 +44,6 @@ module.exports = {
                     error: err
                 });
             }
-
-       /*     for (const d of data) {
-                console.log(d.users);
-                d.users = JSON.parse(d.users);
-            }
-        */    
             
             return res.status(200).json(data);
         });
@@ -176,5 +170,23 @@ module.exports = {
                 data: data
             });
         })
-    }
+    },
+
+    async getDatosPago(req, res) {
+        const metodoDePago = req.params.metodoDePago;
+        const id_usuario = req.params.id_usuario;
+        const id_mesa = req.params.id_mesa;
+
+        UsuariosActivos.getDatosPago(metodoDePago, id_usuario, id_mesa, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de obtener los datos del pago',
+                    error: err
+                });
+            }
+            
+            return res.status(200).json(data);
+        });
+    },
 }

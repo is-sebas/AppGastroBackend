@@ -96,4 +96,33 @@ OrdersCompart.updateEstado = (id, estado, result) => {
     )
 }
 
+OrdersCompart.getOrdenes = (id, result) => {
+    const sql = `
+    SELECT
+        OrdersID,
+        id_usuarioActivo,
+        id_mesa,
+        subTotal
+    FROM
+        ordersCompart
+    WHERE
+        id = ?
+    `;
+
+    db.query(
+        sql,
+        [id],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Listado de ordenes:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
 module.exports = OrdersCompart;

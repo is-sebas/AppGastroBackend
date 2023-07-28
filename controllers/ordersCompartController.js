@@ -60,6 +60,22 @@ module.exports = {
             });
 
         });
+    },
+
+    async getOrdenes(req, res) {
+        const id = req.params.id;
+
+        OrdersCompart.getOrdenes(id, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar las ordenes',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
     }
 
 }

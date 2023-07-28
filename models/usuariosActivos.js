@@ -52,7 +52,8 @@ UsuarioActivo.ListUserMesas = (id_mesa, status, result) => {
             'phone', U.phone
         ) AS users,
         m.codigoqr as codigoqr
-FROM gastro_db.usuariosActivos ua
+    FROM 
+        usuariosActivos ua
     INNER JOIN
         users AS U
     ON
@@ -61,8 +62,10 @@ FROM gastro_db.usuariosActivos ua
         mesas AS m
     ON
         m.id_mesa  = ua.id_mesa 
-WHERE ua.id_mesa = ?
-and ua.estado = ?
+    WHERE 
+        ua.id_mesa = ?
+    and 
+        ua.estado = ?
    order BY
         ua.id_usuario
     `;
@@ -333,5 +336,46 @@ UsuarioActivo.updateMontoPagado = (monto_pagado, id_usuario, id_mesa, result) =>
         }
     )
 }
+
+
+UsuarioActivo.getDatosPago = (metodoDePago, id_usuario, id_mesa, result) => {
+    const sql = `
+    SELECT  x.id_usuario id_cliente,
+		(SELECT 
+			m.id_staff
+		FROM 
+			mesas m
+		WHERE 
+			m.id_mesa = x.id_mesa
+		AND 
+			m.id_local = x.id_local) id_mesero,
+        ? metodoDePago,
+		x.monto_pagado montoPagado
+    FROM
+        (SELECT 
+            ua.id_usuario,
+            ua.id_mesa,
+            ua.id_local,
+            ua.monto_pagado
+        FROM
+            usuariosActivos ua
+        WHERE
+            ua.id_usuario = ?
+        AND
+            ua.id_mesa = ?
+        AND
+            ua.estado = 1) x
+      `;
+  
+    db.query(sql, [metodoDePago, id_usuario, id_mesa], (err, local) => {
+      if (err) {
+        console.log("Error:", err);
+        result(err, null);
+      } else {
+        console.log("Datos del pago:", local);
+        result(null, local);
+      }
+    });
+  }
 
 module.exports = UsuarioActivo;
