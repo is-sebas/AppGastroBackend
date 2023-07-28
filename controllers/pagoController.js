@@ -138,33 +138,21 @@ module.exports = {
                 }
             }
             
-            // Función para comparar dos objetos y determinar si son iguales
-            function areObjectsEqual(obj1, obj2) {
-                const keys1 = Object.keys(obj1);
-                const keys2 = Object.keys(obj2);
-            
-                if (keys1.length !== keys2.length) {
-                return false;
-                }
-            
-                for (const key of keys1) {
-                if (obj1[key] !== obj2[key]) {
-                    return false;
-                }
-                }
-            
+            // Crear un objeto para rastrear los objetos únicos por su propiedad "id_cliente"
+            const clientesUnicos = {};
+
+            // Filtrar y mantener solamente los objetos únicos en datosPago
+            const datosPagoFiltrados = datosPago.filter((obj) => {
+            if (!clientesUnicos.hasOwnProperty(obj[0].id_cliente)) {
+                clientesUnicos[obj[0].id_cliente] = true;
                 return true;
             }
-
-            // Después de obtener todos los datos, filtra los objetos duplicados en datosPago utilizando la función personalizada
-            const datosPagoFiltrados = datosPago.reduce((result, item) => {
-            if (!result.some((existingItem) => areObjectsEqual(item, existingItem))) {
-                result.push(item);
-            }
-                return result;
-            }, []);
+            return false;
+            });
 
             console.log("Datos del Pago filtrados: ", datosPagoFiltrados);
+
+
             // 6. Insertamos los logs del pago:
 
             // Llamar a la función para procesar los pagos
