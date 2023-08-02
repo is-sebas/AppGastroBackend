@@ -350,7 +350,15 @@ UsuarioActivo.getDatosPago = (metodoDePago, id_usuario, id_mesa, result) => {
 		AND 
 			m.id_local = x.id_local) id_mesero,
         ? metodoDePago,
-		x.monto_pagado montoPagado
+		(SELECT SUM(oc.subTotal)
+		  FROM 
+		  	ordersCompart oc
+		  WHERE 
+		  	oc.id_usuarioActivo = x.id_usuario
+		    AND
+		    oc.estado = 2
+		) montoPagado,
+        x.id_mesa
     FROM
         (SELECT 
             ua.id_usuario,

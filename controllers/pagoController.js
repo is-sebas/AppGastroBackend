@@ -70,21 +70,6 @@ module.exports = {
             const ordenes = (await Promise.all(ordenesPromises)).filter(Boolean);
             console.log("Datos de las órdenes", ordenes);
 
-            // 4. Actualizamos el monto a pagar en la tabla usuariosActivos:
-            for (const orderGroup of ordenes) {
-                for (const order of orderGroup) {
-                    UsuariosActivos.updateMontoPagado(order.subTotal, order.id_usuarioActivo, order.id_mesa, (err, id_data) => {
-                        if (err) {
-                            return res.status(501).json({
-                                success: false,
-                                message: 'Hubo un error con la actualización del monto pagado',
-                                error: err
-                            });
-                        }
-                    });
-                }
-            }
-
             async function obtenerDatosPago(metodoDePago, idUsuarioActivo, idMesa) {
                 return new Promise((resolve, reject) => {
                     UsuariosActivos.getDatosPago(metodoDePago, idUsuarioActivo, idMesa, (err, data) => {
@@ -135,8 +120,33 @@ module.exports = {
 
             console.log("Datos del Pago filtrados: ", datosPagoFiltrados);
 
+            // 6. Actualizamos el monto a pagar en la tabla usuariosActivos:
+            for (const pago of datosPagoFiltrados) {
+                // Desestructurar el objeto de pago para acceder a sus propiedades individuales
+                const {
+                    id_cliente,
+                    id_mesa,
+                    montoPagado
+                } = pago[0];
 
-            // 6. Insertamos los logs del pago:
+                // Llamar a UsuariosAcitos.updateMontoPagado con cada objeto de pago
+                await new Promise((resolve, reject) => {
+                    console.log("montoPagado: ", montoPagado);
+                    UsuariosActivos.updateMontoPagado(montoPagado, id_cliente, id_mesa, (err, id_data) => {
+                        if (err) {
+                            return res.status(501).json({
+                                success: false,
+                                message: 'Hubo un error con la actualización del monto pagado',
+                                error: err
+                            });
+                        }
+                        // Si todo está bien, resolvemos la promesa
+                        resolve();
+                    });
+                });
+            }
+
+            // 7. Insertamos los logs del pago:
 
             // Llamar a la función para procesar los pagos
             procesarPagos(datosPagoFiltrados);
