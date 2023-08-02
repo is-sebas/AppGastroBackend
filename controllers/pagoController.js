@@ -1,8 +1,6 @@
 const Pago = require('../models/pago');
 const OrdersCompart = require('../models/ordersCompart');
-const Order = require('../models/order');
 const UsuariosActivos = require('../models/usuariosActivos');
-const Mesas = require('../models/mesas');
 const _ = require('lodash');
 
 module.exports = {
@@ -71,21 +69,6 @@ module.exports = {
             // Filtramos las promesas duplicadas y esperamos a que todas las promesas se resuelvan
             const ordenes = (await Promise.all(ordenesPromises)).filter(Boolean);
             console.log("Datos de las órdenes", ordenes);
-
-            // 3. Actualizamos el estado de orders:
-            for (const orderGroup of ordenes) {
-                for (const order of orderGroup) {
-                    Order.updateEstado(order.OrdersID, "PAGADO", (err, id_data) => {
-                        if (err) {
-                            return res.status(501).json({
-                                success: false,
-                                message: 'Hubo un error con la actualización del estado de la orden',
-                                error: err
-                            });
-                        }
-                    });
-                }
-            }
 
             // 4. Actualizamos el monto a pagar en la tabla usuariosActivos:
             for (const orderGroup of ordenes) {

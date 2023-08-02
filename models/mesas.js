@@ -258,7 +258,6 @@ Mesas.updatePago = (mesas, result) => {
     SET
         mesa_estado = ?,  
         total_cancelado = ?,
-        propina = ?,
         pagado = ?,
         mesa_fecha_cierre = ?
     WHERE
