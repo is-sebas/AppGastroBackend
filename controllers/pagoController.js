@@ -195,5 +195,36 @@ module.exports = {
                 error: error
             });
         }
+    },
+
+    async cierreMesa(req, res) {
+        const id_mesa = req.params.id_mesa;
+
+        try {
+
+            // 1. Verificamos si la mesa cumple la condición para liberar la operación:
+            OrdersCompart.getCumpleCondicion(id_mesa, (err, id_data) => {
+                if (err) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al obtener los datos de las ordenes compartidas',
+                        error: err
+                    });
+                }
+            });
+              
+            return res.status(200).json({
+                success: true,
+                message: 'Cierre de mesa realizado correctamente',
+                data: datos
+            });
+
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Hubo un error al realizar el cierre de la mesa',
+                error: error
+            });
+        }
     }
 }

@@ -125,4 +125,37 @@ OrdersCompart.getOrdenes = (id, result) => {
     );
 }
 
+OrdersCompart.getCumpleCondicion = (id_mesa, result) => {
+    const sql = `
+    SELECT 
+        OrdersID,
+        CASE
+            WHEN COUNT(*) = SUM(CASE WHEN estado = 2 THEN 1 ELSE 0 END) THEN 'SI'
+            ELSE 'NO'
+        END AS cumple_condicion,
+        sum(subTotal) totalCancelado
+    FROM 
+        ordersCompart
+    WHERE 
+        id_mesa = ?
+    GROUP BY 
+        OrdersID
+    `;
+
+    db.query(
+        sql,
+        [id_mesa],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Listado de ordenes por condición:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
 module.exports = OrdersCompart;
