@@ -1,6 +1,8 @@
 const Pago = require('../models/pago');
 const OrdersCompart = require('../models/ordersCompart');
 const UsuariosActivos = require('../models/usuariosActivos');
+const Order = require('../models/order');
+const Mesas = require('../models/mesas');
 const _ = require('lodash');
 
 module.exports = {
@@ -200,31 +202,70 @@ module.exports = {
     async cierreMesa(req, res) {
         const id_mesa = req.params.id_mesa;
 
-        try {
+        // 1. Verificamos si la mesa cumple la condición para liberar la operación:
+        const datos = await new Promise((resolve, reject) => {
+            OrdersCompart.getCumpleCondicion(id_mesa, (err, data) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(data);
+            });
+        });
 
-            // 1. Verificamos si la mesa cumple la condición para liberar la operación:
-            OrdersCompart.getCumpleCondicion(id_mesa, (err, id_data) => {
+        // Filtrar los datos que cumplan con la condición 'SI'
+        const datosSiCumplen = datos.filter(item => item.cumple_condicion === 'SI');
+
+        console.log('datosSiCumplen: ',datosSiCumplen);
+        // Validar si todos los registros tienen cumple_condicion igual a 'SI'
+        const todosCumplenCondicion = datosSiCumplen.length === datos.length;
+
+        // Procesar los datos que cumplen la condición
+        for (const data of datosSiCumplen) {
+            Order.updateEstado(data.OrdersID, 'PAGADO', (err, datos) => {
                 if (err) {
                     return res.status(501).json({
                         success: false,
-                        message: 'Hubo un error al obtener los datos de las ordenes compartidas',
+                        message: 'Hubo un error al actualizar el estado de la orden',
                         error: err
                     });
                 }
             });
-              
-            return res.status(200).json({
-                success: true,
-                message: 'Cierre de mesa realizado correctamente',
-                data: datos
+        }
+
+        if (todosCumplenCondicion == true)
+        {
+            //Obtenemos los datos del pago de la mesa:
+            const datosPagoMesa = await new Promise((resolve) => {
+                Mesas.datosPago(id_mesa, (err, data) => {
+                    if (err) {
+                        return res.status(501).json({
+                            success: false,
+                            message: 'Hubo un error al obtener los datos del pago de la mesa',
+                            error: err
+                        });
+                    }
+                    resolve(data);
+                });
             });
 
-        } catch (error) {
-            return res.status(501).json({
-                success: false,
-                message: 'Hubo un error al realizar el cierre de la mesa',
-                error: error
+            console.log('datosPagoMesa: ', datosPagoMesa);
+            // Procesar los datos que cumplen la condición
+            Mesas.updatePago(datosPagoMesa, (err) => {
+                if (err) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al actualizar el estado de la orden',
+                        error: err
+                    });
+                }
             });
         }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Proceso realizado correctamente',
+            todosCumplenCondicion: todosCumplenCondicion,
+            data: datos
+        });
     }
 }

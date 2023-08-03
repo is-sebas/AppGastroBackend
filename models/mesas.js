@@ -263,28 +263,62 @@ Mesas.updatePago = (mesas, result) => {
     WHERE
         id_mesa = ?
     `;
+    
+    // Recorrer cada registro de mesa en el objeto 'mesas'
+    for (const registro of mesas) {
+        db.query(
+            sql, 
+            [
+                registro.mesa_estado,
+                registro.total_cancelado,
+                registro.pagado,
+                new Date(),
+                registro.id_mesa
+            ],
+            (err, res) => {
+                if (err) {
+                    console.log('Error:', err);
+                    result(err, null);
+                }
+                else {
+                    console.log('Datos del pago de la mesa actualizado:', registro.id_mesa);
+                    result(null, mesas.id_mesa);
+                }
+            }
+        )
+    }
+}
+
+Mesas.datosPago = (id_mesa, result) => {
+    const sql = `
+    SELECT 
+        2 mesa_estado,
+        sum(subTotal) total_cancelado,
+        'SI' pagado,
+        ? id_mesa
+    FROM 
+        ordersCompart
+    WHERE 
+        id_mesa = ?
+    `;
+
+    // Convierte id_mesa a número usando el operador +
+    const idMesaNumber = +id_mesa;
 
     db.query(
-        sql, 
-        [
-            mesas.mesa_estado,
-            mesas.total_cancelado,
-            mesas.propina,
-            mesas.pagado,
-            new Date(),
-            mesas.id_mesa
-        ],
+        sql,
+        [idMesaNumber, idMesaNumber],
         (err, res) => {
             if (err) {
                 console.log('Error:', err);
                 result(err, null);
             }
             else {
-                console.log('Datos del pago de la mesa actualizado:', mesas.id_mesa);
-                result(null, mesas.id_mesa);
+                console.log('Datos del pago de la mesa obtenida:', res);
+                result(null, res);
             }
         }
-    )
+    );
 }
 
 module.exports = Mesas;

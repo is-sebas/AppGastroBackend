@@ -134,5 +134,21 @@ module.exports = {
                 data: data
             });
         })
+    },
+
+    async datosPago(req, res) {
+        const id_mesa = req.params.id_mesa;
+
+        Mesas.datosPago(id_mesa, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de obtener los datos del pago de la mesa',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
     }
 }

@@ -132,8 +132,7 @@ OrdersCompart.getCumpleCondicion = (id_mesa, result) => {
         CASE
             WHEN COUNT(*) = SUM(CASE WHEN estado = 2 THEN 1 ELSE 0 END) THEN 'SI'
             ELSE 'NO'
-        END AS cumple_condicion,
-        sum(subTotal) totalCancelado
+        END AS cumple_condicion
     FROM 
         ordersCompart
     WHERE 
