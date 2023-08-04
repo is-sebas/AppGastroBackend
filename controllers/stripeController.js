@@ -2,6 +2,8 @@ const Order = require('../models/order');
 const OrderHasProducts = require('../models/order_has_products');
 const Stripe = require('stripe');
 const stripe = new Stripe('sk_test_51N8s6BLtL5Hr4HtECNY6cvwUNG5vnVjUGCKptsgqlFlpzvERHoZ2BiQe4lupfUwlf75OOFXbMOK9hJ8SP9cbjooN00tt2jWySB');
+const Pago = require('../models/pago');
+const OrdersCompart = require('../models/ordersCompart');
 
 module.exports = {
     async createPayment(req, res) {
@@ -29,18 +31,33 @@ module.exports = {
                                 error: err
                             });
                         }
-            
-                        for (const product of order.products) {
-                            await OrderHasProducts.create(id, product.id, product.quantity, (err, id_data) => {
+                    
+                        console.log("Id generado: ", id);
+
+                        //Obtenemos los datos para procesar el pago de ordersCompart:
+                        const datosPagoOrderCompart = await new Promise((resolve) => {
+                            OrdersCompart.getDatosPago(id, (err, data) => {
                                 if (err) {
                                     return res.status(501).json({
                                         success: false,
-                                        message: 'Hubo un error con la creacion de los productos en la orden',
+                                        message: 'Hubo un error al obtener los datos del pago de la mesa',
                                         error: err
                                     });
                                 }
+                                resolve(data);
                             });
-                        }
+                        });
+                    
+                        //Realizamos el llamado al endpoind para procesar el pago:
+                        Pago.procesarPago(datosPagoOrderCompart, (err) => {
+                            if (err) {
+                                return res.status(501).json({
+                                    success: false,
+                                    message: 'Hubo un error al procesar el pago',
+                                    error: err
+                                });
+                            }
+                        });
             
                         return res.status(201).json({
                             success: true,

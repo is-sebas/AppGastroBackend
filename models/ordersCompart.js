@@ -157,4 +157,31 @@ OrdersCompart.getCumpleCondicion = (id_mesa, result) => {
     );
 }
 
+OrdersCompart.getDatosPago = (OrderID, result) => {
+    const sql = `
+    SELECT
+        oc.id id_order_compart,
+        'Online' metododepago
+    FROM 
+        ordersCompart oc
+    WHERE
+        oc.OrdersID = ?
+    `;
+
+    db.query(
+        sql,
+        [OrderID],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Listado de ordenes compartidas para el pago:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
 module.exports = OrdersCompart;

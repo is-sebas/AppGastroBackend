@@ -92,6 +92,22 @@ module.exports = {
 
             return res.status(200).json(data);
         });
+    },
+
+    async getDatosPago(req, res) {
+        const OrderID = req.params.OrderID;
+
+        OrdersCompart.getDatosPago(OrderID, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de obtener los datos del pago',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
     }
 
 }

@@ -8,4 +8,5 @@ module.exports = (app, upload) => {
     app.put('/api/ordersCompart/updateEstado/:id/:estado',  passport.authenticate('jwt', { session: false }), ordersCompartController.updateEstado);
     app.get('/api/ordersCompart/getOrdenes/:id',  passport.authenticate('jwt', { session: false }), ordersCompartController.getOrdenes);
     app.get('/api/ordersCompart/getCumpleCondicion/:id_mesa',  passport.authenticate('jwt', { session: false }), ordersCompartController.getCumpleCondicion);
+    app.get('/api/ordersCompart/getDatosPago/:OrderID',  passport.authenticate('jwt', { session: false }), ordersCompartController.getDatosPago);    
 }
