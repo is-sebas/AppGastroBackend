@@ -8,12 +8,15 @@ const OrdersCompart = require('../models/ordersCompart');
 module.exports = {
     async createPayment(req, res) {
         const data = req.body;
-        const order = data.order;
+        const order_compart = data.order_compart;
 
         try {
+            console.log('data.amount: ',data.amount);
+            console.log('data.id: ',data.id);
+
             const payment = await stripe.paymentIntents.create({
                 amount: data.amount,
-                currency: 'USD',
+                currency: 'PYG',
                 description: 'Compra en Ecommerce gastroapp',
                 payment_method: data.id, //token
                 confirm: true
@@ -22,49 +25,22 @@ module.exports = {
 
             if (payment !== null && payment !== undefined) {
                 if (payment.status === 'succeeded') {
-                    Order.create(order, async (err, id) => {
 
+                    //Realizamos el llamado al endpoind para procesar el pago:
+                    Pago.procesarPago(order_compart, (err) => {
                         if (err) {
                             return res.status(501).json({
                                 success: false,
-                                message: 'Hubo un error al momento de crear la orden',
+                                message: 'Hubo un error al procesar el pago',
                                 error: err
                             });
                         }
-                    
-                        console.log("Id generado: ", id);
-
-                        //Obtenemos los datos para procesar el pago de ordersCompart:
-                        const datosPagoOrderCompart = await new Promise((resolve) => {
-                            OrdersCompart.getDatosPago(id, (err, data) => {
-                                if (err) {
-                                    return res.status(501).json({
-                                        success: false,
-                                        message: 'Hubo un error al obtener los datos del pago de la mesa',
-                                        error: err
-                                    });
-                                }
-                                resolve(data);
-                            });
-                        });
-                    
-                        //Realizamos el llamado al endpoind para procesar el pago:
-                        Pago.procesarPago(datosPagoOrderCompart, (err) => {
-                            if (err) {
-                                return res.status(501).json({
-                                    success: false,
-                                    message: 'Hubo un error al procesar el pago',
-                                    error: err
-                                });
-                            }
-                        });
-            
-                        return res.status(201).json({
-                            success: true,
-                            message: 'Transaccion exitosa, la orden se ha creado correctamente',
-                            data: `${id}` // EL ID DE LA NUEVA ORDEN
-                        });
-            
+                    });
+        
+                    return res.status(201).json({
+                        success: true,
+                        message: 'Transaccion exitosa, la orden se ha creado correctamente',
+                        data: `${id}` // EL ID DE LA NUEVA ORDEN
                     });
                 }
                 else {
