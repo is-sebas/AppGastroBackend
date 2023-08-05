@@ -22,40 +22,41 @@ module.exports = {
                 confirm: true
             });
             console.log('PAYMENT: '+ JSON.stringify(payment, null, 3 ));
+            console.log('payment: ', payment);
+            console.log('payment.status: ', payment.status);
+            //if (payment !== null) {
+            if (payment.status === 'succeeded') {
 
-            if (payment !== null) {
-                if (payment.status === 'succeeded') {
-
-                    //Realizamos el llamado al endpoind para procesar el pago:
-                    Pago.procesarPago(order_compart, (err) => {
-                        if (err) {
-                            return res.status(501).json({
-                                success: false,
-                                message: 'Hubo un error al procesar el pago',
-                                error: err
-                            });
-                        }
-                    });
-        
-                    return res.status(201).json({
-                        success: true,
-                        message: 'Transaccion exitosa, la orden se ha creado correctamente',
-                        data: `${id}` // EL ID DE LA NUEVA ORDEN
-                    });
-                }
-                else {
-                    return res.status(501).json({
-                        success: false,
-                        message: 'No se pudo efectuar la transaccion',
-                    });
-                }
+                //Realizamos el llamado al endpoind para procesar el pago:
+                Pago.procesarPago(order_compart, (err) => {
+                    if (err) {
+                        return res.status(501).json({
+                            success: false,
+                            message: 'Hubo un error al procesar el pago',
+                            error: err
+                        });
+                    }
+                });
+    
+                return res.status(201).json({
+                    success: true,
+                    message: 'Transaccion exitosa, la orden se ha creado correctamente',
+                    data: `${id}` // EL ID DE LA NUEVA ORDEN
+                });
             }
+            else {
+                return res.status(501).json({
+                    success: false,
+                    message: 'No se pudo efectuar la transaccion',
+                });
+            }
+            /*}
             else {
                 return res.status(200).json({
                     success: false,
                     message: 'No se pudo efectuar la transaccion',
                 });
-            }
+            }*/
 
         } catch (error) {
             return res.status(200).json({
