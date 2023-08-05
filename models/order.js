@@ -482,7 +482,8 @@ Order.listaConsumoDetalle = (id_orden, result) => {
                             'estado', CASE WHEN oc.estado = 0 THEN 'Inactivo'
                                         WHEN oc.estado = 1 THEN 'Pendiente'
                                         WHEN oc.estado = 2 THEN 'Pagado'
-                                        ELSE 'Eliminado' END)
+                                        ELSE 'Eliminado' END,
+                            'orderCompart', oc.id)
                     ) AS listado
                 FROM 
                     orders o 
