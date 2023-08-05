@@ -23,7 +23,7 @@ module.exports = {
             });
             console.log('PAYMENT: '+ JSON.stringify(payment, null, 3 ));
 
-            if (payment !== null && payment !== undefined) {
+            if (payment !== null) {
                 if (payment.status === 'succeeded') {
 
                     //Realizamos el llamado al endpoind para procesar el pago:
