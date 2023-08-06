@@ -406,7 +406,6 @@ Order.listaConsumoMesa = (id_mesa, result) => {
 
     const sql = `
             SELECT 	
-                o.status,
                 o.id id_orden,
                 (SELECT u.name AS 'SolicitadoPor'
                 FROM users u
