@@ -360,3 +360,7 @@ CREATE TABLE `pagosLogs` (
   CONSTRAINT `pagosLogs_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `pagosLogs_ibfk_2` FOREIGN KEY (`id_mesero`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE gastro_db.pagosLogs ADD id_mesa BIGINT NULL;
+ALTER TABLE gastro_db.pagosLogs CHANGE id_mesa id_mesa BIGINT NULL AFTER id_mesero;
+ALTER TABLE gastro_db.pagosLogs ADD CONSTRAINT pagosLogs_ibfk_3 FOREIGN KEY (id_mesa) REFERENCES gastro_db.mesas(id_mesa);

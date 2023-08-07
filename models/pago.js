@@ -9,11 +9,12 @@ Pago.create = (pago, result) => {
         pagosLogs(
             id_cliente,
             id_mesero,
+            id_mesa,
             metodoDePago,
             montoPagado,
             fechaPago
         )
-    VALUES(?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, ?)
     `;
 
     // Recorrer cada registro de pago en el objeto 'pago'
@@ -23,6 +24,7 @@ Pago.create = (pago, result) => {
             [
                 registro.id_cliente,
                 registro.id_mesero,
+                registro.id_mesa,
                 registro.metodoDePago,
                 registro.montoPagado,
                 new Date()

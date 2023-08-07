@@ -11,6 +11,8 @@ module.exports = {
 
         const pago = req.body;
 
+        console.log("pago: ", pago);
+                
         Pago.create(pago, async (err, data) => {
 
             if (err) {
