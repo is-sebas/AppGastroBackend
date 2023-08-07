@@ -13,4 +13,5 @@ module.exports = (app, upload) => {
     app.delete('/api/usuariosActivos/delete/:id', passport.authenticate('jwt', {session: false}), usuariosActivosController.delete);
     app.put('/api/usuariosActivos/updateMontoPagado/:monto_pagado/:id_usuario/:id_mesa',  passport.authenticate('jwt', { session: false }), usuariosActivosController.updateMontoPagado);
     app.get('/api/usuariosActivos/getDatosPago/:metodoDePago/:id_usuario/:id_mesa', passport.authenticate('jwt', { session: false }), usuariosActivosController.getDatosPago);
+    app.put('/api/usuariosActivos/updateCierreUser/:id_mesa', passport.authenticate('jwt', {session: false}) , usuariosActivosController.updateCierreUser);
 }

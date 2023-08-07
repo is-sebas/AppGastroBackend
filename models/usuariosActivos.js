@@ -386,4 +386,37 @@ UsuarioActivo.getDatosPago = (metodoDePago, id_usuario, id_mesa, result) => {
     });
   }
 
+  UsuarioActivo.updateCierreUser = (id_mesa, result) => {
+
+    const sql = `
+    UPDATE 
+        usuariosActivos ua
+    SET 
+        ua.estado = 2,
+        ua.salida = ?
+    WHERE
+        ua.id_mesa = ?
+    AND
+        ua.estado = 1
+    `;
+
+    db.query(
+        sql, 
+        [
+            new Date(),
+            id_mesa            
+        ],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Cierre de usuarios activos actualizado correctamente');
+                result(null);
+            }
+        }
+    )
+}  
+
 module.exports = UsuarioActivo;

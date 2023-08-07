@@ -189,4 +189,25 @@ module.exports = {
             return res.status(200).json(data);
         });
     },
+
+    async updateCierreUser(req, res) {
+
+        const id_mesa = req.params.id_mesa;
+
+        UsuariosActivos.updateCierreUser(id_mesa, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error con la actualización del cierre de usuarios activos por mesa',
+                    error: err
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'El cierre de usuarios activos por mesa se actualizo correctamente',
+                data: data
+            });
+        })
+    },
 }

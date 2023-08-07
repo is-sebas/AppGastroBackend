@@ -478,6 +478,18 @@ module.exports = {
                     });
                 }
             });
+
+            // Procesar los datos de usuarios activos
+            UsuariosActivos.updateCierreUser(id_mesa, (err) => {
+                if (err) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al actualizar los datos de usuarios Activos',
+                        error: err
+                    });
+                }
+            });
+
         }
 
         return res.status(200).json({
