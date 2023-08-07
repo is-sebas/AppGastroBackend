@@ -444,12 +444,13 @@ Order.listaConsumoMesa = (id_mesa, result) => {
                 o.id_mesa = m.id_mesa
             WHERE
                 m.id_mesa = ?
-            AND
-                	oc.estado = 1
             GROUP BY
                 o.id, p.name, ohp.quantity,o.status, oc.subTotal 
     `;
-
+/**
+              AND
+                	oc.estado = 1
+ */
     db.query(
         sql,
         [id_mesa],
@@ -470,6 +471,7 @@ Order.listaConsumoDetalle = (id_orden, result) => {
 
     const sql = `
                 SELECT 	
+                    o.status,
                     o.id_client user_id,
                     p.name nombreProducto,
                     ohp.quantity cantidad,
@@ -509,8 +511,6 @@ Order.listaConsumoDetalle = (id_orden, result) => {
                     oc.id_usuarioActivo = u.id
                 WHERE
                     o.id = ?
-                AND
-                	oc.estado = 1
                 GROUP BY
 	                p.name
                 `;
