@@ -174,8 +174,60 @@ module.exports = {
                   console.log('Hubo un error al procesar los pagos:', error);
                 }
               }
-              
-              
+
+            // 8. Procesar las ordenes
+            const datosOrdenes = [];
+            for (const pago of datosPagoFiltrados) {
+                // Desestructurar el objeto de pago para acceder a sus propiedades individuales
+                const {
+                    id_mesa
+                } = pago[0];
+
+                try {
+                    const datos = await obtenerDatosOrdenes(id_mesa);
+                    datosOrdenes.push(datos); // Agregar los datos del pago a la variable datosPago.
+    
+                } catch (error) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al obtener los datos de las ordenes',
+                        error: error
+                    });
+                }
+            }
+
+            async function obtenerDatosOrdenes(idMesa) {
+                return new Promise((resolve, reject) => {
+                   // 1. Verificamos si la mesa cumple la condición para liberar la operación:
+                    OrdersCompart.getCumpleCondicion(idMesa, (err, data) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(data);
+                    });
+                });
+            }
+            
+            console.log('datosOrdenes: ', datosOrdenes);
+
+            // Filtrar los datos que cumplan con la condición 'SI'
+            const datosSiCumplen = datosOrdenes[0].filter(item => item.cumple_condicion === 'SI');
+
+            console.log('datosSiCumplen: ',datosSiCumplen);
+
+            // Procesar los datos que cumplen la condición
+            for (const data of datosSiCumplen) {
+                Order.updateEstado(data.OrdersID, 'PAGADO', (err, datos) => {
+                    if (err) {
+                        return res.status(501).json({
+                            success: false,
+                            message: 'Hubo un error al actualizar el estado de la orden',
+                            error: err
+                        });
+                    }
+                });
+            }
+
             return res.status(200).json({
                 success: true,
                 message: 'Pago procesado correctamente',
@@ -321,6 +373,59 @@ module.exports = {
                 }
               }
 
+            // 8. Procesar las ordenes
+            const datosOrdenes = [];
+            for (const pago of datosPagoFiltrados) {
+                // Desestructurar el objeto de pago para acceder a sus propiedades individuales
+                const {
+                    id_mesa
+                } = pago[0];
+
+                try {
+                    const datos = await obtenerDatosOrdenes(id_mesa);
+                    datosOrdenes.push(datos); // Agregar los datos del pago a la variable datosPago.
+
+                } catch (error) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al obtener los datos de las ordenes',
+                        error: error
+                    });
+                }
+            }
+
+            async function obtenerDatosOrdenes(idMesa) {
+                return new Promise((resolve, reject) => {
+                // 1. Verificamos si la mesa cumple la condición para liberar la operación:
+                    OrdersCompart.getCumpleCondicion(idMesa, (err, data) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(data);
+                    });
+                });
+            }
+
+            console.log('datosOrdenes: ', datosOrdenes);
+
+            // Filtrar los datos que cumplan con la condición 'SI'
+            const datosSiCumplen = datosOrdenes[0].filter(item => item.cumple_condicion === 'SI');
+
+            console.log('datosSiCumplen: ',datosSiCumplen);
+
+            // Procesar los datos que cumplen la condición
+            for (const data of datosSiCumplen) {
+                Order.updateEstado(data.OrdersID, 'PAGADO', (err, datos) => {
+                    if (err) {
+                        return res.status(501).json({
+                            success: false,
+                            message: 'Hubo un error al actualizar el estado de la orden',
+                            error: err
+                        });
+                    }
+                });
+            }
+
         } catch (error) {
             console.log('Hubo un error al procesar los pagos:', error);
         }
@@ -345,19 +450,6 @@ module.exports = {
         console.log('datosSiCumplen: ',datosSiCumplen);
         // Validar si todos los registros tienen cumple_condicion igual a 'SI'
         const todosCumplenCondicion = datosSiCumplen.length === datos.length;
-
-        // Procesar los datos que cumplen la condición
-        for (const data of datosSiCumplen) {
-            Order.updateEstado(data.OrdersID, 'PAGADO', (err, datos) => {
-                if (err) {
-                    return res.status(501).json({
-                        success: false,
-                        message: 'Hubo un error al actualizar el estado de la orden',
-                        error: err
-                    });
-                }
-            });
-        }
 
         if (todosCumplenCondicion == true)
         {
