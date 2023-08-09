@@ -11,4 +11,5 @@ module.exports = (app, upload) => {
     app.get('/api/mesas/GetMesaXQR/:codigoQR',  passport.authenticate('jwt', { session: false }), mesasController.GetMesaXQR);
     app.put('/api/mesas/updatePago', passport.authenticate('jwt', {session: false}) , mesasController.updatePago);
     app.get('/api/mesas/datosPago/:id_mesa',  passport.authenticate('jwt', { session: false }), mesasController.datosPago);
+    app.get('/api/mesas/getDatosMesero/:id_mesero/:fecha_desde/:fecha_hasta',  passport.authenticate('jwt', { session: false }), mesasController.getDatosMesero);
 }
