@@ -182,9 +182,7 @@ SELECT
     FROM
         ordersCompart oc
     WHERE
-        oc.id_mesa = ?
-    AND 
-        oc.id_usuarioActivo = ?) as totalMesa,
+        oc.id_mesa = ? ) as totalMesa,
     (SELECT
         SUM(oc.subTotal) AS totalSum
     FROM
