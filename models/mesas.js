@@ -321,37 +321,4 @@ Mesas.datosPago = (id_mesa, result) => {
     );
 }
 
-Mesas.getDatosMesero = (id_mesero, fecha_desde, fecha_hasta, result) => {
-    const sql = `
-    SELECT  
-        concat(u.name, ' ', u.lastname) Mesero,
-        pl.id_mesa Mesa,
-        pl.fechaPago,
-        pl.montoPagado
-    FROM 
-        pagosLogs pl, users u
-    WHERE 
-        pl.id_mesero = u.id 
-    AND
-        pl.id_mesero = ?
-    AND 
-        date(pl.fechaPago) BETWEEN ? and ?
-    `;
-
-    db.query(
-        sql,
-        [id_mesero, fecha_desde, fecha_hasta],
-        (err, res) => {
-            if (err) {
-                console.log('Error:', err);
-                result(err, null);
-            }
-            else {
-                console.log('Datos del mesero:', res);
-                result(null, res);
-            }
-        }
-    );
-}
-
 module.exports = Mesas;

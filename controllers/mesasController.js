@@ -152,42 +152,4 @@ module.exports = {
             return res.status(200).json(data);
         });
     },
-
-    async getDatosMesero(req, res) {
-        const id_mesero = req.params.id_mesero;
-        const fecha_desde = req.params.fecha_desde;
-        const fecha_hasta = req.params.fecha_hasta;
-    
-        Mesas.getDatosMesero(id_mesero, fecha_desde, fecha_hasta, async (err, data) => {
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error al momento de obtener los datos del mesero',
-                    error: err
-                });
-            }
-    
-            try {
-                // Crear una instancia de PDFGenerator y pasarle los datos
-                const pdfGenerator = new PDFGenerator(data);
-    
-                // Generar el PDF y especificar la ruta de salida
-                const outputFilePath = 'reporte_mesero.pdf';
-                await pdfGenerator.generatePDF(outputFilePath);
-    
-                return res.status(200).json({
-                    success: true,
-                    message: 'PDF generado correctamente',
-                    filePath: outputFilePath
-                });
-            } catch (error) {
-                console.error('Error al generar el PDF:', error);
-                return res.status(500).json({
-                    success: false,
-                    message: 'Error al generar el PDF',
-                    error: error.message
-                });
-            }
-        });
-    }
 }
