@@ -145,7 +145,7 @@ FROM
 			    SELECT 
 			        p.name AS producto,
 			        ohp.quantity AS cantidad,
-			        SUM(p.price * ohp.quantity) AS total_generado
+			        p.price * ohp.quantity AS total_generado
 			    FROM
 			        order_has_products ohp, ordersCompart oc, mesas m, products p
 			    WHERE 
@@ -303,7 +303,7 @@ FROM
 			    SELECT 
 			        p.name AS producto,
 			        ohp.quantity AS cantidad,
-			        SUM(p.price * ohp.quantity) AS total_generado
+			        p.price * ohp.quantity AS total_generado
 			    FROM
 			        order_has_products ohp, ordersCompart oc, mesas m, products p
 			    WHERE 
