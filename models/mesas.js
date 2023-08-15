@@ -225,7 +225,8 @@ Mesas.GetMesaXQR = (codigoQR, result) => {
     SELECT 
 	    m.id_mesa,
 	    m.id_local,
-	    m.mesa_estado
+	    m.mesa_estado,
+	    m.mesa_ubicacion
     FROM 
 	    mesas m 
     WHERE
