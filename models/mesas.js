@@ -147,6 +147,8 @@ Mesas.ListMesas = (id_local, result) => {
         mesas as P
     WHERE 
         P.id_local = ?
+    AND 
+        P.mesa_estado = 1
     `;
 
     db.query(
