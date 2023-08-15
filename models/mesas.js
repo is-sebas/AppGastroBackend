@@ -141,8 +141,8 @@ Mesas.ListMesas = (id_local, result) => {
         P.propina,
         P.pagado,
         CONVERT(P.id_staff, char) AS id_staff,
-        p.mesa_fecha_crea,
-        p.mesa_fecha_cierre
+        P.mesa_fecha_crea,
+        P.mesa_fecha_cierre
     FROM
         mesas as P
     WHERE 
