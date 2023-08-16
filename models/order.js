@@ -13,6 +13,9 @@ Order.findByStatus = (status, result) => {
         O.status,
         O.timestamp,
         O.id_mesa,
+        (SELECT m.mesa_ubicacion  AS 'mesa'
+                FROM mesas m
+                WHERE m.id_mesa  = o.id_mesa) mesa,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
@@ -100,6 +103,9 @@ Order.findByDeliveryAndStatus = (id_delivery, status, result) => {
         O.status,
         O.timestamp,
         O.id_mesa,
+        (SELECT m.mesa_ubicacion  AS 'mesa'
+                FROM mesas m
+                WHERE m.id_mesa  = o.id_mesa) mesa,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
@@ -187,6 +193,9 @@ Order.findByClientAndStatus = (id_client, status, result) => {
         O.status,
         O.timestamp,
         O.id_mesa,
+        (SELECT m.mesa_ubicacion  AS 'mesa'
+                FROM mesas m
+                WHERE m.id_mesa  = o.id_mesa) mesa,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
@@ -322,7 +331,7 @@ Order.updateToDispatched = (id_order, id_delivery, result) => {
         sql, 
         [
             id_delivery,
-            'DESPACHADO',
+            'EN CAMINO',
             new Date(),
             id_order
         ],
@@ -354,7 +363,7 @@ Order.updateToOnTheWay = (id_order, id_delivery, result) => {
         sql, 
         [
             id_delivery,
-            'EN CAMINO',
+            'ENTREGADO',
             new Date(),
             id_order
         ],
@@ -480,7 +489,7 @@ Order.listaConsumoDetalle = (id_orden, result) => {
                         SELECT JSON_ARRAYAGG(
                             JSON_OBJECT(
                                 'id', u.id,
-                                'nombre', u.name,
+                                'nombre', CONCAT(u.name, ' ', u.lastname),
                                 'montoAPagar', oc.subTotal,
                                 'estado', CASE
                                     WHEN oc.estado = 0 THEN 'Inactivo'
