@@ -38,9 +38,10 @@ Category.create = (category, result) => {
             description,
             image,
             created_at,
-            updated_at
+            updated_at,
+            id_local
         )
-    VALUES(?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, 1)
     `;
 
     db.query(
