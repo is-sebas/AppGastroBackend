@@ -113,7 +113,8 @@ FROM
 	    CONCAT(
 	        '[',
 	        GROUP_CONCAT(
-	            '{"id_mesa":', m.id_mesa, 
+	            '{"id_mesa":', m.id_mesa,
+				',"nombre_mesa":"', m.mesa_ubicacion,'"' 
 	            ',"mesero":"', REPLACE(CONCAT(u2.name, ' ', u2.lastname), '"', '\\"'), 
 	            '","estado":"',
 	            CASE WHEN m.mesa_estado = 1 THEN 'Activo' ELSE 'Cerrado' END,
@@ -271,7 +272,8 @@ FROM
 	    CONCAT(
 	        '[',
 	        GROUP_CONCAT(
-	            '{"id_mesa":', m.id_mesa, 
+	            '{"id_mesa":', m.id_mesa,
+				',"nombre_mesa":"', m.mesa_ubicacion,'"'
 	            ',"mesero":"', REPLACE(CONCAT(u2.name, ' ', u2.lastname), '"', '\\"'), 
 	            '","estado":"',
 	            CASE WHEN m.mesa_estado = 1 THEN 'Activo' ELSE 'Cerrado' END,
