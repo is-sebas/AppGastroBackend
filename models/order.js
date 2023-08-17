@@ -16,6 +16,9 @@ Order.findByStatus = (status, result) => {
         (SELECT m.mesa_ubicacion  AS 'mesa'
                 FROM mesas m
                 WHERE m.id_mesa  = o.id_mesa) mesa,
+        (SELECT m.id_local  AS 'local'
+                FROM mesas m
+                WHERE m.id_mesa  = o.id_mesa) local,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
@@ -106,6 +109,9 @@ Order.findByDeliveryAndStatus = (id_delivery, status, result) => {
         (SELECT m.mesa_ubicacion  AS 'mesa'
                 FROM mesas m
                 WHERE m.id_mesa  = o.id_mesa) mesa,
+        (SELECT m.id_local  AS 'local'
+                FROM mesas m
+                WHERE m.id_mesa  = o.id_mesa) local,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
@@ -196,6 +202,9 @@ Order.findByClientAndStatus = (id_client, status, result) => {
         (SELECT m.mesa_ubicacion  AS 'mesa'
                 FROM mesas m
                 WHERE m.id_mesa  = o.id_mesa) mesa,
+        (SELECT m.id_local  AS 'local'
+                FROM mesas m
+                WHERE m.id_mesa  = o.id_mesa) local,
         JSON_OBJECT(
             'id', CONVERT(A.id, char),
             'address', A.address,
