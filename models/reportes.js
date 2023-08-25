@@ -72,19 +72,19 @@ FROM
 	  AND 	
 	    m.pagado = 'SI') TABLA_1,
 	(SELECT 
-		COUNT(DISTINCT m.id_mesa) AS total_mesas_abiertas,
-		SUM(oc.subTotal) total_pendiente_cobro
-	FROM
-		mesas m,
-		ordersCompart oc
-	WHERE
-		m.id_mesa = oc.id_mesa
-	  AND 
-	    m.id_local = ?
-	  AND 
-		DATE(m.mesa_fecha_crea) = DATE(CONVERT_TZ(NOW(),'UTC','America/Asuncion'))
-      AND 	
-	    m.pagado = 'NO') TABLA_2,
+			COUNT(m.id_mesa) AS total_mesas_abiertas,
+		(SELECT SUM(oc.subTotal) 
+			 FROM ordersCompart oc
+			  WHERE oc.id_mesa = id_mesa) total_pendiente_cobro
+		FROM
+			mesas m
+		WHERE
+			m.id_local = ?
+		  AND 
+			DATE(m.mesa_fecha_crea) = DATE(CONVERT_TZ(NOW(),'UTC','America/Asuncion'))
+		  AND   
+			m.pagado = 'NO'
+	GROUP BY m.id_mesa) TABLA_2,
 	 (SELECT
 		(SELECT
 			concat(u.name, ' ', u.lastname, ' - correo: ', u.email)
@@ -113,7 +113,8 @@ FROM
 	    CONCAT(
 	        '[',
 	        GROUP_CONCAT(
-	            '{"id_mesa":', m.id_mesa, 
+	            '{"id_mesa":', m.id_mesa,
+				',"nombre_mesa":"', m.mesa_ubicacion,'"' 
 	            ',"mesero":"', REPLACE(CONCAT(u2.name, ' ', u2.lastname), '"', '\\"'), 
 	            '","estado":"',
 	            CASE WHEN m.mesa_estado = 1 THEN 'Activo' ELSE 'Cerrado' END,
@@ -229,20 +230,20 @@ FROM
 		DATE(m.mesa_fecha_crea) BETWEEN ? and ?
 	  AND 	
 	    m.pagado = 'SI') TABLA_1,
-	(SELECT 
-		COUNT(DISTINCT m.id_mesa) AS total_mesas_abiertas,
-		SUM(oc.subTotal) total_pendiente_cobro
-	FROM
-		mesas m,
-		ordersCompart oc
-	WHERE
-		m.id_mesa = oc.id_mesa
-	  AND 
-	    m.id_local = ?
-	  AND 
-        DATE(m.mesa_fecha_crea) BETWEEN ? and ?
-      AND 	
-	    m.pagado = 'NO') TABLA_2,
+		(SELECT 
+			COUNT(DISTINCT m.id_mesa) AS total_mesas_abiertas,
+			(SELECT SUM(oc.subTotal) 
+			 FROM ordersCompart oc
+			  WHERE oc.id_mesa = id_mesa) total_pendiente_cobro
+		FROM
+			mesas m
+		WHERE
+			m.id_local = ?
+		  AND 
+			DATE(m.mesa_fecha_crea) BETWEEN ? and ?
+		  AND 	
+			m.pagado = 'NO'
+	GROUP BY m.id_mesa) TABLA_2,
 	 (SELECT
 		(SELECT
 			concat(u.name, ' ', u.lastname, ' - correo: ', u.email)
@@ -271,7 +272,8 @@ FROM
 	    CONCAT(
 	        '[',
 	        GROUP_CONCAT(
-	            '{"id_mesa":', m.id_mesa, 
+	            '{"id_mesa":', m.id_mesa,
+				',"nombre_mesa":"', m.mesa_ubicacion,'"'
 	            ',"mesero":"', REPLACE(CONCAT(u2.name, ' ', u2.lastname), '"', '\\"'), 
 	            '","estado":"',
 	            CASE WHEN m.mesa_estado = 1 THEN 'Activo' ELSE 'Cerrado' END,

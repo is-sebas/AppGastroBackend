@@ -12,8 +12,7 @@ Product.findByCategory = (id_category, result) => {
         P.image1,
         P.image2,
         P.image3,
-        CONVERT(P.id_category, char) AS id_category,
-        P.stock
+        CONVERT(P.id_category, char) AS id_category
     FROM
         products as P
     WHERE 
@@ -48,11 +47,10 @@ Product.create = (product, result) => {
             image2,
             image3,
             id_category,
-            stock,
             created_at,
             updated_at   
         )
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
@@ -65,7 +63,6 @@ Product.create = (product, result) => {
             product.image2,
             product.image3,
             product.id_category,
-            product.stock,
             new Date(),
             new Date(),
         ],
@@ -98,7 +95,6 @@ Product.update = (product, result) => {
         image2 = ?,
         image3 = ?,
         id_category = ?,
-        stock = ?,
         updated_at = ?
     WHERE
         id = ?
@@ -114,7 +110,6 @@ Product.update = (product, result) => {
             product.image2,
             product.image3,
             product.id_category,
-            product.stock,
             new Date(),
             product.id
         ],
