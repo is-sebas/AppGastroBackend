@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-enviarMail = async ()=> {
+enviarMail = async (destinatario, htmlContent)=> {
     const config = {
         host : 'smtp.gmail.com',
         port : 587,
@@ -12,9 +12,9 @@ enviarMail = async ()=> {
 
     const mensaje = {
         from    : 'appgastrogastro@gmail.com',
-        to      : 'ricardojaviergonzalezbraga@gmail.com',
-        subject : 'Correo de pruebas',
-        text    : 'Envio de correo app gastro'
+        to      : destinatario,
+        subject : 'Comprobante de Pago - AppGastro',
+        html    : htmlContent
     }
 
     const transport = nodemailer.createTransport(config);
@@ -24,4 +24,4 @@ enviarMail = async ()=> {
     console.log(info);
 }
 
-enviarMail();
+module.exports = enviarMail;
