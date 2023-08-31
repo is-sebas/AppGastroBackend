@@ -78,7 +78,7 @@ class generadorFactura {
       </head>
       <body>
           <div class="encabezado">
-              <h1>Factura</h1>
+              <h1>Factura - AppGastro</h1>
               <p>Número de Factura: 12345</p>
               <p>Fecha: 31/08/2023</p>
           </div>
