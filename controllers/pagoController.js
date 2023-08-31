@@ -4,6 +4,8 @@ const UsuariosActivos = require('../models/usuariosActivos');
 const Order = require('../models/order');
 const Mesas = require('../models/mesas');
 const _ = require('lodash');
+const GeneradorFactura = require('../utils/generadorFactura');
+const EnviarMail = require('../utils/sendEmail');
 
 module.exports = {
 
@@ -230,6 +232,29 @@ module.exports = {
                 });
             }
 
+            //Generación de HTML:
+            const generador = new GeneradorFactura();
+            const cliente = 'Ricardo Javier Gonzalez Braga';
+            const ruc = '4163559-0';
+            const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
+            const telefono = '0995368295';
+            const productos = [
+              { nombre: 'Gaseosa - Coca Cola', cantidad: 2, precioUnitario: '10,000' },
+              { nombre: 'Hamburguesas Completa', cantidad: 3, precioUnitario: '15,000' },
+              { nombre: 'Cervezas Pilsen', cantidad: 1, precioUnitario: '20,000' },
+            ];
+            
+            const rutaArchivo = 'factura.html';
+            
+            var facturaHTML = generador.generarFacturaHTML(cliente, ruc, direccion, telefono, productos, rutaArchivo);
+            console.log('Factura generada', facturaHTML);
+
+            //Enviar correo:
+            const destinatario = 'sagz94@outlook.com';
+            const htmlContent = facturaHTML;
+
+            EnviarMail.enviarMail(destinatario, htmlContent);
+
             return res.status(200).json({
                 success: true,
                 message: 'Pago procesado correctamente',
@@ -427,6 +452,27 @@ module.exports = {
                     }
                 });
             }
+
+            //Generación de HTML:
+            const generador = new GeneradorFactura();
+            const cliente = 'Ricardo Javier Gonzalez Braga';
+            const ruc = '4163559-0';
+            const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
+            const telefono = '0995368295';
+            const productos = [
+                { nombre: 'Gaseosa - Coca Cola', cantidad: 2, precioUnitario: '10,000' },
+                { nombre: 'Hamburguesas Completa', cantidad: 3, precioUnitario: '15,000' },
+                { nombre: 'Cervezas Pilsen', cantidad: 1, precioUnitario: '20,000' },
+            ];
+            
+            const rutaArchivo = 'factura.html';
+            
+            var facturaHTML = generador.generarFacturaHTML(cliente, ruc, direccion, telefono, productos, rutaArchivo);
+            console.log('Factura generada', facturaHTML);
+
+            //Enviar correo:
+            const destinatario = 'sagz94@outlook.com';
+            const htmlContent = facturaHTML;
 
         } catch (error) {
             console.log('Hubo un error al procesar los pagos:', error);
