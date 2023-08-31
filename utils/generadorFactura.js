@@ -85,8 +85,8 @@ class generadorFactura {
 
           <div class="cliente">
               <h2>Información del Cliente</h2>
-              <p>RUC: ${ruc}</p>
               <p>Nombre: ${cliente}</p>
+              <p>RUC: ${ruc}</p>
               <p>Dirección: ${direccion}</p>
               <p>Teléfono: ${telefono}</p>
           </div>
