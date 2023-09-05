@@ -364,3 +364,13 @@ CREATE TABLE `pagosLogs` (
 ALTER TABLE gastro_db.pagosLogs ADD id_mesa BIGINT NULL;
 ALTER TABLE gastro_db.pagosLogs CHANGE id_mesa id_mesa BIGINT NULL AFTER id_mesero;
 ALTER TABLE gastro_db.pagosLogs ADD CONSTRAINT pagosLogs_ibfk_3 FOREIGN KEY (id_mesa) REFERENCES gastro_db.mesas(id_mesa);
+
+------------------------------------------------------------------------------------------------------------------
+-- Alter tabla: "users"
+-- Se agregan las columnas: denominacion - ruc
+ALTER TABLE gastro_db.users ADD denominacion varchar(100) NULL;
+ALTER TABLE gastro_db.users CHANGE denominacion denominacion varchar(100) NULL AFTER lastname;
+ALTER TABLE gastro_db.users ADD ruc varchar(20) NULL;
+ALTER TABLE gastro_db.users CHANGE ruc ruc varchar(20) NULL AFTER denominacion;
+
+

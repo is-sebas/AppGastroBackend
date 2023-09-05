@@ -190,7 +190,9 @@ User.update = (user, result) => {
         lastname = ?,
         phone = ?,
         image = ?,
-        updated_at = ?
+        updated_at = ?,
+        denominacion = ?,
+        ruc = ?
     WHERE
         id = ?
     `;

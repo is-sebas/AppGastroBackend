@@ -232,10 +232,21 @@ module.exports = {
                 });
             }
 
+            // 1. Buscar y obtener los datos de facturación
+            const datosFactura = datos.find(item => item.datosFactura);
+
+            if (!datosFactura) {
+            return res.status(400).json({
+                success: false,
+                message: 'No se encontraron datos de facturación en la solicitud.',
+            });
+            }
+
+            const { denominacion, ruc, destinatario } = datosFactura.datosFactura[0];
             //Generación de HTML:
             const generador = new GeneradorFactura();
-            const cliente = 'Ricardo Javier Gonzalez Braga';
-            const ruc = '4163559-0';
+            //const cliente = 'Ricardo Javier Gonzalez Braga';
+            //const ruc = '4163559-0';
             const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
             const telefono = '0995368295';
             const productos = [
@@ -246,11 +257,11 @@ module.exports = {
             
             const rutaArchivo = 'factura.html';
             
-            var facturaHTML = generador.generarFacturaHTML(cliente, ruc, direccion, telefono, productos, rutaArchivo);
+            var facturaHTML = generador.generarFacturaHTML(denominacion, ruc, direccion, telefono, productos, rutaArchivo);
             console.log('Factura generada', facturaHTML);
 
             //Enviar correo:
-            const destinatario = 'sagz94@outlook.com';
+            //const destinatario = 'sagz94@outlook.com';
             const htmlContent = facturaHTML;
 
             EnviarMail.enviarMail(destinatario, htmlContent);
