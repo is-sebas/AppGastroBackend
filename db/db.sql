@@ -374,3 +374,36 @@ ALTER TABLE gastro_db.users ADD ruc varchar(20) NULL;
 ALTER TABLE gastro_db.users CHANGE ruc ruc varchar(20) NULL AFTER denominacion;
 
 
+------
+SELECT JSON_ARRAYAGG(
+    JSON_OBJECT(
+        'nombre', p.name,
+        'cantidad', cantidad, 
+        'precioUnitario', p.price
+    )
+) AS Productos
+FROM 
+    orders o 
+INNER JOIN
+    order_has_products ohp 
+ON
+    o.id = ohp.id_order
+INNER JOIN
+    usuariosActivos ua 
+ON
+    o.id_client = ua.id_usuario
+INNER JOIN
+    products p 
+ON
+    ohp.id_product = p.id 
+INNER JOIN 
+    ordersCompart oc 
+ON
+    o.id = oc.OrdersID 
+AND oc.OrdersID = 54 
+LEFT JOIN (
+    SELECT ohp.id_product, COUNT(*) as cantidad
+    FROM order_has_products ohp
+    GROUP BY ohp.id_product
+) subquery
+ON p.id = subquery.id_product;
