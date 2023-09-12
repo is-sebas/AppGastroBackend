@@ -407,3 +407,23 @@ LEFT JOIN (
     GROUP BY ohp.id_product
 ) subquery
 ON p.id = subquery.id_product;
+
+
+----------------
+SELECT JSON_ARRAYAGG(
+    JSON_OBJECT(
+        'nombre', p.name,
+        'cantidad', subquery.cantidad,
+        'precioUnitario', p.price
+    )
+) AS Productos
+FROM products p
+JOIN (
+    SELECT ohp.id_product, COUNT(*) AS cantidad, p.name, p.price
+    FROM orders o
+    JOIN order_has_products ohp ON o.id = ohp.id_order
+    JOIN usuariosActivos ua ON o.id_client = ua.id_usuario
+    JOIN ordersCompart oc ON o.id = oc.OrdersID
+    JOIN products p ON ohp.id_product = p.id
+    GROUP BY ohp.id_product, p.name, p.price
+) subquery ON p.id = subquery.id_product;
