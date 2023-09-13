@@ -13,6 +13,8 @@ User.findById = (id, result) => {
     U.image,
     U.phone,
     U.password,
+    U.denominacion,
+    U.ruc,
     JSON_ARRAYAGG(
         JSON_OBJECT(
             'id', CONVERT(R.id, char),
@@ -62,7 +64,9 @@ User.findDeliveryMen = (result) => {
         U.name,
         U.lastname,
         U.image,
-        U.phone
+        U.phone,
+        U.denominacion,
+        U.ruc
     FROM
         users AS U
     INNER JOIN
@@ -97,6 +101,8 @@ User.findByEmail = (email, result) => {
   U.image,
   U.phone,
   U.password,
+  U.denominacion,
+  U.ruc,
   JSON_ARRAYAGG(
       JSON_OBJECT(
           'id', CONVERT(R.id, char),
@@ -190,16 +196,16 @@ User.update = (user, result) => {
         lastname = ?,
         phone = ?,
         image = ?,
-        updated_at = ?,
         denominacion = ?,
-        ruc = ?
+        ruc = ?,
+        updated_at = ?
     WHERE
         id = ?
     `;
 
   db.query(
     sql,
-    [user.name, user.lastname, user.phone, user.image, new Date(), user.id],
+    [user.name, user.lastname, user.phone, user.image, user.denominacion, user.ruc, new Date(), user.id],
     (err, res) => {
       if (err) {
         console.log("Error:", err);
@@ -220,6 +226,8 @@ User.updateWithoutImage = (user, result) => {
         name = ?,
         lastname = ?,
         phone = ?,
+        denominacion = ?,
+        ruc = ?,
         updated_at = ?
     WHERE
         id = ?
@@ -227,7 +235,7 @@ User.updateWithoutImage = (user, result) => {
 
   db.query(
     sql,
-    [user.name, user.lastname, user.phone, new Date(), user.id],
+    [user.name, user.lastname, user.phone, user.denominacion, user.ruc, new Date(), user.id],
     (err, res) => {
       if (err) {
         console.log("Error:", err);

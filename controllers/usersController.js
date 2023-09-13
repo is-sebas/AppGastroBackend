@@ -56,6 +56,8 @@ module.exports = {
                     email: myUser.email,
                     phone: myUser.phone,
                     image: myUser.image,
+                    denominacion: myUser.denominacion,
+                    ruc: myUser.ruc,
                     session_token: `JWT ${token}`,
                     //roles: JSON.parse(myUser.roles)
                     roles: myUser.roles

@@ -80,7 +80,7 @@ pago(app, upload);
 reportes(app, upload);
 
 //
-server.listen(3000, "127.0.0.2" || "localhost", function () {    
+server.listen(3000, "192.168.100.66" || "localhost", function () {    
     console.log('Aplicacion NodeJS ' + port + ' Iniciada...')
 });
 
