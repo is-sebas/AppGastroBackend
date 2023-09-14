@@ -205,4 +205,19 @@ module.exports = {
         });
     },
 
+    datosProductos(req, res) {
+        const ordersID = req.params.ordersID;
+
+        Product.datosProductos(ordersID, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar los datos del producto',
+                    error: err
+                });
+            }
+
+            return res.status(201).json(data);
+        });
+    },
 }

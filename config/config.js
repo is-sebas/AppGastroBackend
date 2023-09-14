@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 
 const db = mysql.createConnection({
-    host: 'localhost',
+    host: '192.168.100.66',
     user: 'root',
     password: 'a.123456',
     database: 'gastro_db',

@@ -150,4 +150,45 @@ Product.delete = (id, result) => {
     )
 }
 
+Product.datosProductos = (ordersID, result) => {
+    const sql = `
+    SELECT JSON_OBJECT(
+        'nombre', p.name,
+        'cantidad', ohp.quantity, 
+        'precioUnitario', p.price
+    ) AS Productos
+    FROM 
+        order_has_products ohp 
+    RIGHT JOIN
+        products p 
+    ON
+        ohp.id_product = p.id
+    INNER JOIN 
+        ordersCompart oc 
+    ON
+        oc.OrdersID = ohp.id_order
+    WHERE 
+        oc.OrdersID = ?
+    GROUP BY 
+        p.name, p.price;    
+    `;
+
+    db.query(
+        sql,
+        [ordersID],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Datos del producto:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
+
+
 module.exports = Product;

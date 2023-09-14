@@ -3,6 +3,7 @@ const OrdersCompart = require('../models/ordersCompart');
 const UsuariosActivos = require('../models/usuariosActivos');
 const Order = require('../models/order');
 const Mesas = require('../models/mesas');
+const Product = require('../models/product');
 const _ = require('lodash');
 const GeneradorFactura = require('../utils/generadorFactura');
 const EnviarMail = require('../utils/sendEmail');
@@ -249,15 +250,45 @@ module.exports = {
             //const ruc = '4163559-0';
             const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
             const telefono = '0995368295';
-            const productos = [
+
+            // Obtenemos los datos del productos:
+            for (const data of datosSiCumplen) {
+                Product.datosProductos(data.OrdersID, (err, datos) => {
+                    if (err) {
+                        return res.status(501).json({
+                            success: false,
+                            message: 'Hubo un error al actualizar el estado de la orden',
+                            error: err
+                        });
+                    }
+                });
+            }
+
+            const datosProductos = [];
+            for (const data of datosSiCumplen) {
+
+                try {
+                    const datos = await datosProductos(data.OrdersID);
+                    datosProductos.push(datos); // Agregar los datos del pago a la variable datosPago.
+    
+                } catch (error) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al obtener los datos de las ordenes',
+                        error: error
+                    });
+                }
+            }
+            
+            /*const productos = [
               { nombre: 'Gaseosa - Coca Cola', cantidad: 2, precioUnitario: '10,000' },
               { nombre: 'Hamburguesas Completa', cantidad: 3, precioUnitario: '15,000' },
               { nombre: 'Cervezas Pilsen', cantidad: 1, precioUnitario: '20,000' },
-            ];
+            ];*/
             
             const rutaArchivo = 'factura.html';
             
-            var facturaHTML = generador.generarFacturaHTML(denominacion, ruc, direccion, telefono, productos, rutaArchivo);
+            var facturaHTML = generador.generarFacturaHTML(denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
             console.log('Factura generada', facturaHTML);
 
             //Enviar correo:
@@ -464,26 +495,69 @@ module.exports = {
                 });
             }
 
+            // 1. Buscar y obtener los datos de facturación
+            const datosFactura = datos.find(item => item.datosFactura);
+
+            if (!datosFactura) {
+            return res.status(400).json({
+                success: false,
+                message: 'No se encontraron datos de facturación en la solicitud.',
+            });
+            }
+
+            const { denominacion, ruc, destinatario } = datosFactura.datosFactura[0];
             //Generación de HTML:
             const generador = new GeneradorFactura();
-            const cliente = 'Ricardo Javier Gonzalez Braga';
-            const ruc = '4163559-0';
+            //const cliente = 'Ricardo Javier Gonzalez Braga';
+            //const ruc = '4163559-0';
             const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
-            const telefono = '0995-368-295';
-            const productos = [
-                { nombre: 'Gaseosa - Coca Cola', cantidad: 2, precioUnitario: '10,000' },
-                { nombre: 'Hamburguesas Completa', cantidad: 3, precioUnitario: '15,000' },
-                { nombre: 'Cervezas Pilsen', cantidad: 1, precioUnitario: '20,000' },
-            ];
+            const telefono = '0995368295';
+
+            // Obtenemos los datos del productos:
+            for (const data of datosSiCumplen) {
+                Product.datosProductos(data.OrdersID, (err, datos) => {
+                    if (err) {
+                        return res.status(501).json({
+                            success: false,
+                            message: 'Hubo un error al actualizar el estado de la orden',
+                            error: err
+                        });
+                    }
+                });
+            }
+
+            const datosProductos = [];
+            for (const data of datosSiCumplen) {
+
+                try {
+                    const datos = await datosProductos(data.OrdersID);
+                    datosProductos.push(datos); // Agregar los datos del pago a la variable datosPago.
+    
+                } catch (error) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al obtener los datos de las ordenes',
+                        error: error
+                    });
+                }
+            }
+            
+            /*const productos = [
+              { nombre: 'Gaseosa - Coca Cola', cantidad: 2, precioUnitario: '10,000' },
+              { nombre: 'Hamburguesas Completa', cantidad: 3, precioUnitario: '15,000' },
+              { nombre: 'Cervezas Pilsen', cantidad: 1, precioUnitario: '20,000' },
+            ];*/
             
             const rutaArchivo = 'factura.html';
             
-            var facturaHTML = generador.generarFacturaHTML(cliente, ruc, direccion, telefono, productos, rutaArchivo);
+            var facturaHTML = generador.generarFacturaHTML(denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
             console.log('Factura generada', facturaHTML);
 
             //Enviar correo:
-            const destinatario = 'sagz94@outlook.com';
+            //const destinatario = 'sagz94@outlook.com';
             const htmlContent = facturaHTML;
+
+            EnviarMail.enviarMail(destinatario, htmlContent);
 
         } catch (error) {
             console.log('Hubo un error al procesar los pagos:', error);
