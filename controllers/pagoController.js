@@ -572,7 +572,7 @@ module.exports = {
             console.log('Factura generada', facturaHTML);
 
             //Enviar correo:
-            //const destinatario = 'sagz94@outlook.com';
+            const destinatario = 'sagz94@outlook.com';
             const htmlContent = facturaHTML;
 
             EnviarMail.enviarMail(destinatario, htmlContent);
