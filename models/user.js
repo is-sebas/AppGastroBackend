@@ -337,4 +337,32 @@ User.createUserTemp = async (user, result) => {
   );
 };
 
+
+User.datosFacturaUser = (id, result) => {
+  const sql = `
+    select 
+      u.ruc,
+      u.denominacion
+    from 
+      users u 
+    where 
+      u.id = ?
+      `;
+
+  db.query(
+      sql,
+      [id],
+      (err, res) => {
+          if (err) {
+              console.log('Error:', err);
+              result(err, null);
+          }
+          else {
+              console.log('Datos de la factura del usuario:', res);
+              result(null, res);
+          }
+      }
+  );
+}
+
 module.exports = User;

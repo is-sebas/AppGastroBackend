@@ -264,5 +264,22 @@ module.exports = {
           data: user,
         });
       });
-  }
+  },
+
+  async datosFacturaUser(req, res) {
+    const id = req.params.id;
+
+    User.datosFacturaUser(id, (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error con al listar la información de la factura del usuario",
+          error: err,
+        });
+      }
+
+      return res.status(200).json(data);
+    });
+  },
+
 }
