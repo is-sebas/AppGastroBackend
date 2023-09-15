@@ -274,7 +274,7 @@ module.exports = {
                         if (err) {
                             reject(err);
                         }
-                        resolve(data);
+                        resolve(datos);
                     });
                 });
             }
@@ -519,7 +519,7 @@ module.exports = {
 
             async function obtenerDatosProductos(OrdersID) {
                 return new Promise((resolve, reject) => {
-                   Product.datosProductos(OrdersID, (err, datos) => {
+                   Product.datosProductos(OrdersID,  (err, data) => {
                         if (err) {
                             reject(err);
                         }
@@ -551,7 +551,7 @@ module.exports = {
                         if (err) {
                             reject(err);
                         }
-                        resolve(data);
+                        resolve(datos);
                     });
                 });
             }

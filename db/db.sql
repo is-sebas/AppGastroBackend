@@ -427,3 +427,21 @@ JOIN (
     JOIN products p ON ohp.id_product = p.id
     GROUP BY ohp.id_product, p.name, p.price
 ) subquery ON p.id = subquery.id_product;
+
+
+-- gastro_db.facturas definition
+
+CREATE TABLE `facturas` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id_local` bigint NOT NULL,
+  `id_cliente` bigint DEFAULT NULL,
+  `monto` bigint NOT NULL,
+  `ruc` varchar(100) DEFAULT NULL,
+  `denominacion` varchar(100) DEFAULT NULL,
+  `gestor` varchar(100) DEFAULT NULL,
+  `nro_factura` bigint NOT NULL,
+  `detalle` blob,
+  `fecha` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `facturas_id_IDX` (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
