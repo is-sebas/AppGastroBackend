@@ -184,4 +184,31 @@ OrdersCompart.getDatosPago = (OrderID, result) => {
     );
 }
 
+OrdersCompart.delete = (OrdersID, result) => {
+
+    const sql = `
+    DELETE FROM 
+        gastro_db.ordersCompart
+    WHERE 
+        OrdersID = ?;
+    `;
+
+    db.query(
+        sql, 
+        [
+            OrdersID
+        ],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Orden Eliminada con éxito');
+                result(null, res);
+            }
+        }
+    )
+}
+
 module.exports = OrdersCompart;

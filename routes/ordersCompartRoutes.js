@@ -9,4 +9,6 @@ module.exports = (app, upload) => {
     app.get('/api/ordersCompart/getOrdenes/:id',  passport.authenticate('jwt', { session: false }), ordersCompartController.getOrdenes);
     app.get('/api/ordersCompart/getCumpleCondicion/:id_mesa',  passport.authenticate('jwt', { session: false }), ordersCompartController.getCumpleCondicion);
     app.get('/api/ordersCompart/getDatosPago/:OrderID',  passport.authenticate('jwt', { session: false }), ordersCompartController.getDatosPago);    
+    app.delete('/api/ordersCompart/delete/:id', passport.authenticate('jwt', {session: false}) , ordersCompartController.delete);
+    app.post('/api/ordersCompart/replace', passport.authenticate('jwt', {session: false}) , ordersCompartController.replace);
 }

@@ -505,6 +505,8 @@ module.exports = {
             const datosProductos = [];
             for (const data of datosSiCumplen) {
                 try {
+                    console.log('xxx. data.OrdersID: ',data.OrdersID);
+
                     const datos = await obtenerDatosProductos(data.OrdersID);
                     datosProductos.push(datos); // Agregar los datos del pago a la variable datosPago.
     
@@ -517,6 +519,8 @@ module.exports = {
                 }
             }
 
+            console.log('xxx. datosProductos: ',datosProductos);
+
             async function obtenerDatosProductos(OrdersID) {
                 return new Promise((resolve, reject) => {
                    Product.datosProductos(OrdersID,  (err, data) => {
@@ -528,6 +532,7 @@ module.exports = {
                 });
             }
             
+            console.log('xxx. datosProductos: ',datosProductos);
 
             // Obtenemos los datos del productos:
             const datosFacturaUser = [];
@@ -535,6 +540,7 @@ module.exports = {
                 for (const orderGroup of ordenes) {
                     for (const order of orderGroup) {
                         try {
+                            console.log('xxx. order.id_usuarioActivo: ',order.id_usuarioActivo);
                             const datos = await obtenerDatosFacturaUser(order.id_usuarioActivo);
                             datosFacturaUser.push(datos); // Agregar los datos del pago a la variable datosPago.
             
