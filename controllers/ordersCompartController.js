@@ -134,12 +134,13 @@ module.exports = {
 
     async replace(req, res) {
 
-        const ordersCompart = req.body;
-        
-        console.log('xxx. ordersCompart.OrdersID: ',ordersCompart.OrdersID);
+        const datos = req.body;
+        const ordersID = datos.ordersCompart[0].OrdersID;
 
-        OrdersCompart.delete(ordersCompart.OrdersID, (err, data) => {
-    
+        console.log('xxx. datos: ', datos);
+        console.log('xxx. ordersID: ', ordersID);
+
+        OrdersCompart.delete(ordersID, (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
@@ -149,23 +150,27 @@ module.exports = {
             }
         });
 
-        console.log('xxx. ordersCompart: ',ordersCompart);
-
-        OrdersCompart.create(ordersCompart, (err, data) => {
-    
-            if (err) {
+        
+        for (const ordersCompart of datos.ordersCompart) {
+            console.log('xxx. ordersCompart: ', ordersCompart);
+        
+            OrdersCompart.create(ordersCompart, (err, data) => {
+              if (err) {
                 return res.status(501).json({
-                    success: false,
-                    message: 'Hubo un error con el registro de orders Compart',
-                    error: err
+                  success: false,
+                  message: 'Hubo un error con el registro de orders Compart',
+                  error: err
                 });
-            }
-            
-            return res.status(201).json({
-                success: true,
-                message: 'Orders Compart reemplazada correctamente',
-                data: data
+              }
             });
-        });
+          }
+        
+          // Respuesta después de que se complete el bucle
+          return res.status(201).json({
+            success: true,
+            message: 'Orders Compart reemplazada correctamente',
+            data: datos.ordersCompart  // Puedes incluir los datos si lo deseas.
+          });
+
     }
 }
