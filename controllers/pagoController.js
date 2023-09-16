@@ -252,13 +252,17 @@ module.exports = {
             const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
             const telefono = '0995368295';
 
-            // Obtenemos los datos del productos:
+            // Obtenemos los datos del producto:
             const datosProductos = [];
             for (const data of datosSiCumplen) {
                 try {
                     const datos = await obtenerDatosProductos(data.OrdersID);
-                    datosProductos.push(datos); // Agregar los datos del pago a la variable datosPago.
-    
+                    const productos = datos.map((item) => ({
+                        nombre: item.Productos.nombre,
+                        cantidad: item.Productos.cantidad,
+                        precioUnitario: item.Productos.precioUnitario.toString(), // Convierte el precio a string
+                    }));
+                    datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
                 } catch (error) {
                     return res.status(501).json({
                         success: false,
@@ -270,15 +274,19 @@ module.exports = {
 
             async function obtenerDatosProductos(OrdersID) {
                 return new Promise((resolve, reject) => {
-                   Product.datosProductos(OrdersID, (err, datos) => {
+                    Product.datosProductos(OrdersID, (err, datos) => {
                         if (err) {
                             reject(err);
                         }
+                        console.log('Datos obtenidos de Product.datosProductos:', datos);
                         resolve(datos);
                     });
                 });
             }
             
+            
+            console.log('datosProductos: ',datosProductos);
+
             /*const productos = [
               { nombre: 'Gaseosa - Coca Cola', cantidad: 2, precioUnitario: '10,000' },
               { nombre: 'Hamburguesas Completa', cantidad: 3, precioUnitario: '15,000' },
@@ -501,38 +509,38 @@ module.exports = {
             const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
             const telefono = '0995368295';
 
-            // Obtenemos los datos del productos:
+            // Obtenemos los datos del producto:
             const datosProductos = [];
             for (const data of datosSiCumplen) {
                 try {
-                    console.log('xxx. data.OrdersID: ',data.OrdersID);
-
                     const datos = await obtenerDatosProductos(data.OrdersID);
-                    datosProductos.push(datos); // Agregar los datos del pago a la variable datosPago.
-    
+                    const productos = datos.map((item) => ({
+                        nombre: item.Productos.nombre,
+                        cantidad: item.Productos.cantidad,
+                        precioUnitario: item.Productos.precioUnitario.toString(), // Convierte el precio a string
+                    }));
+                    datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
                 } catch (error) {
                     return res.status(501).json({
                         success: false,
-                        message: 'Hubo un error al obtener los datos deL producto',
+                        message: 'Hubo un error al obtener los datos de las ordenes',
                         error: error
                     });
                 }
             }
 
-            console.log('xxx. datosProductos: ',datosProductos);
-
             async function obtenerDatosProductos(OrdersID) {
                 return new Promise((resolve, reject) => {
-                   Product.datosProductos(OrdersID,  (err, data) => {
+                    Product.datosProductos(OrdersID, (err, datos) => {
                         if (err) {
                             reject(err);
                         }
-                        resolve(data);
+                        console.log('Datos obtenidos de Product.datosProductos:', datos);
+                        resolve(datos);
                     });
                 });
             }
             
-            console.log('xxx. datosProductos: ',datosProductos);
 
             // Obtenemos los datos del productos:
             const datosFacturaUser = [];
@@ -551,6 +559,8 @@ module.exports = {
                 }
             }
             
+            console.log('xxx. datosProductos: ',datosProductos);
+
             async function obtenerDatosFacturaUser(id) {
                 return new Promise((resolve, reject) => {
                    User.datosFacturaUser(id, (err, datos) => {
@@ -581,7 +591,7 @@ module.exports = {
             const destinatario = 'sagz94@outlook.com';
             const htmlContent = facturaHTML;
 
-            EnviarMail.enviarMail(destinatario, htmlContent);
+            EnviarMail(destinatario, htmlContent);
 
         } catch (error) {
             console.log('Hubo un error al procesar los pagos:', error);
