@@ -1,3 +1,4 @@
+const Order = require('../models/order');
 const OrdersCompart = require('../models/ordersCompart');
 
 module.exports = {
@@ -140,37 +141,98 @@ module.exports = {
         console.log('xxx. datos: ', datos);
         console.log('xxx. ordersID: ', ordersID);
 
-        OrdersCompart.delete(ordersID, (err, data) => {
+
+        async function verificarPagos() {
+            try {
+        
+                const resultado = await obtenerProcesoPago(ordersID);
+        
+                if (resultado && resultado.length > 0) {
+                    const yaSeprocesounPago = resultado[0].yaSeProcesoUnPago;
+                    console.log('yaSeprocesounPago:', yaSeprocesounPago);
+        
+                    return yaSeprocesounPago;
+                } else {
+                    console.log('No se encontraron datos.');
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+                throw error;
+            }
+        }
+
+        async function obtenerProcesoPago(ordersID) {
+            return new Promise((resolve, reject) => {
+               OrdersCompart.getSeProcesoPago(ordersID, (err, data) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(data);
+                }
+              });
+            });
+          }
+
+        const yaSeProcesoUnPago = await verificarPagos();
+
+        if (yaSeProcesoUnPago == "NO")
+        {
+            OrdersCompart.delete(ordersID, (err, data) => {
+                if (err) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al eliminar las ordenes compartidas',
+                        error: err
+                    });
+                }
+            });
+
+            
+            for (const ordersCompart of datos.ordersCompart) {
+                console.log('xxx. ordersCompart: ', ordersCompart);
+            
+                OrdersCompart.create(ordersCompart, (err, data) => {
+                if (err) {
+                    return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error con el registro de orders Compart',
+                    error: err
+                    });
+                }
+                });
+            }
+            
+            // Respuesta después de que se complete el bucle
+            return res.status(201).json({
+                success: true,
+                message: 'Orders Compart reemplazada correctamente',
+                data: datos.ordersCompart  // Puedes incluir los datos si lo deseas.
+            });
+        }
+        else
+        {
+            return res.status(200).json({
+                success: false,
+                message: 'No se puede recalcular debido a que ya se realizo un pago'
+            });
+        }
+
+    },
+
+    async getSeProcesoPago(req, res) {
+        const OrdersID = req.params.OrdersID;
+
+        OrdersCompart.getSeProcesoPago(OrdersID, (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
-                    message: 'Hubo un error al eliminar las ordenes compartidas',
+                    message: 'Hubo un error al momento de obtener los datos que indican si se procesaron o no todos los pagos',
                     error: err
                 });
             }
+
+            return res.status(200).json(data);
         });
-
-        
-        for (const ordersCompart of datos.ordersCompart) {
-            console.log('xxx. ordersCompart: ', ordersCompart);
-        
-            OrdersCompart.create(ordersCompart, (err, data) => {
-              if (err) {
-                return res.status(501).json({
-                  success: false,
-                  message: 'Hubo un error con el registro de orders Compart',
-                  error: err
-                });
-              }
-            });
-          }
-        
-          // Respuesta después de que se complete el bucle
-          return res.status(201).json({
-            success: true,
-            message: 'Orders Compart reemplazada correctamente',
-            data: datos.ordersCompart  // Puedes incluir los datos si lo deseas.
-          });
-
-    }
+    },
 }

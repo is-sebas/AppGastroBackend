@@ -11,4 +11,5 @@ module.exports = (app, upload) => {
     app.get('/api/ordersCompart/getDatosPago/:OrderID',  passport.authenticate('jwt', { session: false }), ordersCompartController.getDatosPago);    
     app.delete('/api/ordersCompart/delete/:id', passport.authenticate('jwt', {session: false}) , ordersCompartController.delete);
     app.post('/api/ordersCompart/replace', passport.authenticate('jwt', {session: false}) , ordersCompartController.replace);
+    app.get('/api/ordersCompart/getSeProcesoPago/:OrdersID',  passport.authenticate('jwt', { session: false }), ordersCompartController.getSeProcesoPago);
 }

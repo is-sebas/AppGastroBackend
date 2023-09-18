@@ -211,4 +211,36 @@ OrdersCompart.delete = (OrdersID, result) => {
     )
 }
 
+OrdersCompart.getSeProcesoPago = (OrdersID, result) => {
+    const sql = `
+    SELECT CASE
+        WHEN COUNT(*) > 0 THEN 
+            'SI'
+        ELSE 
+            'NO'
+    END AS yaSeProcesoUnPago
+    FROM 
+        ordersCompart oc 
+    WHERE
+        oc.OrdersID = ?
+    AND
+        oc.estado = 2
+    `;
+
+    db.query(
+        sql,
+        [OrdersID],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Retorno de validación proceso de pago:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
 module.exports = OrdersCompart;
