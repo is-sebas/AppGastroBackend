@@ -168,4 +168,33 @@ Locales.delete = (id_local, result) => {
     )
 }
 
+Locales.GetlocalXMesa = (id_mesa, result) => {
+    const sql = `
+    SELECT 
+        l.loc_nombre 
+    FROM
+        mesas m,
+        locales l 
+    WHERE
+        m.id_local = l.id_local 
+    AND
+        m.id_mesa = ?
+    `;
+
+    db.query(
+        sql,
+        [id_mesa],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Local obtenido:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
 module.exports = Locales;

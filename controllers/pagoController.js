@@ -8,6 +8,7 @@ const User = require('../models/user');
 const _ = require('lodash');
 const GeneradorFactura = require('../utils/generadorFactura');
 const EnviarMail = require('../utils/sendEmail');
+const Locales = require('../models/locales');
 
 module.exports = {
 
@@ -234,24 +235,8 @@ module.exports = {
                 });
             }
 
-            // 1. Buscar y obtener los datos de facturación
-            const datosFactura = datos.find(item => item.datosFactura);
 
-            if (!datosFactura) {
-            return res.status(400).json({
-                success: false,
-                message: 'No se encontraron datos de facturación en la solicitud.',
-            });
-            }
-
-            const { denominacion, ruc, destinatario } = datosFactura.datosFactura[0];
-            //Generación de HTML:
-            const generador = new GeneradorFactura();
-            //const cliente = 'Ricardo Javier Gonzalez Braga';
-            //const ruc = '4163559-0';
-            const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
-            const telefono = '0995368295';
-
+            //////////////////////////////////////////////////////////////////
             // Obtenemos los datos del producto:
             const datosProductos = [];
             for (const data of datosSiCumplen) {
@@ -260,7 +245,7 @@ module.exports = {
                     const productos = datos.map((item) => ({
                         nombre: item.Productos.nombre,
                         cantidad: item.Productos.cantidad,
-                        precioUnitario: item.Productos.precioUnitario.toString(), // Convierte el precio a string
+                        precioUnitario: item.Productos.precioUnitario, // Convierte el precio a string
                     }));
                     datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
                 } catch (error) {
@@ -284,25 +269,103 @@ module.exports = {
                 });
             }
             
+            // Obtenemos los datos del productos:
+            const datosFacturaUser = [];
+            for (const ordersCompart of datos) {
+                for (const orderGroup of ordenes) {
+                    for (const order of orderGroup) {
+                        try {
+                            console.log('xxx. order.id_usuarioActivo: ',order.id_usuarioActivo);
+                            const datos = await obtenerDatosFacturaUser(order.id_usuarioActivo);
+                            datosFacturaUser.push(datos); // Agregar los datos del pago a la variable datosPago.
             
-            console.log('datosProductos: ',datosProductos);
+                        } catch (error) {
+                            console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
+                        }
+                    }
+                }
+            }
 
-            /*const productos = [
-              { nombre: 'Gaseosa - Coca Cola', cantidad: 2, precioUnitario: '10,000' },
-              { nombre: 'Hamburguesas Completa', cantidad: 3, precioUnitario: '15,000' },
-              { nombre: 'Cervezas Pilsen', cantidad: 1, precioUnitario: '20,000' },
-            ];*/
+            async function obtenerDatosFacturaUser(id) {
+                return new Promise((resolve, reject) => {
+                   User.datosFacturaUser(id, (err, datos) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(datos);
+                    });
+                });
+            }
+
+            async function obtenerNombreLocalYUsar() {
+                try {
+                    const id_mesa = datosPagoFiltrados[0][0].id_mesa;
+                    console.log('obtenerNombreLocalYUsar (id_mesa:', id_mesa);
             
+                    const resultado = await obtenerNombreLocal(id_mesa);
+            
+                    console.log('obtenerNombreLocalYUsar (zzz. resultado:', resultado);
+            
+                    if (resultado && resultado.length > 0) {
+                        const nombreLocal = resultado[0].loc_nombre;
+                        console.log('Nombre del local:', nombreLocal);
+            
+                        return nombreLocal;
+                    } else {
+                        console.log('No se encontró el local para la mesa.');
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Error al obtener el nombre del local:', error);
+                    throw error;
+                }
+            }
+
+            async function obtenerNombreLocal(id_mesa) {
+                return new Promise((resolve, reject) => {
+                  console.log('obtenerNombreLocal (zzz. id_mesa: ',id_mesa);
+                   Locales.GetlocalXMesa(id_mesa, (err, data) => {
+                    if (err) {
+                      reject(err);
+                    } else {
+                      resolve(data);
+                    }
+                  });
+                });
+              }
+
+            // 1. Buscar y obtener los datos de facturación
+            const datosFactura = datos.find(item => item.datosFactura);
+
+            if (!datosFactura) {
+            return res.status(400).json({
+                success: false,
+                message: 'No se encontraron datos de facturación en la solicitud.',
+            });
+            }
+
+            const { denominacion, ruc, destinatario } = datosFactura.datosFactura[0];
+            //Generación de HTML:
+            const generador = new GeneradorFactura();
+            //const cliente = 'Ricardo Javier Gonzalez Braga';
+            //const ruc = '4163559-0';
+            const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
+            const telefono = '0995368295';
+            const nombreLocal = await obtenerNombreLocalYUsar();
+
+            console.log('local nombre: ', nombreLocal);
+
             const rutaArchivo = 'factura.html';
+
+            var facturaHTML = generador.generarFacturaHTML(nombreLocal, denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
             
-            var facturaHTML = generador.generarFacturaHTML(denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
             console.log('Factura generada', facturaHTML);
 
             //Enviar correo:
             //const destinatario = 'sagz94@outlook.com';
             const htmlContent = facturaHTML;
 
-            EnviarMail.enviarMail(destinatario, htmlContent);
+            EnviarMail(destinatario, htmlContent);
 
             return res.status(200).json({
                 success: true,
@@ -507,7 +570,7 @@ module.exports = {
             //const cliente = 'Ricardo Javier Gonzalez Braga';
             //const ruc = '4163559-0';
             const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
-            const telefono = '0995368295';
+            //const telefono = '0995368295';
 
             // Obtenemos los datos del producto:
             const datosProductos = [];
@@ -517,7 +580,7 @@ module.exports = {
                     const productos = datos.map((item) => ({
                         nombre: item.Productos.nombre,
                         cantidad: item.Productos.cantidad,
-                        precioUnitario: item.Productos.precioUnitario.toString(), // Convierte el precio a string
+                        precioUnitario: item.Productos.precioUnitario, // Convierte el precio a string
                     }));
                     datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
                 } catch (error) {
@@ -541,7 +604,6 @@ module.exports = {
                 });
             }
             
-
             // Obtenemos los datos del productos:
             const datosFacturaUser = [];
             for (const ordersCompart of datos) {
@@ -558,8 +620,6 @@ module.exports = {
                     }
                 }
             }
-            
-            console.log('xxx. datosProductos: ',datosProductos);
 
             async function obtenerDatosFacturaUser(id) {
                 return new Promise((resolve, reject) => {
@@ -572,19 +632,64 @@ module.exports = {
                 });
             }
 
-            /*const productos = [
-              { nombre: 'Gaseosa - Coca Cola', cantidad: 2, precioUnitario: '10,000' },
-              { nombre: 'Hamburguesas Completa', cantidad: 3, precioUnitario: '15,000' },
-              { nombre: 'Cervezas Pilsen', cantidad: 1, precioUnitario: '20,000' },
-            ];*/
+            async function obtenerNombreLocalYUsar() {
+                try {
+                    const id_mesa = datosPagoFiltrados[0][0].id_mesa;
+                    console.log('obtenerNombreLocalYUsar (id_mesa:', id_mesa);
+            
+                    const resultado = await obtenerNombreLocal(id_mesa);
+            
+                    console.log('obtenerNombreLocalYUsar (zzz. resultado:', resultado);
+            
+                    if (resultado && resultado.length > 0) {
+                        const nombreLocal = resultado[0].loc_nombre;
+                        console.log('Nombre del local:', nombreLocal);
+            
+                        return nombreLocal;
+                    } else {
+                        console.log('No se encontró el local para la mesa.');
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Error al obtener el nombre del local:', error);
+                    throw error;
+                }
+            }
+
+            async function obtenerNombreLocal(id_mesa) {
+                return new Promise((resolve, reject) => {
+                  console.log('obtenerNombreLocal (zzz. id_mesa: ',id_mesa);
+                   Locales.GetlocalXMesa(id_mesa, (err, data) => {
+                    if (err) {
+                      reject(err);
+                    } else {
+                      resolve(data);
+                    }
+                  });
+                });
+              }
+                      
+
+            console.log('xxx. datosProductos: ',datosProductos);
+            
+            console.log('datosFacturaUser: ', datosFacturaUser);
+
+            console.log('ruc: ', datosFacturaUser[0][0].ruc);
+            console.log('denominacion: ',datosFacturaUser[0][0].denominacion);
+            console.log('telefono: ',datosFacturaUser[0][0].phone);
 
             // Obtener los valores "ruc" y "denominación"
-            const ruc = datosFacturaUser[0].ruc;
-            const denominacion = datosFacturaUser[0].denominacion;
-            
+            const ruc = datosFacturaUser[0][0].ruc;
+            const denominacion = datosFacturaUser[0][0].denominacion;
+            const telefono = datosFacturaUser[0][0].phone;
+
+            const nombreLocal = await obtenerNombreLocalYUsar();
+
+            console.log('local nombre: ', nombreLocal);
+
             const rutaArchivo = 'factura.html';
             
-            var facturaHTML = generador.generarFacturaHTML(denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
+            var facturaHTML = generador.generarFacturaHTML(nombreLocal, denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
             console.log('Factura generada', facturaHTML);
 
             //Enviar correo:

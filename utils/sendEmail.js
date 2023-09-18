@@ -13,7 +13,7 @@ async function enviarMail(destinatario, htmlContent) {
   const mensaje = {
     from: 'appgastrogastro@gmail.com',
     to: destinatario,
-    subject: 'Comprobante de Pago - AppGastro',
+    subject: 'Comprobante de Pago',
     html: htmlContent
   }
 

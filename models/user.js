@@ -342,7 +342,8 @@ User.datosFacturaUser = (id, result) => {
   const sql = `
     select 
       u.ruc,
-      u.denominacion
+      u.denominacion,
+      u.phone
     from 
       users u 
     where 

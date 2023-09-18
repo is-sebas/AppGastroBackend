@@ -3,6 +3,29 @@ class generadorFactura {
     // Configuración inicial si es necesario
   }
 
+  obtenerFechaActual() {
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate().toString().padStart(2, '0');
+    const mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
+    const anio = fechaActual.getFullYear();
+    return `${dia}/${mes}/${anio}`;
+  }
+
+  generarNumeroFactura() {
+    // Generar tres partes del número de factura: "060", "001", y un número aleatorio entre 1 y 9999999
+    const parte1 = '001';
+    const parte2 = '001';
+    const parte3 = (Math.floor(Math.random() * 9999999) + 1).toString().padStart(7, '0'); // Número aleatorio entre 1 y 9999999 con relleno de ceros
+
+    const numeroFactura = `${parte1}-${parte2}-${parte3}`;
+    return numeroFactura;
+  }
+
+  formatearMonto(monto) {
+    // Formatear el monto con separador de miles y dos decimales
+    return monto.toLocaleString('es-PY', { style: 'currency', currency: 'PYG' });
+  }
+
   calcularTotales(productos) {
     let subtotal = 0;
     productos.forEach((producto) => {
@@ -10,10 +33,14 @@ class generadorFactura {
       subtotal += totalPorProducto;
     });
 
-    const iva = subtotal * 0.1; // 10% de IVA
+    const iva = Math.round((subtotal / 11) * 1000) / 1000; // Redondear a 3 decimales (10% de IVA)
     const total = subtotal + iva;
 
-    return { subtotal, iva, total };
+    return {
+        subtotal: this.formatearMonto(subtotal),
+        iva: this.formatearMonto(iva),
+        total: this.formatearMonto(total),
+      };
   }
 
   generarDetalleProductos(productos) {
@@ -25,8 +52,8 @@ class generadorFactura {
         <tr>
             <td>${producto.nombre}</td>
             <td>${producto.cantidad}</td>
-            <td>${producto.precioUnitario}</td>
-            <td>${totalPorProducto}</td>
+            <td>${this.formatearMonto(producto.precioUnitario)}</td>
+            <td>${this.formatearMonto(totalPorProducto)}</td>
         </tr>
       `;
     });
@@ -34,8 +61,10 @@ class generadorFactura {
     return detalleHTML;
   }
 
-  generarFacturaHTML(cliente, ruc, direccion, telefono, productos) {
+  generarFacturaHTML(local_nombre, cliente, ruc, direccion, telefono, productos) {
     const { subtotal, iva, total } = this.calcularTotales(productos);
+    const fechaActual = this.obtenerFechaActual();
+    const numeroFactura = this.generarNumeroFactura();
 
     const facturaHTML = `
       <!DOCTYPE html>
@@ -43,7 +72,7 @@ class generadorFactura {
       <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Factura - AppGastro</title>
+          <title>Factura - ${local_nombre}</title>
           <style>
               /* Estilos CSS para la factura */
               body {
@@ -78,16 +107,16 @@ class generadorFactura {
       </head>
       <body>
           <div class="encabezado">
-              <h1>Factura - AppGastro</h1>
-              <p>Número de Factura: 12345</p>
-              <p>Fecha: 31/08/2023</p>
+              <h1>Factura - ${local_nombre}</h1>
+              <p>${direccion}</p>
+              <p>Número de Factura: ${numeroFactura}</p>
+              <p>Fecha: ${fechaActual}</p>
           </div>
 
           <div class="cliente">
               <h2>Información del Cliente</h2>
               <p>Nombre: ${cliente}</p>
               <p>RUC: ${ruc}</p>
-              <p>Dirección: ${direccion}</p>
               <p>Teléfono: ${telefono}</p>
           </div>
 

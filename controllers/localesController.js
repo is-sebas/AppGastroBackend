@@ -205,4 +205,20 @@ module.exports = {
         });
     },
 
+    async GetlocalXMesa(req, res) {
+        const id_mesa = req.params.id_mesa;
+
+        Locales.GetlocalXMesa(id_mesa, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de obtener el nombre del local',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
+    },
+
 }

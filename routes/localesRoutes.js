@@ -9,4 +9,5 @@ module.exports = (app, upload) => {
     app.put('/api/locales/update', passport.authenticate('jwt', {session: false}) , localesController.update);
     app.put('/api/locales/updateWithImage', passport.authenticate('jwt', {session: false}) , upload.array('image', 1), localesController.updateWithImage);
     app.delete('/api/locales/delete/:id_local', passport.authenticate('jwt', {session: false}), localesController.delete);
+    app.get('/api/locales/GetlocalXMesa/:id_mesa',  passport.authenticate('jwt', { session: false }), localesController.GetlocalXMesa);
 }
