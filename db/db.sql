@@ -439,9 +439,9 @@ CREATE TABLE `facturas` (
   `ruc` varchar(100) DEFAULT NULL,
   `denominacion` varchar(100) DEFAULT NULL,
   `gestor` varchar(100) DEFAULT NULL,
-  `nro_factura` bigint NOT NULL,
-  `detalle` blob,
+  `nro_factura` varchar(100) NOT NULL,
+  `detalle` longtext,
   `fecha` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `facturas_id_IDX` (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
