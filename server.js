@@ -32,6 +32,7 @@ const pedidoLog = require('./routes/pedidoLogRoutes');
 const pago = require('./routes/pagoRoutes');
 const reportes = require('./routes/reportesRoutes');
 const { update } = require('./models/user');
+const facturaRoutes = require('./routes/facturaRoutes');
 
 const port = process.env.PORT || 3000;
 
@@ -78,9 +79,10 @@ ordersCompart(app,upload);
 pedidoLog(app, upload);
 pago(app, upload);
 reportes(app, upload);
+facturaRoutes(app, upload);
 
 //
-server.listen(3000, "192.168.85.130" || "localhost", function () {    
+server.listen(3000, "192.168.1.4" || "localhost", function () {    
     console.log('Aplicacion NodeJS ' + port + ' Iniciada...')
 });
 

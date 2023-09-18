@@ -3,7 +3,8 @@ const db = require('../config/config')
 const OrdersCompart = {}
 
 OrdersCompart.create = (ordersCompart, result) => {
-
+    // Redondear subTotal y convertirlo a entero
+    const subTotalRounded = Math.round(parseFloat(ordersCompart.subTotal));
     const sql = `
     INSERT INTO
         ordersCompart(
@@ -23,7 +24,7 @@ OrdersCompart.create = (ordersCompart, result) => {
             ordersCompart.id_usuarioActivo,
             ordersCompart.id_mesa,
             ordersCompart.estado,
-            ordersCompart.subTotal
+            subTotalRounded
         ],
         (err, res) => {
             if (err) {
