@@ -366,4 +366,51 @@ User.datosFacturaUser = (id, result) => {
   );
 }
 
+User.datosInsertFactura = (id_user, id_mesa, monto, nro_factura, detalle, result) => {
+  const sql = `
+        SELECT (SELECT
+                    m.id_local
+                  FROM 
+                    mesas m
+                  WHERE
+                    m.id_mesa = ?) as 'id_local',
+            ? as 'id_cliente',
+            ? as 'monto',	
+            u.ruc as 'ruc',
+            u.denominacion as 'denominacion',
+          (SELECT
+            concat(u.name, ' ', u.lastname)
+          FROM
+            users u
+          WHERE
+            u.id in (SELECT
+                  m.id_staff
+                  FROM 
+                  mesas m
+                  WHERE
+                  m.id_mesa = ?)) 'gestor',
+          ? as 'nro_factura',
+          ? as 'detalle'
+        FROM 
+          users u
+        WHERE
+          u.id  = ?
+      `;
+
+  db.query(
+      sql,
+      [id_mesa, id_user, monto, id_mesa, nro_factura, detalle, id_user],
+      (err, res) => {
+          if (err) {
+              console.log('Error:', err);
+              result(err, null);
+          }
+          else {
+              console.log('Datos para insertar facturas:', res);
+              result(null, res);
+          }
+      }
+  );
+}
+
 module.exports = User;

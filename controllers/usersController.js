@@ -282,4 +282,24 @@ module.exports = {
     });
   },
 
+  async datosInsertFactura(req, res) {
+    const id_user = req.params.id_user;
+    const id_mesa = req.params.id_mesa;
+    const monto = req.params.monto;
+    const nro_factura = req.params.nro_factura;
+    const detalle = req.params.detalle;
+
+    User.datosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle, (err, data) => {
+      if (err) {
+        return res.status(501).json({
+          success: false,
+          message: "Hubo un error al listar la información de la factura a insertar",
+          error: err,
+        });
+      }
+
+      return res.status(200).json(data);
+    });
+  },
+
 }

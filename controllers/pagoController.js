@@ -9,6 +9,8 @@ const _ = require('lodash');
 const GeneradorFactura = require('../utils/generadorFactura');
 const EnviarMail = require('../utils/sendEmail');
 const Locales = require('../models/locales');
+const cheerio = require('cheerio');
+const Factura = require('../models/factura');
 
 module.exports = {
 
@@ -367,6 +369,78 @@ module.exports = {
 
             EnviarMail(destinatario, htmlContent);
 
+            // Obtenemos los datos para insertar en la factura:
+            const datosInsertFactura = [];
+            
+            try {
+
+                const id_user = datosPagoFiltrados[0][0].id_cliente;
+                const id_mesa = datosPagoFiltrados[0][0].id_mesa;
+                const monto = datosPagoFiltrados[0][0].montoPagado;
+
+                // Carga el HTML en Cheerio
+                const $ = cheerio.load(facturaHTML);
+                const numeroFactura = $('p:contains("Número de Factura:")').text();
+                const nro_factura = numeroFactura.replace('Número de Factura: ', '');
+
+                console.log('1. id_user: ', id_user);
+                console.log('2. id_mesa: ', id_mesa);
+                console.log('3. monto: ', monto);
+                console.log('4. nro_factura: ', nro_factura);
+
+                const detalle = facturaHTML;
+                console.log('5. detalle: ', detalle);
+
+                const datos = await obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle);
+                datosInsertFactura.push(datos); // Agregar los datos del pago a la variable.
+
+            } catch (error) {
+                console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
+            }
+
+            async function obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle) {
+                return new Promise((resolve, reject) => {
+                   User.datosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle, (err, datos) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(datos);
+                    });
+                });
+            }
+
+            //Insertamos en la tabla:
+            console.log('datosInsertFactura: ', datosInsertFactura);
+    
+            for (const datosInsert of datosInsertFactura) {
+                for (const factura of datosInsert) {
+                    console.log('factura.id_local: ', factura.id_local);
+                    console.log('factura.id_cliente: ', factura.id_cliente);
+                    console.log('factura.monto: ', factura.monto);
+                    console.log('factura.ruc: ', factura.ruc);
+                    console.log('factura.denominacion: ', factura.denominacion);
+                    console.log('factura.gestor: ', factura.gestor);
+                    console.log('factura.nro_factura: ', factura.nro_factura);
+                    console.log('factura.detalle: ', factura.detalle);
+            
+                    await Factura.create(
+                        factura.id_local,
+                        factura.id_cliente,
+                        factura.monto,
+                        factura.ruc,
+                        factura.denominacion,
+                        factura.gestor,
+                        factura.nro_factura,
+                        factura.detalle,
+                        (err, id_data) => {
+                            if (err) {
+                                console.error('Hubo un error al insertar los datos de la factura:', err);
+                            }
+                        }
+                    );
+                }
+            }
+
             return res.status(200).json({
                 success: true,
                 message: 'Pago procesado correctamente',
@@ -697,6 +771,78 @@ module.exports = {
             const htmlContent = facturaHTML;
 
             EnviarMail(destinatario, htmlContent);
+
+            // Obtenemos los datos para insertar en la factura:
+            const datosInsertFactura = [];
+            
+            try {
+
+                const id_user = datosPagoFiltrados[0][0].id_cliente;
+                const id_mesa = datosPagoFiltrados[0][0].id_mesa;
+                const monto = datosPagoFiltrados[0][0].montoPagado;
+
+                // Carga el HTML en Cheerio
+                const $ = cheerio.load(facturaHTML);
+                const numeroFactura = $('p:contains("Número de Factura:")').text();
+                const nro_factura = numeroFactura.replace('Número de Factura: ', '');
+
+                console.log('1. id_user: ', id_user);
+                console.log('2. id_mesa: ', id_mesa);
+                console.log('3. monto: ', monto);
+                console.log('4. nro_factura: ', nro_factura);
+
+                const detalle = facturaHTML;
+                console.log('5. detalle: ', detalle);
+
+                const datos = await obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle);
+                datosInsertFactura.push(datos); // Agregar los datos del pago a la variable.
+
+            } catch (error) {
+                console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
+            }
+
+            async function obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle) {
+                return new Promise((resolve, reject) => {
+                   User.datosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle, (err, datos) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(datos);
+                    });
+                });
+            }
+
+            //Insertamos en la tabla:
+            console.log('datosInsertFactura: ', datosInsertFactura);
+    
+            for (const datosInsert of datosInsertFactura) {
+                for (const factura of datosInsert) {
+                    console.log('factura.id_local: ', factura.id_local);
+                    console.log('factura.id_cliente: ', factura.id_cliente);
+                    console.log('factura.monto: ', factura.monto);
+                    console.log('factura.ruc: ', factura.ruc);
+                    console.log('factura.denominacion: ', factura.denominacion);
+                    console.log('factura.gestor: ', factura.gestor);
+                    console.log('factura.nro_factura: ', factura.nro_factura);
+                    console.log('factura.detalle: ', factura.detalle);
+            
+                    await Factura.create(
+                        factura.id_local,
+                        factura.id_cliente,
+                        factura.monto,
+                        factura.ruc,
+                        factura.denominacion,
+                        factura.gestor,
+                        factura.nro_factura,
+                        factura.detalle,
+                        (err, id_data) => {
+                            if (err) {
+                                console.error('Hubo un error al insertar los datos de la factura:', err);
+                            }
+                        }
+                    );
+                }
+            }                     
 
         } catch (error) {
             console.log('Hubo un error al procesar los pagos:', error);

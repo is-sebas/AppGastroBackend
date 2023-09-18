@@ -2,7 +2,7 @@ const db = require('../config/config');
 
 const Factura = {};
 
-Factura.create = (factura, result) => {
+Factura.create = (id_local, id_cliente, monto, ruc, denominacion, gestor, nro_factura, detalle, result) => {
 
     const sql = `
     INSERT INTO 
@@ -18,17 +18,27 @@ Factura.create = (factura, result) => {
             fecha)
     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
+        console.log('Factura.create');
+        console.log('1. id_local: ', id_local);
+        console.log('1. id_cliente: ', id_cliente);
+        console.log('3. monto: ', monto);
+        console.log('4. ruc: ', ruc);
+        console.log('5. denominacion: ', denominacion);
+        console.log('6. gestor: ', gestor);
+        console.log('7. nro_factura: ', nro_factura);
+        console.log('8. detalle: ', detalle);
+
         db.query(
             sql, 
             [
-                factura.id_local,
-                factura.id_cliente,
-                factura.monto,
-                factura.ruc,
-                factura.denominacion,
-                factura.gestor,
-                factura.nro_factura,
-                factura.detalle,
+                id_local, 
+                id_cliente, 
+                monto, 
+                ruc,
+                denominacion,
+                gestor,
+                nro_factura,
+                detalle,
                 new Date()
             ],
             (err, res) => {
