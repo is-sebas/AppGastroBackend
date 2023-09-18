@@ -312,9 +312,11 @@ User.createUserTemp = async (user, result) => {
                 email,
                 name,
                 lastname,
+                denominacion,
+                ruc,
                 created_at
             )
-        VALUES(?, ?, ?, ?)
+        VALUES(?, ?, ?, ?, ?, ?)
     `;
 
   db.query(
@@ -323,6 +325,8 @@ User.createUserTemp = async (user, result) => {
       user.email,
       user.name,
       user.lastname,
+      user.denominacion,
+      user.ruc,
       new Date()
     ],
     (err, res) => {
