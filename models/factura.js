@@ -53,4 +53,32 @@ Factura.create = (id_local, id_cliente, monto, ruc, denominacion, gestor, nro_fa
         );
 }
 
+Factura.GetFacturaHTML = (nro_factura, result) => {
+    const sql = `
+    SELECT 
+        f.detalle 
+    FROM
+        facturas f 
+    WHERE 
+        f.nro_factura = ?
+
+    `;
+
+    db.query(
+        sql,
+        [nro_factura],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Detalle de Factura Obtenido:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
+
 module.exports = Factura;
