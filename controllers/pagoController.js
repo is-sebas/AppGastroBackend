@@ -461,8 +461,8 @@ module.exports = {
         // Validar si todos los registros tienen cumple_condicion igual a 'SI'
         const todosCumplenCondicion = datosSiCumplen.length === datos.length;
 
-        if (todosCumplenCondicion == true)
-        {
+        //if (todosCumplenCondicion == true)
+        //{
             //Obtenemos los datos del pago de la mesa:
             const datosPagoMesa = await new Promise((resolve) => {
                 Mesas.datosPago(id_mesa, (err, data) => {
@@ -713,7 +713,7 @@ module.exports = {
                     );
                 }
             }
-        }
+        //}
 
         return res.status(200).json({
             success: true,

@@ -103,10 +103,6 @@ class generadorFactura {
               .cliente {
                   margin-top: 20px;
               }
-
-              .strong {
-                  font-weight: bold;
-              }
           </style>
       </head>
       <body>
@@ -137,21 +133,19 @@ class generadorFactura {
                   ${this.generarDetalleProductos(productos)}
               </tbody>
               <tfoot>
-                <div class="strong">
-                    <tr>
-                      <td colspan="3">Subtotal:</td>
-                      <td>${subtotal}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">IVA (10%):</td>
-                        <td>${iva}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">Total:</td>
-                        <td>${total}</td>
-                    </tr>
-                </div>
-              </tfoot>
+              <tr>
+                <td colspan="3"><strong>Subtotal:</strong></td>
+                <td><strong>${subtotal}</strong></td>
+              </tr>
+              <tr>
+                  <td colspan="3"><strong>IVA (10%):</strong></td>
+                  <td><strong>${iva}</strong></td>
+              </tr>
+              <tr>
+                  <td colspan="3"><strong>Total:</strong></td>
+                  <td><strong>${total}</strong></td>
+              </tr>
+              </tfoot>            
           </table>
 
           <div class="notas">
