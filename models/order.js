@@ -649,4 +649,32 @@ Order.updateEstado = (id, status, result) => {
     )
 }
 
+Order.datosOrdenes = (id_mesa, result) => {
+    const sql = `
+    SELECT 
+        o.id OrdersID
+    FROM
+        orders o 
+    WHERE 
+        o.id_mesa = 25
+    `;
+
+    console.log('id_mesa:', id_mesa);
+
+    db.query(
+        sql,
+        [id_mesa],
+        (err, res) => {
+            if (err) {
+                console.log('Error:', err);
+                result(err, null);
+            }
+            else {
+                console.log('Datos de las ordenes:', res);
+                result(null, res);
+            }
+        }
+    );
+}
+
 module.exports = Order;

@@ -241,5 +241,21 @@ module.exports = {
             });
 
         });
-    }
+    },
+
+    async datosOrdenes(req, res) {
+        const id_mesa = req.params.id_mesa;
+
+        Order.datosOrdenes(id_mesa, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de obtener listado de ordenes por mesa',
+                    error: err
+                });
+            }
+
+            return res.status(200).json(data);
+        });
+    },
 }

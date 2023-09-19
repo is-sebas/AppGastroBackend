@@ -237,210 +237,6 @@ module.exports = {
                 });
             }
 
-
-            //////////////////////////////////////////////////////////////////
-            // Obtenemos los datos del producto:
-            const datosProductos = [];
-            for (const data of datosSiCumplen) {
-                try {
-                    const datos = await obtenerDatosProductos(data.OrdersID);
-                    const productos = datos.map((item) => ({
-                        nombre: item.Productos.nombre,
-                        cantidad: item.Productos.cantidad,
-                        precioUnitario: item.Productos.precioUnitario, // Convierte el precio a string
-                    }));
-                    datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
-                } catch (error) {
-                    return res.status(501).json({
-                        success: false,
-                        message: 'Hubo un error al obtener los datos de las ordenes',
-                        error: error
-                    });
-                }
-            }
-
-            async function obtenerDatosProductos(OrdersID) {
-                return new Promise((resolve, reject) => {
-                    Product.datosProductos(OrdersID, (err, datos) => {
-                        if (err) {
-                            reject(err);
-                        }
-                        console.log('Datos obtenidos de Product.datosProductos:', datos);
-                        resolve(datos);
-                    });
-                });
-            }
-            
-            // Obtenemos los datos del productos:
-            const datosFacturaUser = [];
-            for (const ordersCompart of datos) {
-                for (const orderGroup of ordenes) {
-                    for (const order of orderGroup) {
-                        try {
-                            console.log('xxx. order.id_usuarioActivo: ',order.id_usuarioActivo);
-                            const datos = await obtenerDatosFacturaUser(order.id_usuarioActivo);
-                            datosFacturaUser.push(datos); // Agregar los datos del pago a la variable datosPago.
-            
-                        } catch (error) {
-                            console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
-                        }
-                    }
-                }
-            }
-
-            async function obtenerDatosFacturaUser(id) {
-                return new Promise((resolve, reject) => {
-                   User.datosFacturaUser(id, (err, datos) => {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(datos);
-                    });
-                });
-            }
-
-            async function obtenerNombreLocalYUsar() {
-                try {
-                    const id_mesa = datosPagoFiltrados[0][0].id_mesa;
-                    console.log('obtenerNombreLocalYUsar (id_mesa:', id_mesa);
-            
-                    const resultado = await obtenerNombreLocal(id_mesa);
-            
-                    console.log('obtenerNombreLocalYUsar (zzz. resultado:', resultado);
-            
-                    if (resultado && resultado.length > 0) {
-                        const nombreLocal = resultado[0].loc_nombre;
-                        console.log('Nombre del local:', nombreLocal);
-            
-                        return nombreLocal;
-                    } else {
-                        console.log('No se encontró el local para la mesa.');
-                        return null;
-                    }
-                } catch (error) {
-                    console.error('Error al obtener el nombre del local:', error);
-                    throw error;
-                }
-            }
-
-            async function obtenerNombreLocal(id_mesa) {
-                return new Promise((resolve, reject) => {
-                  console.log('obtenerNombreLocal (zzz. id_mesa: ',id_mesa);
-                   Locales.GetlocalXMesa(id_mesa, (err, data) => {
-                    if (err) {
-                      reject(err);
-                    } else {
-                      resolve(data);
-                    }
-                  });
-                });
-              }
-
-            // 1. Buscar y obtener los datos de facturación
-            const datosFactura = datos.find(item => item.datosFactura);
-
-            if (!datosFactura) {
-            return res.status(400).json({
-                success: false,
-                message: 'No se encontraron datos de facturación en la solicitud.',
-            });
-            }
-
-            const { denominacion, ruc, destinatario } = datosFactura.datosFactura[0];
-            //Generación de HTML:
-            const generador = new GeneradorFactura();
-            //const cliente = 'Ricardo Javier Gonzalez Braga';
-            //const ruc = '4163559-0';
-            const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
-            const telefono = '0995368295';
-            const nombreLocal = await obtenerNombreLocalYUsar();
-
-            console.log('local nombre: ', nombreLocal);
-
-            const rutaArchivo = 'factura.html';
-
-            var facturaHTML = generador.generarFacturaHTML(nombreLocal, denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
-            
-            console.log('Factura generada', facturaHTML);
-
-            //Enviar correo:
-            //const destinatario = 'sagz94@outlook.com';
-            const htmlContent = facturaHTML;
-
-            EnviarMail(destinatario, htmlContent);
-
-            // Obtenemos los datos para insertar en la factura:
-            const datosInsertFactura = [];
-            
-            try {
-
-                const id_user = datosPagoFiltrados[0][0].id_cliente;
-                const id_mesa = datosPagoFiltrados[0][0].id_mesa;
-                const monto = datosPagoFiltrados[0][0].montoPagado;
-
-                // Carga el HTML en Cheerio
-                const $ = cheerio.load(facturaHTML);
-                const numeroFactura = $('p:contains("Número de Factura:")').text();
-                const nro_factura = numeroFactura.replace('Número de Factura: ', '');
-
-                console.log('1. id_user: ', id_user);
-                console.log('2. id_mesa: ', id_mesa);
-                console.log('3. monto: ', monto);
-                console.log('4. nro_factura: ', nro_factura);
-
-                const detalle = facturaHTML;
-                console.log('5. detalle: ', detalle);
-
-                const datos = await obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle);
-                datosInsertFactura.push(datos); // Agregar los datos del pago a la variable.
-
-            } catch (error) {
-                console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
-            }
-
-            async function obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle) {
-                return new Promise((resolve, reject) => {
-                   User.datosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle, (err, datos) => {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(datos);
-                    });
-                });
-            }
-
-            //Insertamos en la tabla:
-            console.log('datosInsertFactura: ', datosInsertFactura);
-    
-            for (const datosInsert of datosInsertFactura) {
-                for (const factura of datosInsert) {
-                    console.log('factura.id_local: ', factura.id_local);
-                    console.log('factura.id_cliente: ', factura.id_cliente);
-                    console.log('factura.monto: ', factura.monto);
-                    console.log('factura.ruc: ', factura.ruc);
-                    console.log('factura.denominacion: ', factura.denominacion);
-                    console.log('factura.gestor: ', factura.gestor);
-                    console.log('factura.nro_factura: ', factura.nro_factura);
-                    console.log('factura.detalle: ', factura.detalle);
-            
-                    await Factura.create(
-                        factura.id_local,
-                        factura.id_cliente,
-                        factura.monto,
-                        factura.ruc,
-                        factura.denominacion,
-                        factura.gestor,
-                        factura.nro_factura,
-                        factura.detalle,
-                        (err, id_data) => {
-                            if (err) {
-                                console.error('Hubo un error al insertar los datos de la factura:', err);
-                            }
-                        }
-                    );
-                }
-            }
-
             return res.status(200).json({
                 success: true,
                 message: 'Pago procesado correctamente',
@@ -639,211 +435,6 @@ module.exports = {
                 });
             }
 
-            //Generación de HTML:
-            const generador = new GeneradorFactura();
-            //const cliente = 'Ricardo Javier Gonzalez Braga';
-            //const ruc = '4163559-0';
-            const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
-            //const telefono = '0995368295';
-
-            // Obtenemos los datos del producto:
-            const datosProductos = [];
-            for (const data of datosSiCumplen) {
-                try {
-                    const datos = await obtenerDatosProductos(data.OrdersID);
-                    const productos = datos.map((item) => ({
-                        nombre: item.Productos.nombre,
-                        cantidad: item.Productos.cantidad,
-                        precioUnitario: item.Productos.precioUnitario, // Convierte el precio a string
-                    }));
-                    datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
-                } catch (error) {
-                    return res.status(501).json({
-                        success: false,
-                        message: 'Hubo un error al obtener los datos de las ordenes',
-                        error: error
-                    });
-                }
-            }
-
-            async function obtenerDatosProductos(OrdersID) {
-                return new Promise((resolve, reject) => {
-                    Product.datosProductos(OrdersID, (err, datos) => {
-                        if (err) {
-                            reject(err);
-                        }
-                        console.log('Datos obtenidos de Product.datosProductos:', datos);
-                        resolve(datos);
-                    });
-                });
-            }
-            
-            // Obtenemos los datos del productos:
-            const datosFacturaUser = [];
-            for (const ordersCompart of datos) {
-                for (const orderGroup of ordenes) {
-                    for (const order of orderGroup) {
-                        try {
-                            console.log('xxx. order.id_usuarioActivo: ',order.id_usuarioActivo);
-                            const datos = await obtenerDatosFacturaUser(order.id_usuarioActivo);
-                            datosFacturaUser.push(datos); // Agregar los datos del pago a la variable datosPago.
-            
-                        } catch (error) {
-                            console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
-                        }
-                    }
-                }
-            }
-
-            async function obtenerDatosFacturaUser(id) {
-                return new Promise((resolve, reject) => {
-                   User.datosFacturaUser(id, (err, datos) => {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(datos);
-                    });
-                });
-            }
-
-            async function obtenerNombreLocalYUsar() {
-                try {
-                    const id_mesa = datosPagoFiltrados[0][0].id_mesa;
-                    console.log('obtenerNombreLocalYUsar (id_mesa:', id_mesa);
-            
-                    const resultado = await obtenerNombreLocal(id_mesa);
-            
-                    console.log('obtenerNombreLocalYUsar (zzz. resultado:', resultado);
-            
-                    if (resultado && resultado.length > 0) {
-                        const nombreLocal = resultado[0].loc_nombre;
-                        console.log('Nombre del local:', nombreLocal);
-            
-                        return nombreLocal;
-                    } else {
-                        console.log('No se encontró el local para la mesa.');
-                        return null;
-                    }
-                } catch (error) {
-                    console.error('Error al obtener el nombre del local:', error);
-                    throw error;
-                }
-            }
-
-            async function obtenerNombreLocal(id_mesa) {
-                return new Promise((resolve, reject) => {
-                  console.log('obtenerNombreLocal (zzz. id_mesa: ',id_mesa);
-                   Locales.GetlocalXMesa(id_mesa, (err, data) => {
-                    if (err) {
-                      reject(err);
-                    } else {
-                      resolve(data);
-                    }
-                  });
-                });
-              }
-                      
-
-            console.log('xxx. datosProductos: ',datosProductos);
-            
-            console.log('datosFacturaUser: ', datosFacturaUser);
-
-            console.log('ruc: ', datosFacturaUser[0][0].ruc);
-            console.log('denominacion: ',datosFacturaUser[0][0].denominacion);
-            console.log('telefono: ',datosFacturaUser[0][0].phone);
-
-            // Obtener los valores "ruc" y "denominación"
-            const ruc = datosFacturaUser[0][0].ruc;
-            const denominacion = datosFacturaUser[0][0].denominacion;
-            const telefono = datosFacturaUser[0][0].phone;
-
-            const nombreLocal = await obtenerNombreLocalYUsar();
-
-            console.log('local nombre: ', nombreLocal);
-
-            const rutaArchivo = 'factura.html';
-            
-            var facturaHTML = generador.generarFacturaHTML(nombreLocal, denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
-            console.log('Factura generada', facturaHTML);
-
-            //Enviar correo:
-            const destinatario = 'sagz94@outlook.com';
-            const htmlContent = facturaHTML;
-
-            EnviarMail(destinatario, htmlContent);
-
-            // Obtenemos los datos para insertar en la factura:
-            const datosInsertFactura = [];
-            
-            try {
-
-                const id_user = datosPagoFiltrados[0][0].id_cliente;
-                const id_mesa = datosPagoFiltrados[0][0].id_mesa;
-                const monto = datosPagoFiltrados[0][0].montoPagado;
-
-                // Carga el HTML en Cheerio
-                const $ = cheerio.load(facturaHTML);
-                const numeroFactura = $('p:contains("Número de Factura:")').text();
-                const nro_factura = numeroFactura.replace('Número de Factura: ', '');
-
-                console.log('1. id_user: ', id_user);
-                console.log('2. id_mesa: ', id_mesa);
-                console.log('3. monto: ', monto);
-                console.log('4. nro_factura: ', nro_factura);
-
-                const detalle = facturaHTML;
-                console.log('5. detalle: ', detalle);
-
-                const datos = await obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle);
-                datosInsertFactura.push(datos); // Agregar los datos del pago a la variable.
-
-            } catch (error) {
-                console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
-            }
-
-            async function obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle) {
-                return new Promise((resolve, reject) => {
-                   User.datosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle, (err, datos) => {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(datos);
-                    });
-                });
-            }
-
-            //Insertamos en la tabla:
-            console.log('datosInsertFactura: ', datosInsertFactura);
-    
-            for (const datosInsert of datosInsertFactura) {
-                for (const factura of datosInsert) {
-                    console.log('factura.id_local: ', factura.id_local);
-                    console.log('factura.id_cliente: ', factura.id_cliente);
-                    console.log('factura.monto: ', factura.monto);
-                    console.log('factura.ruc: ', factura.ruc);
-                    console.log('factura.denominacion: ', factura.denominacion);
-                    console.log('factura.gestor: ', factura.gestor);
-                    console.log('factura.nro_factura: ', factura.nro_factura);
-                    console.log('factura.detalle: ', factura.detalle);
-            
-                    await Factura.create(
-                        factura.id_local,
-                        factura.id_cliente,
-                        factura.monto,
-                        factura.ruc,
-                        factura.denominacion,
-                        factura.gestor,
-                        factura.nro_factura,
-                        factura.detalle,
-                        (err, id_data) => {
-                            if (err) {
-                                console.error('Hubo un error al insertar los datos de la factura:', err);
-                            }
-                        }
-                    );
-                }
-            }                     
-
         } catch (error) {
             console.log('Hubo un error al procesar los pagos:', error);
         }
@@ -851,6 +442,7 @@ module.exports = {
 
     async cierreMesa(req, res) {
         const id_mesa = req.params.id_mesa;
+        const id_user = req.params.id_user;
 
         // 1. Verificamos si la mesa cumple la condición para liberar la operación:
         const datos = await new Promise((resolve, reject) => {
@@ -908,6 +500,225 @@ module.exports = {
                 }
             });
 
+        }
+
+        //////////////////////////////////////////////////////////////
+        //Generación de HTML:
+        const generador = new GeneradorFactura();
+        const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
+
+        // Obtenemos los datos de las ordenes:
+        const datosOrdenes = [];
+
+        try {
+            const datos = await obtenerDatosOrdenes(id_mesa);
+            datosOrdenes.push(datos); // Agregar los datos del pago a la variable datosPago.
+
+        } catch (error) {
+            console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
+        }
+
+        async function obtenerDatosOrdenes(id_mesa) {
+            return new Promise((resolve, reject) => {
+            Order.datosOrdenes(id_mesa, (err, datos) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(datos);
+                });
+            });
+        }
+
+        console.log("datosOrdenes[]", datosOrdenes);
+
+        // Obtenemos los datos del producto:
+        const datosProductos = [];
+        for (const datosOrden of datosOrdenes) { // Iteramos sobre los arreglos anidados
+            for (const data of datosOrden) { // Iteramos sobre los objetos dentro de cada arreglo anidado
+                try {
+                    const datos = await obtenerDatosProductos(data.OrdersID);
+                    const productos = datos.map((item) => ({
+                        nombre: item.Productos.nombre,
+                        cantidad: item.Productos.cantidad,
+                        precioUnitario: item.Productos.precioUnitario.toString(), // Convierte el precio a string
+                    }));
+                    datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
+                } catch (error) {
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error al obtener los datos de las ordenes',
+                        error: error
+                    });
+                }
+            }
+        }
+
+        async function obtenerDatosProductos(OrdersID) {
+            return new Promise((resolve, reject) => {
+                Product.datosProductos(OrdersID, (err, datos) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log('Datos obtenidos de Product.datosProductos:', datos);
+                    resolve(datos);
+                });
+            });
+        }
+
+        // Obtenemos los datos de la factura:
+        const datosFacturaUser = [];
+
+        try {
+            const datos = await obtenerDatosFacturaUser(id_user);
+            datosFacturaUser.push(datos); // Agregar los datos del pago a la variable datosPago.
+
+        } catch (error) {
+            console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
+        }
+
+        async function obtenerDatosFacturaUser(id) {
+            return new Promise((resolve, reject) => {
+               User.datosFacturaUser(id, (err, datos) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(datos);
+                });
+            });
+        }
+
+        async function obtenerNombreLocalYUsar() {
+            try {
+                const resultado = await obtenerNombreLocal(id_mesa);
+        
+                if (resultado && resultado.length > 0) {
+                    const nombreLocal = resultado[0].loc_nombre;
+                    console.log('Nombre del local:', nombreLocal);
+        
+                    return nombreLocal;
+                } else {
+                    console.log('No se encontró el local para la mesa.');
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error al obtener el nombre del local:', error);
+                throw error;
+            }
+        }
+
+        async function obtenerNombreLocal(id_mesa) {
+            return new Promise((resolve, reject) => {
+               Locales.GetlocalXMesa(id_mesa, (err, data) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(data);
+                }
+              });
+            });
+          }
+                  
+
+        console.log('xxx. datosProductos: ',datosProductos);
+        
+        console.log('datosFacturaUser: ', datosFacturaUser);
+
+        console.log('ruc: ', datosFacturaUser[0][0].ruc);
+        console.log('denominacion: ',datosFacturaUser[0][0].denominacion);
+        console.log('telefono: ',datosFacturaUser[0][0].phone);
+        console.log('correo: ',datosFacturaUser[0][0].email);
+
+        // Obtener los valores "ruc" y "denominación"
+        const ruc = datosFacturaUser[0][0].ruc;
+        const denominacion = datosFacturaUser[0][0].denominacion;
+        const telefono = datosFacturaUser[0][0].phone;
+        const destinatario = datosFacturaUser[0][0].email;
+
+        const nombreLocal = await obtenerNombreLocalYUsar();
+
+        console.log('local nombre: ', nombreLocal);
+
+        const rutaArchivo = 'factura.html';
+        
+        var facturaHTML = generador.generarFacturaHTML(nombreLocal, denominacion, ruc, direccion, telefono, datosProductos, rutaArchivo);
+        console.log('Factura generada', facturaHTML);
+
+        //Enviar correo:
+        //const destinatario = 'sagz94@outlook.com';
+        const htmlContent = facturaHTML;
+
+        EnviarMail(destinatario, htmlContent);
+
+        // Obtenemos los datos para insertar en la factura:
+        const datosInsertFactura = [];
+        
+        try {
+
+            const id_user = datosPagoFiltrados[0][0].id_cliente;
+            const id_mesa = datosPagoFiltrados[0][0].id_mesa;
+            const monto = datosPagoFiltrados[0][0].montoPagado;
+
+            // Carga el HTML en Cheerio
+            const $ = cheerio.load(facturaHTML);
+            const numeroFactura = $('p:contains("Número de Factura:")').text();
+            const nro_factura = numeroFactura.replace('Número de Factura: ', '');
+
+            console.log('1. id_user: ', id_user);
+            console.log('2. id_mesa: ', id_mesa);
+            console.log('3. monto: ', monto);
+            console.log('4. nro_factura: ', nro_factura);
+
+            const detalle = facturaHTML;
+            console.log('5. detalle: ', detalle);
+
+            const datos = await obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle);
+            datosInsertFactura.push(datos); // Agregar los datos del pago a la variable.
+
+        } catch (error) {
+            console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
+        }
+
+        async function obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle) {
+            return new Promise((resolve, reject) => {
+               User.datosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle, (err, datos) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(datos);
+                });
+            });
+        }
+
+        //Insertamos en la tabla:
+        console.log('datosInsertFactura: ', datosInsertFactura);
+
+        for (const datosInsert of datosInsertFactura) {
+            for (const factura of datosInsert) {
+                console.log('factura.id_local: ', factura.id_local);
+                console.log('factura.id_cliente: ', factura.id_cliente);
+                console.log('factura.monto: ', factura.monto);
+                console.log('factura.ruc: ', factura.ruc);
+                console.log('factura.denominacion: ', factura.denominacion);
+                console.log('factura.gestor: ', factura.gestor);
+                console.log('factura.nro_factura: ', factura.nro_factura);
+                console.log('factura.detalle: ', factura.detalle);
+        
+                await Factura.create(
+                    factura.id_local,
+                    factura.id_cliente,
+                    factura.monto,
+                    factura.ruc,
+                    factura.denominacion,
+                    factura.gestor,
+                    factura.nro_factura,
+                    factura.detalle,
+                    (err, id_data) => {
+                        if (err) {
+                            console.error('Hubo un error al insertar los datos de la factura:', err);
+                        }
+                    }
+                );
+            }
         }
 
         return res.status(200).json({

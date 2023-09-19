@@ -347,7 +347,8 @@ User.datosFacturaUser = (id, result) => {
     select 
       u.ruc,
       u.denominacion,
-      u.phone
+      u.phone,
+      u.email
     from 
       users u 
     where 

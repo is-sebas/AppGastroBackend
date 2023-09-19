@@ -82,7 +82,7 @@ reportes(app, upload);
 facturaRoutes(app, upload);
 
 //
-server.listen(3000, "192.168.1.4" || "localhost", function () {    
+server.listen(3000, "192.168.85.130" || "localhost", function () {    
     console.log('Aplicacion NodeJS ' + port + ' Iniciada...')
 });
 

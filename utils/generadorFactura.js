@@ -134,16 +134,16 @@ class generadorFactura {
               </tbody>
               <tfoot>
                   <tr>
-                      <td colspan="3">Subtotal:</td>
-                      <td>${subtotal}</td>
+                      <td colspan="3"><strong>Subtotal:</strong></td>
+                      <td><strong>${subtotal}</strong></td>
                   </tr>
                   <tr>
-                      <td colspan="3">IVA (10%):</td>
-                      <td>${iva}</td>
+                      <td colspan="3"><strong>IVA (10%):</strong></td>
+                      <td><strong>${iva}</strong></td>
                   </tr>
                   <tr>
-                      <td colspan="3">Total:</td>
-                      <td>${total}</td>
+                      <td colspan="3"><strong>Total:</strong></td>
+                      <td><strong>${total}</strong></td>
                   </tr>
               </tfoot>
           </table>

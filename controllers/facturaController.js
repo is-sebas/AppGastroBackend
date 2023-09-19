@@ -25,9 +25,9 @@ module.exports = {
     },
 
     async GetFacturaHTML(req, res) {
-        const nro_factura = req.params.nro_factura;
+        const id_mesa = req.params.id_mesa;
     
-        Factura.GetFacturaHTML(nro_factura, (err, data) => {
+        Factura.GetFacturaHTML(id_mesa, (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
@@ -42,8 +42,5 @@ module.exports = {
             return res.status(200).send(htmlData);
         });
     },
-    
-    
-    
 
 }
