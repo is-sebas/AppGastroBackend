@@ -435,13 +435,13 @@ CREATE TABLE `facturas` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `id_local` bigint NOT NULL,
   `id_cliente` bigint DEFAULT NULL,
-  `monto` bigint NOT NULL,
+  `id_mesa` bigint DEFAULT NULL,
   `ruc` varchar(100) DEFAULT NULL,
   `denominacion` varchar(100) DEFAULT NULL,
   `gestor` varchar(100) DEFAULT NULL,
   `nro_factura` varchar(100) NOT NULL,
-  `detalle` longtext,
+  `detalle` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `fecha` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `facturas_id_IDX` (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
