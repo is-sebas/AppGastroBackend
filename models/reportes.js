@@ -20,7 +20,7 @@ Reporte.getReporteUsuario = (id_user, fecha_desde, fecha_hasta, result) => {
                 u2.id = pl.id_mesero) mesero,
         pl.id_mesa mesa,
         pl.fechaPago,
-        FORMAT(pl.montoPagado) as montoPagado
+        pl.montoPagado as montoPagado
     FROM 
         pagosLogs pl, users u
     WHERE 
@@ -62,7 +62,7 @@ Reporte.getReporteComercioOnline = (id_local, result) => {
 FROM 
 	(SELECT 
 		COUNT(*) total_mesas_cerradas,
-		FORMAT(SUM(m.total_cancelado),0) total_ganancia
+		SUM(m.total_cancelado) total_ganancia
 	FROM
 		mesas m
 	WHERE
@@ -73,7 +73,7 @@ FROM
 	    m.pagado = 'SI') TABLA_1,
 	(SELECT 
 			COUNT(m.id_mesa) AS total_mesas_abiertas,
-		(SELECT FORMAT(SUM(oc.subTotal),0)
+		(SELECT SUM(oc.subTotal)
 			 FROM ordersCompart oc
 			  WHERE oc.id_mesa = id_mesa) total_pendiente_cobro
 		FROM
@@ -95,7 +95,7 @@ FROM
     	FROM 
 			(SELECT 
 				id_usuarioActivo, 
-				FORMAT(SUM(subTotal),0) total_gastado
+				SUM(subTotal) total_gastado
 			  FROM 
 			  	  mesas m, ordersCompart oc
 			  WHERE
@@ -146,7 +146,7 @@ FROM
 			    SELECT 
 			        p.name AS producto,
 			        ohp.quantity AS cantidad,
-			        FORMAT(p.price * ohp.quantity,0) AS total_generado
+			        p.price * ohp.quantity AS total_generado
 			    FROM
 			        order_has_products ohp, ordersCompart oc, mesas m, products p
 			    WHERE 
@@ -176,7 +176,7 @@ FROM
 		    SELECT 
 		        pl.metodoDePago metodo,
 		        COUNT(pl.id) transacciones,
-		        FORMAT(SUM(pl.montoPagado),0) total
+		        SUM(pl.montoPagado) total
 		    FROM 
 		        mesas m, pagosLogs pl 
 		    WHERE 
@@ -221,7 +221,7 @@ Reporte.getReporteComercioRangoFecha = (id_local,fecha_desde, fecha_hasta, resul
 FROM 
 	(SELECT 
 		COUNT(*) total_mesas_cerradas,
-		FORMAT(SUM(m.total_cancelado), 0) AS total_ganancia
+		SUM(m.total_cancelado) AS total_ganancia
 	FROM
 		mesas m
 	WHERE
@@ -232,9 +232,9 @@ FROM
 	    m.pagado = 'SI') TABLA_1,
 		(SELECT 
 			COUNT(DISTINCT m.id_mesa) AS total_mesas_abiertas,
-			FORMAT((SELECT SUM(oc.subTotal) 
+			(SELECT SUM(oc.subTotal) 
 			 FROM ordersCompart oc
-			  WHERE oc.id_mesa = id_mesa), 0) AS total_pendiente_cobro
+			  WHERE oc.id_mesa = id_mesa) AS total_pendiente_cobro
 		FROM
 			mesas m
 		WHERE
@@ -254,7 +254,7 @@ FROM
     	FROM 
 			(SELECT 
 				id_usuarioActivo, 
-				FORMAT(SUM(subTotal),0) total_gastado
+				SUM(subTotal) total_gastado
 			  FROM 
 			  	  mesas m, ordersCompart oc
 			  WHERE
@@ -305,7 +305,7 @@ FROM
 			    SELECT 
 			        p.name AS producto,
 			        ohp.quantity AS cantidad,
-			        FORMAT(p.price * ohp.quantity, 0) AS total_generado
+			        p.price * ohp.quantity AS total_generado
 			    FROM
 			        order_has_products ohp, ordersCompart oc, mesas m, products p
 			    WHERE 
@@ -335,7 +335,7 @@ FROM
 		    SELECT 
 		        pl.metodoDePago metodo,
 		        COUNT(pl.id) transacciones,
-		        FORMAT(SUM(pl.montoPagado),0) total
+		        SUM(pl.montoPagado) total
 		    FROM 
 		        mesas m, pagosLogs pl 
 		    WHERE 
