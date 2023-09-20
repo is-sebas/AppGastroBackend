@@ -2,14 +2,14 @@ const db = require('../config/config');
 
 const Factura = {};
 
-Factura.create = (id_local, id_cliente, monto, ruc, denominacion, gestor, nro_factura, detalle, result) => {
+Factura.create = (id_local, id_cliente, id_mesa, ruc, denominacion, gestor, nro_factura, detalle, result) => {
 
     const sql = `
     INSERT INTO 
         facturas(
             id_local, 
-            id_cliente, 
-            monto, 
+            id_cliente,
+            id_mesa,
             ruc,
             denominacion,
             gestor,
@@ -20,8 +20,8 @@ Factura.create = (id_local, id_cliente, monto, ruc, denominacion, gestor, nro_fa
     `;
         console.log('Factura.create');
         console.log('1. id_local: ', id_local);
-        console.log('1. id_cliente: ', id_cliente);
-        console.log('3. monto: ', monto);
+        console.log('2. id_cliente: ', id_cliente);
+        console.log('3. id_mesa: ', id_mesa);
         console.log('4. ruc: ', ruc);
         console.log('5. denominacion: ', denominacion);
         console.log('6. gestor: ', gestor);
@@ -32,8 +32,8 @@ Factura.create = (id_local, id_cliente, monto, ruc, denominacion, gestor, nro_fa
             sql, 
             [
                 id_local, 
-                id_cliente, 
-                monto, 
+                id_cliente,
+                id_mesa,
                 ruc,
                 denominacion,
                 gestor,

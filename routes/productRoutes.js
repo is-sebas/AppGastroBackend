@@ -9,6 +9,6 @@ module.exports = (app, upload) => {
     app.put('/api/products/updateWithImage', passport.authenticate('jwt', {session: false}) , upload.array('image', 3), productsController.updateWithImage);
     app.put('/api/products/update', passport.authenticate('jwt', {session: false}) , productsController.update);
     app.delete('/api/products/delete/:id', passport.authenticate('jwt', {session: false}), productsController.delete);
-    app.get('/api/products/datosProductos/:ordersID',  passport.authenticate('jwt', { session: false }), productsController.datosProductos);
+    app.get('/api/products/datosProductos/:id_order_compart',  passport.authenticate('jwt', { session: false }), productsController.datosProductos);
 
 }

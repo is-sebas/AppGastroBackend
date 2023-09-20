@@ -29,8 +29,7 @@ class generadorFactura {
   calcularTotales(productos) {
     let subtotal = 0;
     productos.forEach((producto) => {
-      const totalPorProducto = producto.cantidad * producto.precioUnitario;
-      subtotal += totalPorProducto;
+      subtotal = subtotal + producto.montoPagado;
     });
 
     const iva = Math.round((subtotal / 11) * 1000) / 1000; // Redondear a 3 decimales (10% de IVA)
@@ -47,13 +46,10 @@ class generadorFactura {
     let detalleHTML = '';
 
     productos.forEach((producto) => {
-      const totalPorProducto = producto.cantidad * producto.precioUnitario;
       detalleHTML += `
         <tr>
-            <td>${producto.nombre}</td>
-            <td>${producto.cantidad}</td>
-            <td>${this.formatearMonto(producto.precioUnitario)}</td>
-            <td>${this.formatearMonto(totalPorProducto)}</td>
+            <td>${producto.producto}</td>
+            <td>${this.formatearMonto(producto.montoPagado)}</td>
         </tr>
       `;
     });
@@ -124,8 +120,6 @@ class generadorFactura {
               <thead>
                   <tr>
                       <th>Descripción</th>
-                      <th>Cantidad</th>
-                      <th>Precio Unitario (PYG)</th>
                       <th>Total (PYG)</th>
                   </tr>
               </thead>
@@ -133,19 +127,19 @@ class generadorFactura {
                   ${this.generarDetalleProductos(productos)}
               </tbody>
               <tfoot>
-                  <tr>
-                      <td colspan="3">Subtotal:</td>
-                      <td>${subtotal}</td>
-                  </tr>
-                  <tr>
-                      <td colspan="3">IVA (10%):</td>
-                      <td>${iva}</td>
-                  </tr>
-                  <tr>
-                      <td colspan="3">Total:</td>
-                      <td>${total}</td>
-                  </tr>
-              </tfoot>
+              <tr>
+                <td><strong>Subtotal:</strong></td>
+                <td><strong>${subtotal}</strong></td>
+              </tr>
+              <tr>
+                  <td><strong>IVA (10%):</strong></td>
+                  <td><strong>${iva}</strong></td>
+              </tr>
+              <tr>
+                  <td><strong>Total:</strong></td>
+                  <td><strong>${total}</strong></td>
+              </tr>
+              </tfoot>            
           </table>
 
           <div class="notas">

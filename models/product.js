@@ -150,32 +150,28 @@ Product.delete = (id, result) => {
     )
 }
 
-Product.datosProductos = (ordersID, result) => {
+Product.datosProductos = (id_order_compart, result) => {
     const sql = `
     SELECT JSON_OBJECT(
-        'nombre', p.name,
-        'cantidad', ohp.quantity, 
-        'precioUnitario', p.price
-    ) AS Productos
-    FROM 
-        order_has_products ohp 
-    RIGHT JOIN
-        products p 
-    ON
-        ohp.id_product = p.id
-    INNER JOIN 
-        ordersCompart oc 
-    ON
-        oc.OrdersID = ohp.id_order
-    WHERE 
-        oc.OrdersID = ?
-    GROUP BY 
-        p.name, p.price;    
-    `;
+                'producto', p.name,
+                'montoPagado', oc.subTotal,
+                'cantidad', ohp.quantity
+            ) AS Productos
+        FROM
+            order_has_products ohp, ordersCompart oc, mesas m, products p
+        WHERE 
+            oc.OrdersID = ohp.id_order
+        AND 
+            m.id_mesa = oc.id_mesa
+        AND 
+            ohp.id_product = p.id
+        AND
+            oc.id = ?   
+        `;
 
     db.query(
         sql,
-        [ordersID],
+        [id_order_compart],
         (err, res) => {
             if (err) {
                 console.log('Error:', err);

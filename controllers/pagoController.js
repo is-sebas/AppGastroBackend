@@ -241,13 +241,13 @@ module.exports = {
             //////////////////////////////////////////////////////////////////
             // Obtenemos los datos del producto:
             const datosProductos = [];
-            for (const data of datosSiCumplen) {
+            for (const ordersCompart of datos) {
                 try {
-                    const datos = await obtenerDatosProductos(data.OrdersID);
+                    const datos = await obtenerDatosProductos(ordersCompart.id_order_compart);
                     const productos = datos.map((item) => ({
-                        nombre: item.Productos.nombre,
-                        cantidad: item.Productos.cantidad,
-                        precioUnitario: item.Productos.precioUnitario, // Convierte el precio a string
+                        producto: item.Productos.producto,
+                        montoPagado: item.Productos.montoPagado,
+                        cantidad: item.Productos.cantidad, 
                     }));
                     datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
                 } catch (error) {
@@ -259,9 +259,9 @@ module.exports = {
                 }
             }
 
-            async function obtenerDatosProductos(OrdersID) {
+            async function obtenerDatosProductos(id_order_compart) {
                 return new Promise((resolve, reject) => {
-                    Product.datosProductos(OrdersID, (err, datos) => {
+                    Product.datosProductos(id_order_compart, (err, datos) => {
                         if (err) {
                             reject(err);
                         }
@@ -271,26 +271,27 @@ module.exports = {
                 });
             }
             
-            // Obtenemos los datos del productos:
+            // Obtenemos los datos de la factura:
+
+            const datosFactura = datos.find(item => item.datosFactura);
+
+            const { id_user } = datosFactura.datosFactura[0];
+
+            console.log('id_user: ', id_user);
+
             const datosFacturaUser = [];
-            for (const ordersCompart of datos) {
-                for (const orderGroup of ordenes) {
-                    for (const order of orderGroup) {
-                        try {
-                            console.log('xxx. order.id_usuarioActivo: ',order.id_usuarioActivo);
-                            const datos = await obtenerDatosFacturaUser(order.id_usuarioActivo);
-                            datosFacturaUser.push(datos); // Agregar los datos del pago a la variable datosPago.
-            
-                        } catch (error) {
-                            console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
-                        }
-                    }
-                }
+
+            try {
+                const datos = await obtenerDatosFacturaUser(id_user);
+                datosFacturaUser.push(datos); // Agregar los datos del pago a la variable datosPago.
+
+            } catch (error) {
+                console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
             }
 
             async function obtenerDatosFacturaUser(id) {
                 return new Promise((resolve, reject) => {
-                   User.datosFacturaUser(id, (err, datos) => {
+                User.datosFacturaUser(id, (err, datos) => {
                         if (err) {
                             reject(err);
                         }
@@ -336,23 +337,25 @@ module.exports = {
                 });
               }
 
-            // 1. Buscar y obtener los datos de facturación
-            const datosFactura = datos.find(item => item.datosFactura);
 
-            if (!datosFactura) {
-            return res.status(400).json({
-                success: false,
-                message: 'No se encontraron datos de facturación en la solicitud.',
-            });
-            }
-
-            const { denominacion, ruc, destinatario } = datosFactura.datosFactura[0];
             //Generación de HTML:
             const generador = new GeneradorFactura();
-            //const cliente = 'Ricardo Javier Gonzalez Braga';
-            //const ruc = '4163559-0';
             const direccion = 'Avda. España N° 1239 c/ Padre Cardozo';
-            const telefono = '0995368295';
+            
+            console.log('datosFacturaUser: ', datosFacturaUser);
+
+            console.log('ruc: ', datosFacturaUser[0][0].ruc);
+            console.log('denominacion: ',datosFacturaUser[0][0].denominacion);
+            console.log('telefono: ',datosFacturaUser[0][0].phone);
+            console.log('correo: ',datosFacturaUser[0][0].email);
+
+            // Obtener los valores "ruc" y "denominación"
+            const ruc = datosFacturaUser[0][0].ruc;
+            const denominacion = datosFacturaUser[0][0].denominacion;
+            const telefono = datosFacturaUser[0][0].phone;
+            const destinatario = datosFacturaUser[0][0].email;
+
+
             const nombreLocal = await obtenerNombreLocalYUsar();
 
             console.log('local nombre: ', nombreLocal);
@@ -398,9 +401,9 @@ module.exports = {
                 console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
             }
 
-            async function obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle) {
+            async function obtenerDatosInsertFactura(id_user, id_mesa, nro_factura, detalle) {
                 return new Promise((resolve, reject) => {
-                   User.datosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle, (err, datos) => {
+                User.datosInsertFactura(id_user, id_mesa, nro_factura, detalle, (err, datos) => {
                         if (err) {
                             reject(err);
                         }
@@ -411,12 +414,11 @@ module.exports = {
 
             //Insertamos en la tabla:
             console.log('datosInsertFactura: ', datosInsertFactura);
-    
+
             for (const datosInsert of datosInsertFactura) {
                 for (const factura of datosInsert) {
                     console.log('factura.id_local: ', factura.id_local);
                     console.log('factura.id_cliente: ', factura.id_cliente);
-                    console.log('factura.monto: ', factura.monto);
                     console.log('factura.ruc: ', factura.ruc);
                     console.log('factura.denominacion: ', factura.denominacion);
                     console.log('factura.gestor: ', factura.gestor);
@@ -426,7 +428,7 @@ module.exports = {
                     await Factura.create(
                         factura.id_local,
                         factura.id_cliente,
-                        factura.monto,
+                        factura.id_mesa,
                         factura.ruc,
                         factura.denominacion,
                         factura.gestor,
@@ -440,7 +442,7 @@ module.exports = {
                     );
                 }
             }
-
+    
             return res.status(200).json({
                 success: true,
                 message: 'Pago procesado correctamente',
@@ -648,13 +650,13 @@ module.exports = {
 
             // Obtenemos los datos del producto:
             const datosProductos = [];
-            for (const data of datosSiCumplen) {
+            for (const ordersCompart of datos) {
                 try {
-                    const datos = await obtenerDatosProductos(data.OrdersID);
+                    const datos = await obtenerDatosProductos(ordersCompart.id_order_compart);
                     const productos = datos.map((item) => ({
-                        nombre: item.Productos.nombre,
-                        cantidad: item.Productos.cantidad,
-                        precioUnitario: item.Productos.precioUnitario, // Convierte el precio a string
+                        producto: item.Productos.producto,
+                        montoPagado: item.Productos.montoPagado,
+                        cantidad: item.Productos.cantidad, 
                     }));
                     datosProductos.push(...productos); // Agregar los datos de productos a la variable datosProductos.
                 } catch (error) {
@@ -666,9 +668,9 @@ module.exports = {
                 }
             }
 
-            async function obtenerDatosProductos(OrdersID) {
+            async function obtenerDatosProductos(id_order_compart) {
                 return new Promise((resolve, reject) => {
-                    Product.datosProductos(OrdersID, (err, datos) => {
+                    Product.datosProductos(id_order_compart, (err, datos) => {
                         if (err) {
                             reject(err);
                         }
@@ -751,11 +753,13 @@ module.exports = {
             console.log('ruc: ', datosFacturaUser[0][0].ruc);
             console.log('denominacion: ',datosFacturaUser[0][0].denominacion);
             console.log('telefono: ',datosFacturaUser[0][0].phone);
+            console.log('correo: ',datosFacturaUser[0][0].email);
 
             // Obtener los valores "ruc" y "denominación"
             const ruc = datosFacturaUser[0][0].ruc;
             const denominacion = datosFacturaUser[0][0].denominacion;
             const telefono = datosFacturaUser[0][0].phone;
+            const destinatario = datosFacturaUser[0][0].email;
 
             const nombreLocal = await obtenerNombreLocalYUsar();
 
@@ -767,7 +771,7 @@ module.exports = {
             console.log('Factura generada', facturaHTML);
 
             //Enviar correo:
-            const destinatario = 'sagz94@outlook.com';
+            //const destinatario = 'sagz94@outlook.com';
             const htmlContent = facturaHTML;
 
             EnviarMail(destinatario, htmlContent);
@@ -801,9 +805,9 @@ module.exports = {
                 console.error('Hubo un error al obtener los datos de la factura del usuario: ', error);
             }
 
-            async function obtenerDatosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle) {
+            async function obtenerDatosInsertFactura(id_user, id_mesa, nro_factura, detalle) {
                 return new Promise((resolve, reject) => {
-                   User.datosInsertFactura(id_user, id_mesa, monto, nro_factura, detalle, (err, datos) => {
+                User.datosInsertFactura(id_user, id_mesa, nro_factura, detalle, (err, datos) => {
                         if (err) {
                             reject(err);
                         }
@@ -812,14 +816,12 @@ module.exports = {
                 });
             }
 
-            //Insertamos en la tabla:
             console.log('datosInsertFactura: ', datosInsertFactura);
-    
+
             for (const datosInsert of datosInsertFactura) {
                 for (const factura of datosInsert) {
                     console.log('factura.id_local: ', factura.id_local);
                     console.log('factura.id_cliente: ', factura.id_cliente);
-                    console.log('factura.monto: ', factura.monto);
                     console.log('factura.ruc: ', factura.ruc);
                     console.log('factura.denominacion: ', factura.denominacion);
                     console.log('factura.gestor: ', factura.gestor);
@@ -829,7 +831,7 @@ module.exports = {
                     await Factura.create(
                         factura.id_local,
                         factura.id_cliente,
-                        factura.monto,
+                        factura.id_mesa,
                         factura.ruc,
                         factura.denominacion,
                         factura.gestor,
@@ -842,7 +844,7 @@ module.exports = {
                         }
                     );
                 }
-            }                     
+            }                    
 
         } catch (error) {
             console.log('Hubo un error al procesar los pagos:', error);

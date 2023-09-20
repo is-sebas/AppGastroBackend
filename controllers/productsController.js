@@ -206,9 +206,9 @@ module.exports = {
     },
 
     datosProductos(req, res) {
-        const ordersID = req.params.ordersID;
+        const id_order_compart = req.params.id_order_compart;
 
-        Product.datosProductos(ordersID, (err, data) => {
+        Product.datosProductos(id_order_compart, (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,

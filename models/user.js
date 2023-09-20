@@ -347,7 +347,8 @@ User.datosFacturaUser = (id, result) => {
     select 
       u.ruc,
       u.denominacion,
-      u.phone
+      u.phone,
+      u.email
     from 
       users u 
     where 
@@ -370,7 +371,7 @@ User.datosFacturaUser = (id, result) => {
   );
 }
 
-User.datosInsertFactura = (id_user, id_mesa, monto, nro_factura, detalle, result) => {
+User.datosInsertFactura = (id_user, id_mesa, nro_factura, detalle, result) => {
   const sql = `
         SELECT (SELECT
                     m.id_local
@@ -379,8 +380,8 @@ User.datosInsertFactura = (id_user, id_mesa, monto, nro_factura, detalle, result
                   WHERE
                     m.id_mesa = ?) as 'id_local',
             ? as 'id_cliente',
-            ? as 'monto',	
             u.ruc as 'ruc',
+            ? as 'id_mesa',
             u.denominacion as 'denominacion',
           (SELECT
             concat(u.name, ' ', u.lastname)
@@ -403,7 +404,7 @@ User.datosInsertFactura = (id_user, id_mesa, monto, nro_factura, detalle, result
 
   db.query(
       sql,
-      [id_mesa, id_user, monto, id_mesa, nro_factura, detalle, id_user],
+      [id_mesa, id_user, id_mesa, id_mesa, nro_factura, detalle, id_user],
       (err, res) => {
           if (err) {
               console.log('Error:', err);
